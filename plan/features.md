@@ -32,6 +32,7 @@ This document outlines the features grouped by module based on the sidebar navig
 
 ## 6. Users
 - `[ ]` **Staff Directory**: List showing all internal pharmacy users, email addresses, and active roles.
+- `[ ]` **Role Assignment**: Assign roles (Admin, Cashier, Pharmacist) to staff members per team.
 - `[ ]` **User Access Audit Logs**: Keep track of login timestamps and actions performed by administrators or cashiers.
 
 ## 7. Settings

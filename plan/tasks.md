@@ -17,17 +17,17 @@ This checklist outlines the remaining implementation steps for the Daaweyn pharm
 Managing drug classes (e.g. Prescription, OTC, Generic, Vaccines).
 
 ### Backend
-- `[ ]` Create `Category` Model and Database Migration (fields: `id`, `team_id`, `name`, `slug`, `description`, timestamps)
-- `[ ]` Implement category database constraints (scoped unique constraint on `team_id` and `slug`)
-- `[ ]` Build `CategoryController` (CRUD: `index`, `store`, `update`, `destroy`)
-- `[ ]` Register multi-tenant routes in `routes/web.php` (under `{current_team}` prefix and auth middleware)
+- `[x]` Create `Category` Model and Database Migration (fields: `id`, `team_id`, `name`, `slug`, `description`, timestamps)
+- `[x]` Implement category database constraints (scoped unique constraint on `team_id` and `slug`)
+- `[x]` Build `CategoryController` (CRUD: `index`, `store`, `update`, `destroy`)
+- `[x]` Register multi-tenant routes in `routes/web.php` (under `{current_team}` prefix and auth middleware)
 - `[ ]` Create test suite for category CRUD logic and authorization rules
 
 ### Frontend
-- `[ ]` Create Inertia Page `resources/js/pages/categories/index.tsx`
-- `[ ]` Implement `CategoryTable` showing names, product counts, and actions
-- `[ ]` Implement `CategoryDialog` modal for adding/editing categories
-- `[ ]` Connect form submissions using Inertia's `useForm` hook and display success toast messages
+- `[x]` Create Inertia Page `resources/js/pages/categories/index.tsx`
+- `[x]` Implement `CategoryTable` showing names, product counts, and actions
+- `[x]` Implement `CategoryDialog` modal for adding/editing categories
+- `[x]` Connect form submissions using Inertia's `useForm` hook and display success toast messages
 - `[ ]` Regenerate Wayfinder TypeScript routes using `php artisan boost:update` or equivalent command
 
 ---

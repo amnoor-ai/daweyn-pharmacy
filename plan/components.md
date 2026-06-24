@@ -101,3 +101,9 @@ These components support the missing modules and represent custom dashboards, fo
   - *Purpose*: Form modal to input email and select roles to dispatch new invitations.
   - *Shadcn Primitives*: `dialog`, `input`, `select`, `button`.
   - *Status*: **Missing**
+
+### 3.6 Dashboard
+- **`StatCard`**
+  - *Purpose*: Reusable metric tile displaying a label, value, trend indicator, and icon.
+  - *Shadcn Primitives*: `card`.
+  - *Status*: **Missing**

@@ -4,3 +4,4 @@ export type * from './navigation';
 export type * from './teams';
 export type * from './ui';
 export type * from './products';
+export type * from './customers';

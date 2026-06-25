@@ -9,97 +9,94 @@ use Inertia\Inertia;
 
 class ProductController extends Controller 
 { 
-    public function index(Team $team)
-    {
-        $products = $team->products()
+   public function index(Team $currentTeam)
+{
+    $products = $currentTeam->products()
         ->with('category')
         ->orderBy('name')
         ->get();
 
-        $categories = $team->categories()
+    $categories = $currentTeam->categories()
         ->orderBy('name')
         ->get();
 
-        return Inertia::render('products/index', [
-            'products' => $products,
-            'categories' => $categories,
-        ]);
-    }
+    return Inertia::render('products/index', [
+        'products' => $products,
+        'categories' => $categories,
+    ]);
+}
 
-    public function create(Team $team)
-    {
-        $categories = $team->categories()->orderBy('name')->get();
+public function create(Team $currentTeam)
+{
+    $categories = $currentTeam->categories()->orderBy('name')->get();
 
-        return Inertia::render('products/create', [
-            'categories' => $categories,
-        ]);
-    }
+    return Inertia::render('products/create', [
+        'categories' => $categories,
+    ]);
+}
 
-    public function store(Request $request, Team $team)
-    {
-      $validated = $request->validate([
-        'category_id' => ['required', 'exists:categories,id'],
-        'sku' => ['required', 'string', 'max:100'],
-        'name' => ['required', 'string', 'max:255'],
-        'description' => ['nullable', 'string'],
-        'cost_price' => ['required', 'numeric', 'min:0'],
-        'selling_price' => ['required', 'numeric', 'min:0'],
-        'stock_quantity' => ['required', 'integer', 'min:0'],
-        'alert_threshold' => ['required', 'integer', 'min:0']
-      ]);
+public function store(Request $request, Team $currentTeam)
+{
+    $validated = $request->validate([
+        'category_id'     => ['required', 'exists:categories,id'],
+        'sku'             => ['required', 'string', 'max:100'],
+        'name'            => ['required', 'string', 'max:255'],
+        'description'     => ['nullable', 'string'],
+        'cost_price'      => ['required', 'numeric', 'min:0'],
+        'selling_price'   => ['required', 'numeric', 'min:0'],
+        'stock_quantity'  => ['required', 'integer', 'min:0'],
+        'alert_threshold' => ['required', 'integer', 'min:0'],
+    ]);
 
-      $team->products()->create($validated);
+    $currentTeam->products()->create($validated);
 
-      return redirect()
-      ->route('products.index', $team->slug)
-      ->with('success', 'Product created successfully');
-    }
+    return redirect()
+        ->route('products.index', $currentTeam->slug)
+        ->with('success', 'Product created successfully.');
+}
 
-    public function edit(Team $team, Product $product)
-    {
-        abort_unless($product->team_id === $team->id, 403);
+public function edit(Team $currentTeam, Product $product)
+{
+    abort_unless($product->team_id === $currentTeam->id, 403);
 
-        $categories = $team->categories()
-        ->orderBy('name')
-        ->get();
+    $categories = $currentTeam->categories()->orderBy('name')->get();
 
-        return Inertia::render('products/edit', [
-            'product' => $product,
-            'categories' => $categories,
-        ]);
-    }
+    return Inertia::render('products/edit', [
+        'product'    => $product,
+        'categories' => $categories,
+    ]);
+}
 
-    public function update(Request $request, Team $team, Product $product)
-    {
-        abort_unless($product->team_id === $team->id, 403);
+public function update(Request $request, Team $currentTeam, Product $product)
+{
+    abort_unless($product->team_id === $currentTeam->id, 403);
 
-        $validated = $request->validate([
-            'category_id' => ['required', 'exists:categories,id'],
-            'sku' => ['required', 'string', 'max:100'],
-            'name' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-            'cost_price' => ['required', 'numeric', 'min:0'],
-            'selling_price' => ['required', 'numeric', 'min:0'],
-            'stock_quantity' => ['required', 'integer', 'min:0'],
-            'alert_threshold' => ['required', 'integer', 'min:0'],
-        ]);
+    $validated = $request->validate([
+        'category_id'     => ['required', 'exists:categories,id'],
+        'sku'             => ['required', 'string', 'max:100'],
+        'name'            => ['required', 'string', 'max:255'],
+        'description'     => ['nullable', 'string'],
+        'cost_price'      => ['required', 'numeric', 'min:0'],
+        'selling_price'   => ['required', 'numeric', 'min:0'],
+        'stock_quantity'  => ['required', 'integer', 'min:0'],
+        'alert_threshold' => ['required', 'integer', 'min:0'],
+    ]);
 
-        $product->update($validated);
+    $product->update($validated);
 
-        return redirect()
-            ->route('products.index', $team->slug)
-            ->with('success', 'Product updated successfully');
-    }
+    return redirect()
+        ->route('products.index', $currentTeam->slug)
+        ->with('success', 'Product updated successfully.');
+}
 
-    public function destroy(Team $team, Product $product)
-    {
-        abort_unless($product->team_id === $team->id, 403);
+public function destroy(Team $currentTeam, Product $product)
+{
+    abort_unless($product->team_id === $currentTeam->id, 403);
 
-        $product->delete();
+    $product->delete();
 
-        return redirect()
-            ->route('products.index', $team->slug)
-            ->with('success', 'Product deleted successfully');
-    }
-    
+    return redirect()
+        ->route('products.index', $currentTeam->slug)
+        ->with('success', 'Product deleted successfully.');
+}
 }

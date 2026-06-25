@@ -36,18 +36,18 @@ Managing drug classes (e.g. Prescription, OTC, Generic, Vaccines).
 Managing drug products, unit costs, pricing, and stock alerts.
 
 ### Backend
-- `[ ]` Create `Product` Model and Database Migration (fields: `id`, `team_id`, `category_id`, `sku`, `name`, `description`, `cost_price`, `selling_price`, `stock_quantity`, `alert_threshold`, timestamps)
-- `[ ]` Implement product database constraints and index configurations (foreign key to `categories`, index on `sku`)
-- `[ ]` Build `ProductController` (CRUD: `index`, `create`, `store`, `edit`, `update`, `destroy`)
-- `[ ]` Add validation rules for cost and selling prices (ensure positive numbers, logical decimal limits)
-- `[ ]` Register multi-tenant routes in `routes/web.php`
+- `[x]` Create `Product` Model and Database Migration (fields: `id`, `team_id`, `category_id`, `sku`, `name`, `description`, `cost_price`, `selling_price`, `stock_quantity`, `alert_threshold`, timestamps)
+- `[x]` Implement product database constraints and index configurations (foreign key to `categories`, index on `sku`)
+- `[x]` Build `ProductController` (CRUD: `index`, `create`, `store`, `edit`, `update`, `destroy`)
+- `[x]` Add validation rules for cost and selling prices (ensure positive numbers, logical decimal limits)
+- `[x]` Register multi-tenant routes in `routes/web.php`
 
 ### Frontend
-- `[ ]` Create Inertia Page `resources/js/pages/products/index.tsx` (product listing with alert badges)
-- `[ ]` Build `ProductTable` component supporting pagination, category filtering, and search queries
-- `[ ]` Create `ProductForm` component (pages: `products/create.tsx` and `products/edit.tsx`)
-- `[ ]` Implement color-coded `StockAlertBadge` using status colors (success, warning, danger)
-- `[ ]` Rebuild Wayfinder type declarations and verify form navigation routes
+- `[x]` Create Inertia Page `resources/js/pages/products/index.tsx` (product listing with alert badges)
+- `[x]` Build `ProductTable` component supporting pagination, category filtering, and search queries
+- `[x]` Create `ProductForm` component (pages: `products/create.tsx` and `products/edit.tsx`)
+- `[x]` Implement color-coded `StockAlertBadge` using status colors (success, warning, danger)
+- `[x]` Rebuild Wayfinder type declarations and verify form navigation routes
 
 ---
 

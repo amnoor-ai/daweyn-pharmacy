@@ -1,0 +1,18 @@
+import type { Category } from "./categories";
+
+
+export type Product = {
+    id: number;
+    team_id: number;
+    category_id: number;
+    category?: Category;
+    sku: string;
+    name: string;
+    description: string | null;
+    cost_price: number;
+    selling_price: number;
+    stock_quantity: number;
+    alert_threshold: number;
+    created_at: string | null;
+
+}

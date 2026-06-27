@@ -55,10 +55,10 @@ Managing drug products, unit costs, pricing, and stock alerts.
 Managing customer profiles and patient record tracking.
 
 ### Backend
-- `[ ]` Create `Customer` Model and Database Migration (fields: `id`, `team_id`, `name`, `email`, `phone`, `address`, `loyalty_points`, timestamps)
-- `[ ]` Create customer index on fields for speedy search (indexes on `phone` and `name`)
-- `[ ]` Build `CustomerController` (`index`, `show`, `store`, `update`)
-- `[ ]` Register multi-tenant routes in `routes/web.php`
+- `[x]` Create `Customer` Model and Database Migration (fields: `id`, `team_id`, `name`, `email`, `phone`, `address`, `loyalty_points`, timestamps)
+- `[x]` Create customer index on fields for speedy search (indexes on `phone` and `name`)
+- `[x]` Build `CustomerController` (`index`, `show`, `store`, `update`)
+- `[x]` Register multi-tenant routes in `routes/web.php`
 
 ### Frontend
 - `[ ]` Create Inertia Page `resources/js/pages/customers/index.tsx`

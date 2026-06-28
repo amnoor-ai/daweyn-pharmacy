@@ -48,8 +48,8 @@ Reference `plan/design-system.md` for full tokens. Key values:
 ## What's Missing (Build Order)
 - [x] Phase 1 — Categories (CRUD)
 - [x] Phase 2 — Products / Inventory
-- [ ] Phase 3 — Customers
-- [ ] Phase 4 — Transactions / Sales
+- [x] Phase 3 — Customers
+- [x] Phase 4 — Transactions / Sales
 - [ ] Phase 5 — Users & Role management
 - [ ] Phase 6 — Reports
 - [ ] Phase 7 — Help page

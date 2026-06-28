@@ -61,11 +61,11 @@ Managing customer profiles and patient record tracking.
 - `[x]` Register multi-tenant routes in `routes/web.php`
 
 ### Frontend
-- `[ ]` Create Inertia Page `resources/js/pages/customers/index.tsx`
-- `[ ]` Build `CustomerTable` component with search inputs and summary indicators
-- `[ ]` Create Inertia Page `resources/js/pages/customers/show.tsx` showing medication logs and details
-- `[ ]` Create `CustomerHistoryTimeline` component to display chronological filled items
-- `[ ]` Recompile route endpoints and verify customer profiles view
+- `[x]` Create Inertia Page `resources/js/pages/customers/index.tsx`
+- `[x]` Build `CustomerTable` component with search inputs and summary indicators
+- `[x]` Create Inertia Page `resources/js/pages/customers/show.tsx` showing medication logs and details
+- `[x]` Create `CustomerHistoryTimeline` component to display chronological filled items
+- `[x]` Recompile route endpoints and verify customer profiles view
 
 ---
 
@@ -73,18 +73,18 @@ Managing customer profiles and patient record tracking.
 Handling purchases, invoices, and sales performance data.
 
 ### Backend
-- `[ ]` Create `Transaction` Model and Database Migration (fields: `id`, `team_id`, `customer_id`, `invoice_number`, `subtotal`, `tax`, `discount`, `total`, `payment_method`, `cashier_id`, timestamps)
-- `[ ]` Create `TransactionItem` Model and Database Migration (fields: `id`, `transaction_id`, `product_id`, `quantity`, `unit_price`, `total`, timestamps)
-- `[ ]` Implement database triggers/logic to automatically decrement product inventory stock on successful transaction checkout
-- `[ ]` Build `TransactionController` (`index`, `show`, `store` for sales checkout)
-- `[ ]` Register multi-tenant routes in `routes/web.php`
+- `[x]` Create `Transaction` Model and Database Migration (fields: `id`, `team_id`, `customer_id`, `invoice_number`, `subtotal`, `tax`, `discount`, `total`, `payment_method`, `cashier_id`, timestamps)
+- `[x]` Create `TransactionItem` Model and Database Migration (fields: `id`, `transaction_id`, `product_id`, `quantity`, `unit_price`, `total`, timestamps)
+- `[x]` Implement database triggers/logic to automatically decrement product inventory stock on successful transaction checkout
+- `[x]` Build `TransactionController` (`index`, `show`, `store` for sales checkout)
+- `[x]` Register multi-tenant routes in `routes/web.php`
 
 ### Frontend
-- `[ ]` Create Inertia Page `resources/js/pages/transactions/index.tsx`
-- `[ ]` Build `TransactionTable` showing sales records, payment pill badges, and totals
-- `[ ]` Create `InvoiceSheet` side drawer displaying itemized invoice listings
+- `[x]` Create Inertia Page `resources/js/pages/transactions/index.tsx`
+- `[x]` Build `TransactionTable` showing sales records, payment pill badges, and totals
+- `[x]` Create `InvoiceSheet` side drawer displaying itemized invoice listings
 - `[ ]` Set up checkout form endpoints to process test pharmacy sales
-- `[ ]` Rebuild Wayfinder endpoints
+- `[x]` Rebuild Wayfinder endpoints
 
 ---
 
@@ -92,16 +92,16 @@ Handling purchases, invoices, and sales performance data.
 Controlling staff profiles and access levels (e.g. Administrator, Pharmacist, Cashier).
 
 ### Backend
-- `[ ]` Build `UserController` (specifically mapping users linked to the active tenant team)
-- `[ ]` Create database seeders representing standard roles and default staff accounts
-- `[ ]` Implement policy rules authorizing changes (e.g. only administrators can modify user list or toggle permissions)
-- `[ ]` Register team staff routes in `routes/web.php`
+- `[x]` Build `UserController` (specifically mapping users linked to the active tenant team)
+- `[x]` Create database seeders representing standard roles and default staff accounts
+- `[x]` Implement policy rules authorizing changes (e.g. only administrators can modify user list or toggle permissions)
+- `[x]` Register team staff routes in `routes/web.php`
 
 ### Frontend
-- `[ ]` Create Inertia Page `resources/js/pages/users/index.tsx`
-- `[ ]` Build `StaffTable` component detailing emails, role pills, and statuses
-- `[ ]` Build `InviteStaffDialog` modal allowing custom email delivery with assigned access roles
-- `[ ]` Rebuild route indexes and verify policy authorizations
+- `[x]` Create Inertia Page `resources/js/pages/users/index.tsx`
+- `[x]` Build `StaffTable` component detailing emails, role pills, and statuses
+- `[x]` Build `InviteStaffDialog` modal allowing custom email delivery with assigned access roles
+- `[x]` Rebuild route indexes and verify policy authorizations
 
 ---
 

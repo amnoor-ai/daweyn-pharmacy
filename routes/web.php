@@ -4,6 +4,8 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\Teams\TeamInvitationController;
 use App\Http\Middleware\EnsureTeamMembership;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +37,15 @@ Route::prefix('{current_team}')
         Route::post('customers', [CustomerController::class, 'store'])->name('customers.store');
         Route::put('customers/{customer}', [CustomerController::class, 'update'])->name('customers.update');
         Route::delete('customers/{customer}', [CustomerController::class, 'destroy'])->name('customers.destroy');
+
+        // Transactions
+        Route::get('transactions', [TransactionController::class, 'index'])->name('transactions.index');
+        Route::get('transactions/create', [TransactionController::class, 'create'])->name('transactions.create');
+        Route::post('transactions', [TransactionController::class, 'store'])->name('transactions.store');
+        Route::get('transactions/{transaction}', [TransactionController::class, 'show'])->name('transactions.show');
+
+        // Users / Staff
+        Route::get('users', [UserController::class, 'index'])->name('users.index');
     });
 
 Route::middleware(['auth'])->group(function () {

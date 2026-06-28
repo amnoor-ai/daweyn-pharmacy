@@ -28,6 +28,7 @@ use Illuminate\Support\Carbon;
  * @property-read Collection<int, Category> $categories
  * @property-read Collection<int, Product> $products
  * @property-read Collection<int, Customer> $customers
+ * @property-read Collection<int, Transaction> $transactions
  */
 #[Fillable(['name', 'slug', 'is_personal'])]
 class Team extends Model
@@ -126,6 +127,16 @@ class Team extends Model
     public function customers(): HasMany
     {
         return $this->hasMany(Customer::class);
+    }
+
+    /**
+     * Get all transactions for this team.
+     *
+     * @return HasMany<Transaction, $this>
+     */
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class);
     }
 
     /**

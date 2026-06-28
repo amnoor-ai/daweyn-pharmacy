@@ -1,24 +1,18 @@
 import { Head, usePage } from '@inertiajs/react';
 import { Plus } from 'lucide-react';
-import { useState } from 'react';
 import ProductTable from '@/components/ProductTable';
 import { Button } from '@/components/ui/button';
-import type { Category, Product } from '@/types';
+import type { Product } from '@/types';
 
 type Props = {
     products: Product[];
-    categories: Category[];
 };
 
-export default function ProductsIndex({ products, categories }: Props) {
+export default function ProductsIndex({ products }: Props) {
     const { props } = usePage();
     const teamSlug = (props.currentTeam as { slug: string } | null)?.slug ?? '';
 
-    const [editingProduct, setEditingProduct] = useState<Product | undefined>(undefined);
-
     function handleEdit(product: Product) {
-        setEditingProduct(product);
-        // redirect to edit page
         window.location.href = `/${teamSlug}/products/${product.id}/edit`;
     }
 
@@ -27,9 +21,9 @@ export default function ProductsIndex({ products, categories }: Props) {
             <Head title="Products" />
             <div className="flex flex-col gap-6 p-6">
                 {/* Header */}
-                <div className="flex items-center justify-between">
+                <div className="flex flex-wrap items-center justify-between gap-y-3">
                     <div>
-                        <h1 className="text-2xl font-bold tracking-tight text-text-primary">
+                        <h1 className="text-xl font-bold tracking-tight text-text-primary sm:text-2xl">
                             Products
                         </h1>
                         <p className="mt-1 text-sm text-text-secondary">
@@ -37,7 +31,9 @@ export default function ProductsIndex({ products, categories }: Props) {
                         </p>
                     </div>
                     <Button
-                        onClick={() => window.location.href = `/${teamSlug}/products/create`}
+                        onClick={() =>
+                            (window.location.href = `/${teamSlug}/products/create`)
+                        }
                         className="gap-2 bg-brand hover:bg-brand-dark"
                     >
                         <Plus className="h-4 w-4" />
@@ -60,7 +56,9 @@ ProductsIndex.layout = (props: { currentTeam?: { slug: string } | null }) => ({
     breadcrumbs: [
         {
             title: 'Products',
-            href: props.currentTeam ? `/${props.currentTeam.slug}/products` : '/',
+            href: props.currentTeam
+                ? `/${props.currentTeam.slug}/products`
+                : '/',
         },
     ],
 });

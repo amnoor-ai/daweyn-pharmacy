@@ -18,7 +18,13 @@ class CategoryController extends Controller
      */
     public function index(Request $request, Team $current_team): Response
     {
+        $q = $request->query('q', '');
+
         $categories = Category::where('team_id', $current_team->id)
+            ->when($q, fn ($query) => $query->where(function ($q2) use ($q) {
+                $q2->where('name', 'like', "%{$q}%")
+                   ->orWhere('description', 'like', "%{$q}%");
+            }))
             ->orderBy('name')
             ->get()
             ->map(fn (Category $category) => [
@@ -31,6 +37,7 @@ class CategoryController extends Controller
 
         return Inertia::render('categories/index', [
             'categories' => $categories,
+            'search' => $q,
         ]);
     }
 

@@ -1,12 +1,7 @@
 import type { Customer } from './customers';
 import type { Product } from './products';
 
-export type PaymentMethod =
-    | 'cash'
-    | 'zaad'
-    | 'evc'
-    | 'jeeb'
-    | 'card';
+export type PaymentMethod = 'cash' | 'zaad' | 'evc' | 'jeeb' | 'card';
 
 export type TransactionItem = {
     id: number;

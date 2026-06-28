@@ -39,9 +39,16 @@ Reference `plan/design-system.md` for full tokens. Key values:
 ## What's Already Built
 - Auth flow — login, register, 2FA, passkeys
 - Multi-tenant teams — create, switch, invite, manage members
-- Dashboard skeleton
+- Dashboard with real metrics (revenue, transactions, customers, products)
 - Settings pages — profile, appearance, team
 - Sidebar navigation (`app-sidebar.tsx`)
+- Phase 1 — Categories CRUD ✅
+- Phase 2 — Products / Inventory CRUD ✅
+- Phase 3 — Customers CRUD ✅
+- Phase 4 — Transactions / Sales + POS ✅
+- Phase 5 — Users & Role management ✅
+- Phase 6 — Reports & Dashboard ✅
+- Phase 7 — Help page ✅
 
 ---
 
@@ -50,9 +57,9 @@ Reference `plan/design-system.md` for full tokens. Key values:
 - [x] Phase 2 — Products / Inventory
 - [x] Phase 3 — Customers
 - [x] Phase 4 — Transactions / Sales
-- [ ] Phase 5 — Users & Role management
-- [ ] Phase 6 — Reports
-- [ ] Phase 7 — Help page
+- [x] Phase 5 — Users & Role management
+- [x] Phase 6 — Reports
+- [x] Phase 7 — Help page
 
 ---
 

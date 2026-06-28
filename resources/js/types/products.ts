@@ -1,5 +1,4 @@
-import type { Category } from "./categories";
-
+import type { Category } from './categories';
 
 export type Product = {
     id: number;
@@ -14,5 +13,4 @@ export type Product = {
     stock_quantity: number;
     alert_threshold: number;
     created_at: string | null;
-
-}
+};

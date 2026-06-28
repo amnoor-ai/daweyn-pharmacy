@@ -34,8 +34,8 @@ export default function CategoriesIndex({ categories }: Props) {
         setDialogOpen(open);
 
         if (!open) {
-setEditingCategory(undefined);
-}
+            setEditingCategory(undefined);
+        }
     }
 
     return (
@@ -44,9 +44,9 @@ setEditingCategory(undefined);
 
             <div className="flex flex-col gap-6 p-6">
                 {/* Page header */}
-                <div className="flex items-center justify-between">
+                <div className="flex flex-wrap items-center justify-between gap-y-3">
                     <div>
-                        <h1 className="text-2xl font-bold tracking-tight text-[#161A30]">
+                        <h1 className="text-xl font-bold tracking-tight text-[#161A30] sm:text-2xl">
                             Categories
                         </h1>
                         <p className="mt-1 text-sm text-[#8A8FA6]">

@@ -63,7 +63,7 @@ export default function CategoryDialog({
                 description: category?.description ?? '',
             });
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [open, category?.id]);
 
     function handleSubmit(e: React.FormEvent) {
@@ -133,7 +133,7 @@ export default function CategoryDialog({
                             className="text-[#161A30]"
                         >
                             Description{' '}
-                            <span className="text-[#B0B4C4] text-xs font-normal">
+                            <span className="text-xs font-normal text-[#B0B4C4]">
                                 (optional)
                             </span>
                         </Label>
@@ -145,7 +145,7 @@ export default function CategoryDialog({
                             }
                             placeholder="Short description of this category…"
                             rows={3}
-                            className="w-full rounded-md border border-[#ECEEF5] bg-white px-3 py-2 text-sm text-[#161A30] placeholder:text-[#B0B4C4] focus:border-[#1B2559] focus:outline-none focus:ring-1 focus:ring-[#1B2559]"
+                            className="w-full rounded-md border border-[#ECEEF5] bg-white px-3 py-2 text-sm text-[#161A30] placeholder:text-[#B0B4C4] focus:border-[#1B2559] focus:ring-1 focus:ring-[#1B2559] focus:outline-none"
                         />
                         <InputError message={errors.description} />
                     </div>

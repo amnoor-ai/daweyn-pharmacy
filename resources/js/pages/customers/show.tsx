@@ -1,6 +1,5 @@
-import { Head, usePage } from '@inertiajs/react';
+import { Head, router, usePage } from '@inertiajs/react';
 import { ArrowLeft } from 'lucide-react';
-import { router } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import type { Customer } from '@/types';
 
@@ -15,7 +14,7 @@ export default function CustomerShow({ customer }: Props) {
     return (
         <>
             <Head title={customer.name} />
-            <div className="flex flex-col gap-6 p-6 max-w-2xl">
+            <div className="flex max-w-2xl flex-col gap-6 p-6">
                 {/* Back button */}
                 <Button
                     variant="ghost"
@@ -40,30 +39,50 @@ export default function CustomerShow({ customer }: Props) {
                 <div className="rounded-xl border border-border-soft bg-surface p-6">
                     <dl className="flex flex-col gap-4">
                         <div className="flex flex-col gap-1">
-                            <dt className="text-xs font-medium uppercase tracking-wide text-text-secondary">Phone</dt>
-                            <dd className="text-sm text-text-primary">{customer.phone}</dd>
+                            <dt className="text-xs font-medium tracking-wide text-text-secondary uppercase">
+                                Phone
+                            </dt>
+                            <dd className="text-sm text-text-primary">
+                                {customer.phone}
+                            </dd>
                         </div>
                         <div className="flex flex-col gap-1">
-                            <dt className="text-xs font-medium uppercase tracking-wide text-text-secondary">Email</dt>
-                            <dd className="text-sm text-text-primary">{customer.email ?? '—'}</dd>
+                            <dt className="text-xs font-medium tracking-wide text-text-secondary uppercase">
+                                Email
+                            </dt>
+                            <dd className="text-sm text-text-primary">
+                                {customer.email ?? '—'}
+                            </dd>
                         </div>
                         <div className="flex flex-col gap-1">
-                            <dt className="text-xs font-medium uppercase tracking-wide text-text-secondary">Address</dt>
-                            <dd className="text-sm text-text-primary">{customer.address ?? '—'}</dd>
+                            <dt className="text-xs font-medium tracking-wide text-text-secondary uppercase">
+                                Address
+                            </dt>
+                            <dd className="text-sm text-text-primary">
+                                {customer.address ?? '—'}
+                            </dd>
                         </div>
                         <div className="flex flex-col gap-1">
-                            <dt className="text-xs font-medium uppercase tracking-wide text-text-secondary">Loyalty Points</dt>
-                            <dd className="text-sm font-medium text-brand">{customer.loyalty_points}</dd>
+                            <dt className="text-xs font-medium tracking-wide text-text-secondary uppercase">
+                                Loyalty Points
+                            </dt>
+                            <dd className="text-sm font-medium text-brand">
+                                {customer.loyalty_points}
+                            </dd>
                         </div>
                         <div className="flex flex-col gap-1">
-                            <dt className="text-xs font-medium uppercase tracking-wide text-text-secondary">Customer Since</dt>
+                            <dt className="text-xs font-medium tracking-wide text-text-secondary uppercase">
+                                Customer Since
+                            </dt>
                             <dd className="text-sm text-text-primary">
                                 {customer.created_at
-                                    ? new Date(customer.created_at).toLocaleDateString('en-GB', {
-                                        day: 'numeric',
-                                        month: 'long',
-                                        year: 'numeric',
-                                    })
+                                    ? new Date(
+                                          customer.created_at,
+                                      ).toLocaleDateString('en-GB', {
+                                          day: 'numeric',
+                                          month: 'long',
+                                          year: 'numeric',
+                                      })
                                     : '—'}
                             </dd>
                         </div>
@@ -78,7 +97,9 @@ CustomerShow.layout = (props: { currentTeam?: { slug: string } | null }) => ({
     breadcrumbs: [
         {
             title: 'Customers',
-            href: props.currentTeam ? `/${props.currentTeam.slug}/customers` : '/',
+            href: props.currentTeam
+                ? `/${props.currentTeam.slug}/customers`
+                : '/',
         },
         {
             title: 'Profile',

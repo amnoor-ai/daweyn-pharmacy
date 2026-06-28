@@ -9,10 +9,16 @@ use Inertia\Inertia;
 
 class ProductController extends Controller 
 { 
-   public function index(Team $currentTeam)
+   public function index(Request $request, Team $currentTeam)
 {
+    $q = $request->query('q', '');
+
     $products = $currentTeam->products()
         ->with('category')
+        ->when($q, fn ($query) => $query->where(function ($q2) use ($q) {
+            $q2->where('name', 'like', "%{$q}%")
+               ->orWhere('sku', 'like', "%{$q}%");
+        }))
         ->orderBy('name')
         ->get();
 
@@ -23,6 +29,7 @@ class ProductController extends Controller
     return Inertia::render('products/index', [
         'products' => $products,
         'categories' => $categories,
+        'search' => $q,
     ]);
 }
 

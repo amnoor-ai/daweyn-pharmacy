@@ -1,9 +1,9 @@
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useInitials } from '@/hooks/use-initials';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { Plus, Users } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { useInitials } from '@/hooks/use-initials';
 import type { TeamMember } from '@/types';
 
 type Props = {
@@ -12,7 +12,10 @@ type Props = {
 
 export default function UsersIndex({ members }: Props) {
     const { props } = usePage();
-    const currentTeam = props.currentTeam as { slug: string; name: string } | null;
+    const currentTeam = props.currentTeam as {
+        slug: string;
+        name: string;
+    } | null;
     const teamSlug = currentTeam?.slug ?? '';
     const getInitials = useInitials();
 
@@ -27,9 +30,9 @@ export default function UsersIndex({ members }: Props) {
             <Head title="Staff Directory" />
             <div className="flex flex-col gap-6 p-6">
                 {/* Header */}
-                <div className="flex items-center justify-between">
+                <div className="flex flex-wrap items-center justify-between gap-y-3">
                     <div>
-                        <h1 className="text-2xl font-bold tracking-tight text-text-primary">
+                        <h1 className="text-xl font-bold tracking-tight text-text-primary sm:text-2xl">
                             Staff
                         </h1>
                         <p className="mt-1 text-sm text-text-secondary">
@@ -38,7 +41,7 @@ export default function UsersIndex({ members }: Props) {
                     </div>
                     <Button
                         asChild
-                        className="gap-2 bg-brand hover:bg-brand-dark cursor-pointer"
+                        className="cursor-pointer gap-2 bg-brand hover:bg-brand-dark"
                     >
                         <Link href={`/settings/teams/${teamSlug}`}>
                             <Plus className="h-4 w-4" />
@@ -49,10 +52,14 @@ export default function UsersIndex({ members }: Props) {
 
                 {/* Table / List */}
                 {members.length === 0 ? (
-                    <div className="rounded-xl border border-border-soft bg-surface py-12 flex flex-col items-center justify-center text-center">
-                        <Users className="h-8 w-8 text-text-secondary mb-3 opacity-60" />
-                        <p className="text-sm font-medium text-text-primary">No staff members found</p>
-                        <p className="text-xs text-text-secondary mt-1">Invite team members to collaborate in your pharmacy.</p>
+                    <div className="flex flex-col items-center justify-center rounded-xl border border-border-soft bg-surface py-12 text-center">
+                        <Users className="mb-3 h-8 w-8 text-text-secondary opacity-60" />
+                        <p className="text-sm font-medium text-text-primary">
+                            No staff members found
+                        </p>
+                        <p className="mt-1 text-xs text-text-secondary">
+                            Invite team members to collaborate in your pharmacy.
+                        </p>
                     </div>
                 ) : (
                     <div className="overflow-hidden rounded-xl border border-border-soft bg-surface shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
@@ -89,12 +96,18 @@ export default function UsersIndex({ members }: Props) {
                                                     <Avatar className="h-9 w-9">
                                                         {member.avatar ? (
                                                             <AvatarImage
-                                                                src={member.avatar}
-                                                                alt={member.name}
+                                                                src={
+                                                                    member.avatar
+                                                                }
+                                                                alt={
+                                                                    member.name
+                                                                }
                                                             />
                                                         ) : null}
-                                                        <AvatarFallback className="bg-brand/10 text-brand font-semibold text-xs">
-                                                            {getInitials(member.name)}
+                                                        <AvatarFallback className="bg-brand/10 text-xs font-semibold text-brand">
+                                                            {getInitials(
+                                                                member.name,
+                                                            )}
                                                         </AvatarFallback>
                                                     </Avatar>
                                                     <span className="font-medium text-text-primary">
@@ -108,7 +121,9 @@ export default function UsersIndex({ members }: Props) {
                                             <td className="px-6 py-4">
                                                 <Badge
                                                     className={
-                                                        roleBadgeStyles[member.role] ||
+                                                        roleBadgeStyles[
+                                                            member.role
+                                                        ] ||
                                                         roleBadgeStyles.member
                                                     }
                                                 >
@@ -117,7 +132,9 @@ export default function UsersIndex({ members }: Props) {
                                             </td>
                                             <td className="px-6 py-4 text-text-secondary">
                                                 {member.created_at
-                                                    ? new Date(member.created_at).toLocaleDateString(
+                                                    ? new Date(
+                                                          member.created_at,
+                                                      ).toLocaleDateString(
                                                           'en-GB',
                                                           {
                                                               day: 'numeric',

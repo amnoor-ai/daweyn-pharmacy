@@ -10,15 +10,22 @@ use Inertia\Inertia;
 
 class TransactionController extends Controller
 {
-    public function index(Team $currentTeam)
+    public function index(Request $request, Team $currentTeam)
     {
+        $q = $request->query('q', '');
+
         $transactions = $currentTeam->transactions()
             ->with(['customer', 'cashier', 'items.product'])
+            ->when($q, fn ($query) => $query->where(function ($q2) use ($q) {
+                $q2->where('invoice_number', 'like', "%{$q}%")
+                   ->orWhereHas('customer', fn ($cq) => $cq->where('name', 'like', "%{$q}%"));
+            }))
             ->orderByDesc('created_at')
             ->get();
 
         return Inertia::render('transactions/index', [
             'transactions' => $transactions,
+            'search' => $q,
         ]);
     }
 

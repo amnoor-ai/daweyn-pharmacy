@@ -1,5 +1,5 @@
-import { Link, usePage } from '@inertiajs/react';
-import AppLogoIcon from '@/components/app-logo-icon';
+import { Link } from '@inertiajs/react';
+import { PillBottle } from 'lucide-react';
 import { home } from '@/routes';
 import type { AuthLayoutProps } from '@/types';
 
@@ -8,34 +8,61 @@ export default function AuthSplitLayout({
     title,
     description,
 }: AuthLayoutProps) {
-    const { name } = usePage().props;
-
     return (
-        <div className="relative grid h-dvh flex-col items-center justify-center px-8 sm:px-0 lg:max-w-none lg:grid-cols-2 lg:px-0">
-            <div className="relative hidden h-full flex-col bg-muted p-10 text-white lg:flex dark:border-r">
-                <div className="absolute inset-0 bg-zinc-900" />
-                <Link
-                    href={home()}
-                    className="relative z-20 flex items-center text-lg font-medium"
-                >
-                    <AppLogoIcon className="mr-2 size-8 fill-current text-white" />
-                    {name}
-                </Link>
-            </div>
-            <div className="w-full lg:p-8">
-                <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+        <div className="relative grid h-dvh flex-col items-center justify-center bg-canvas px-8 sm:px-0 lg:max-w-none lg:grid-cols-2 lg:px-0">
+            {/* Left Panel (Desktop only) */}
+            <div className="relative hidden h-full flex-col bg-gradient-to-br from-[#1B2559] to-[#4C5FD5] p-10 text-white lg:flex">
+                <div className="relative z-20 flex flex-1 flex-col justify-between">
+                    {/* Brand Logo header */}
                     <Link
                         href={home()}
-                        className="relative z-20 flex items-center justify-center lg:hidden"
+                        className="flex items-center gap-2.5 text-lg font-bold tracking-tight text-white"
                     >
-                        <AppLogoIcon className="h-10 fill-current text-black sm:h-12" />
+                        <div className="flex h-8 w-8 items-center justify-center rounded-[8px] bg-white">
+                            <PillBottle size={18} className="text-[#1B2559]" />
+                        </div>
+                        <span className="text-xl">Daaweyn</span>
                     </Link>
+
+                    {/* Tagline footer */}
+                    <div className="mt-auto">
+                        <p className="text-2xl font-bold tracking-tight text-white">
+                            Care begins with clarity.
+                        </p>
+                        <p className="mt-2 text-sm text-[#EEF0FD]/80">
+                            Pharmacy intelligence, simplified.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            {/* Right Panel (Form) */}
+            <div className="flex w-full items-center justify-center lg:p-8">
+                <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+                    {/* Mobile Logo */}
+                    <Link
+                        href={home()}
+                        className="relative z-20 mb-4 flex items-center justify-center gap-2.5 lg:hidden"
+                    >
+                        <div className="flex h-10 w-10 items-center justify-center rounded-[10px] bg-brand text-white">
+                            <PillBottle size={22} />
+                        </div>
+                        <span className="text-2xl font-bold text-brand">
+                            Daaweyn
+                        </span>
+                    </Link>
+
+                    {/* Header title / subtitle */}
                     <div className="flex flex-col items-start gap-2 text-left sm:items-center sm:text-center">
-                        <h1 className="text-xl font-medium">{title}</h1>
-                        <p className="text-sm text-balance text-muted-foreground">
+                        <h1 className="text-xl font-bold text-text-primary">
+                            {title}
+                        </h1>
+                        <p className="text-sm text-balance text-text-secondary">
                             {description}
                         </p>
                     </div>
+
+                    {/* Form content */}
                     {children}
                 </div>
             </div>

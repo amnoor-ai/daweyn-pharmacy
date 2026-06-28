@@ -109,16 +109,16 @@ Controlling staff profiles and access levels (e.g. Administrator, Pharmacist, Ca
 Interactive analytics dashboard modules and manuals.
 
 ### Backend
-- `[ ]` Extend `DashboardController` to compute actual vs target sales performance, payment counts, and stock level warnings
-- `[ ]` Build support ticket endpoint logic for the help section (transmits ticket text to email/log)
-- `[ ]` Register `help` route in `routes/web.php`
+- `[x]` Extend `DashboardController` to compute actual vs target sales performance, payment counts, and stock level warnings
+- `[x]` Build support ticket endpoint logic for the help section (transmits ticket text to email/log)
+- `[x]` Register `help` route in `routes/web.php`
 
 ### Frontend
-- `[ ]` Update [dashboard.tsx](file:///c:/Users/abdul/Documents/GitHub/daweyn-pharmacy/resources/js/pages/dashboard.tsx) to render real metrics (replacing grey placeholder grids)
-- `[ ]` Implement `RevenueLineChart` using visual lines (navy theme accents)
-- `[ ]` Implement `PaymentMethodDonut` summarizing cash, card, and insurance payments
-- `[ ]` Create Inertia Page `resources/js/pages/help.tsx` with a searchable FAQ list and support ticket form
-- `[ ]` Verify dashboard data hydration and help submission flows
+- `[x]` Update [dashboard.tsx](file:///c:/Users/abdul/Documents/GitHub/daweyn-pharmacy/resources/js/pages/dashboard.tsx) to render real metrics (replacing grey placeholder grids)
+- `[x]` Implement `RevenueLineChart` using visual lines (navy theme accents)
+- `[x]` Implement `PaymentMethodDonut` summarizing cash, card, and insurance payments
+- `[x]` Create Inertia Page `resources/js/pages/help.tsx` with a searchable FAQ list and support ticket form
+- `[x]` Verify dashboard data hydration and help submission flows
 
 ---
 
@@ -126,9 +126,9 @@ Interactive analytics dashboard modules and manuals.
 Validating UX design parameters and application stability.
 
 ### Checklists
-- `[ ]` Verify Tailwind v4 theme variables match design system spec in [plan/design-system.md](file:///c:/Users/abdul/Documents/GitHub/daweyn-pharmacy/plan/design-system.md)
-- `[ ]` Ensure sidebar and header elements collapse cleanly on mobile layout widths
-- `[ ]` Run test commands: `php artisan test` (validates all PHP assertions)
-- `[ ]` Run build verification: `npm run build` (validates TypeScript types and bundler packaging)
-- `[ ]` Run formatting checklist: `npm run format:check` and lint checks `npm run lint:check`
-- `[ ]` Perform manual review of interactive dashboard modals, sliders, and drawers
+- `[x]` Verify Tailwind v4 theme variables match design system spec in [plan/design-system.md](file:///c:/Users/abdul/Documents/GitHub/daweyn-pharmacy/plan/design-system.md)
+- `[x]` Ensure sidebar and header elements collapse cleanly on mobile layout widths
+- `[x]` Run test commands: `php artisan test` (validates all PHP assertions)
+- `[x]` Run build verification: `npm run build` (validates TypeScript types and bundler packaging)
+- `[x]` Run formatting checklist: `npm run format:check` and lint checks `npm run lint:check`
+- `[x]` Perform manual review of interactive dashboard modals, sliders, and drawers

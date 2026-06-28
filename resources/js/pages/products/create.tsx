@@ -1,8 +1,8 @@
 import { Head, useForm, usePage } from '@inertiajs/react';
+import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import InputError from '@/components/input-error';
 import type { Category } from '@/types';
 
 type Props = {
@@ -43,7 +43,7 @@ export default function ProductCreate({ categories }: Props) {
     return (
         <>
             <Head title="Add Product" />
-            <div className="flex flex-col gap-6 p-6 max-w-2xl">
+            <div className="flex max-w-2xl flex-col gap-6 p-6">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-text-primary">
                         Add Product
@@ -56,17 +56,22 @@ export default function ProductCreate({ categories }: Props) {
                 <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                     {/* Category */}
                     <div className="flex flex-col gap-1.5">
-                        <Label htmlFor="category_id" className="text-text-primary">
+                        <Label
+                            htmlFor="category_id"
+                            className="text-text-primary"
+                        >
                             Category <span className="text-danger-fg">*</span>
                         </Label>
                         <select
                             id="category_id"
                             value={data.category_id}
-                            onChange={e => setData('category_id', String(e.target.value))}
-                            className="w-full rounded-md border border-border-soft bg-white px-3 py-2 text-sm text-text-primary focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+                            onChange={(e) =>
+                                setData('category_id', String(e.target.value))
+                            }
+                            className="w-full rounded-md border border-border-soft bg-white px-3 py-2 text-sm text-text-primary focus:border-brand focus:ring-1 focus:ring-brand focus:outline-none"
                         >
                             <option value="">Select a category</option>
-                            {categories.map(cat => (
+                            {categories.map((cat) => (
                                 <option key={cat.id} value={String(cat.id)}>
                                     {cat.name}
                                 </option>
@@ -83,7 +88,7 @@ export default function ProductCreate({ categories }: Props) {
                         <Input
                             id="name"
                             value={data.name}
-                            onChange={e => setData('name', e.target.value)}
+                            onChange={(e) => setData('name', e.target.value)}
                             placeholder="e.g. Amoxicillin 500mg"
                             className="border-border-soft"
                         />
@@ -98,7 +103,7 @@ export default function ProductCreate({ categories }: Props) {
                         <Input
                             id="sku"
                             value={data.sku}
-                            onChange={e => setData('sku', e.target.value)}
+                            onChange={(e) => setData('sku', e.target.value)}
                             placeholder="e.g. AMX-500"
                             className="border-border-soft"
                         />
@@ -107,17 +112,24 @@ export default function ProductCreate({ categories }: Props) {
 
                     {/* Description */}
                     <div className="flex flex-col gap-1.5">
-                        <Label htmlFor="description" className="text-text-primary">
+                        <Label
+                            htmlFor="description"
+                            className="text-text-primary"
+                        >
                             Description{' '}
-                            <span className="text-text-secondary text-xs font-normal">(optional)</span>
+                            <span className="text-xs font-normal text-text-secondary">
+                                (optional)
+                            </span>
                         </Label>
                         <textarea
                             id="description"
                             value={data.description}
-                            onChange={e => setData('description', e.target.value)}
+                            onChange={(e) =>
+                                setData('description', e.target.value)
+                            }
                             placeholder="Short description..."
                             rows={3}
-                            className="w-full rounded-md border border-border-soft bg-white px-3 py-2 text-sm text-text-primary placeholder:text-text-secondary focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+                            className="w-full rounded-md border border-border-soft bg-white px-3 py-2 text-sm text-text-primary placeholder:text-text-secondary focus:border-brand focus:ring-1 focus:ring-brand focus:outline-none"
                         />
                         <InputError message={errors.description} />
                     </div>
@@ -125,8 +137,12 @@ export default function ProductCreate({ categories }: Props) {
                     {/* Prices */}
                     <div className="grid grid-cols-2 gap-4">
                         <div className="flex flex-col gap-1.5">
-                            <Label htmlFor="cost_price" className="text-text-primary">
-                                Cost Price <span className="text-danger-fg">*</span>
+                            <Label
+                                htmlFor="cost_price"
+                                className="text-text-primary"
+                            >
+                                Cost Price{' '}
+                                <span className="text-danger-fg">*</span>
                             </Label>
                             <Input
                                 id="cost_price"
@@ -134,15 +150,21 @@ export default function ProductCreate({ categories }: Props) {
                                 min="0"
                                 step="0.01"
                                 value={data.cost_price}
-                                onChange={e => setData('cost_price', e.target.value)}
+                                onChange={(e) =>
+                                    setData('cost_price', e.target.value)
+                                }
                                 placeholder="0.00"
                                 className="border-border-soft"
                             />
                             <InputError message={errors.cost_price} />
                         </div>
                         <div className="flex flex-col gap-1.5">
-                            <Label htmlFor="selling_price" className="text-text-primary">
-                                Selling Price <span className="text-danger-fg">*</span>
+                            <Label
+                                htmlFor="selling_price"
+                                className="text-text-primary"
+                            >
+                                Selling Price{' '}
+                                <span className="text-danger-fg">*</span>
                             </Label>
                             <Input
                                 id="selling_price"
@@ -150,7 +172,9 @@ export default function ProductCreate({ categories }: Props) {
                                 min="0"
                                 step="0.01"
                                 value={data.selling_price}
-                                onChange={e => setData('selling_price', e.target.value)}
+                                onChange={(e) =>
+                                    setData('selling_price', e.target.value)
+                                }
                                 placeholder="0.00"
                                 className="border-border-soft"
                             />
@@ -161,30 +185,42 @@ export default function ProductCreate({ categories }: Props) {
                     {/* Stock */}
                     <div className="grid grid-cols-2 gap-4">
                         <div className="flex flex-col gap-1.5">
-                            <Label htmlFor="stock_quantity" className="text-text-primary">
-                                Stock Quantity <span className="text-danger-fg">*</span>
+                            <Label
+                                htmlFor="stock_quantity"
+                                className="text-text-primary"
+                            >
+                                Stock Quantity{' '}
+                                <span className="text-danger-fg">*</span>
                             </Label>
                             <Input
                                 id="stock_quantity"
                                 type="number"
                                 min="0"
                                 value={data.stock_quantity}
-                                onChange={e => setData('stock_quantity', e.target.value)}
+                                onChange={(e) =>
+                                    setData('stock_quantity', e.target.value)
+                                }
                                 placeholder="0"
                                 className="border-border-soft"
                             />
                             <InputError message={errors.stock_quantity} />
                         </div>
                         <div className="flex flex-col gap-1.5">
-                            <Label htmlFor="alert_threshold" className="text-text-primary">
-                                Alert Threshold <span className="text-danger-fg">*</span>
+                            <Label
+                                htmlFor="alert_threshold"
+                                className="text-text-primary"
+                            >
+                                Alert Threshold{' '}
+                                <span className="text-danger-fg">*</span>
                             </Label>
                             <Input
                                 id="alert_threshold"
                                 type="number"
                                 min="0"
                                 value={data.alert_threshold}
-                                onChange={e => setData('alert_threshold', e.target.value)}
+                                onChange={(e) =>
+                                    setData('alert_threshold', e.target.value)
+                                }
                                 placeholder="10"
                                 className="border-border-soft"
                             />
@@ -221,11 +257,15 @@ ProductCreate.layout = (props: { currentTeam?: { slug: string } | null }) => ({
     breadcrumbs: [
         {
             title: 'Products',
-            href: props.currentTeam ? `/${props.currentTeam.slug}/products` : '/',
+            href: props.currentTeam
+                ? `/${props.currentTeam.slug}/products`
+                : '/',
         },
         {
             title: 'Add Product',
-            href: props.currentTeam ? `/${props.currentTeam.slug}/products/create` : '/',
+            href: props.currentTeam
+                ? `/${props.currentTeam.slug}/products/create`
+                : '/',
         },
     ],
 });

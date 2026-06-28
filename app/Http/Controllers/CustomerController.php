@@ -9,14 +9,22 @@ use Inertia\Inertia;
 
 class CustomerController extends Controller
 {
-    public function index(Team $currentTeam)
+    public function index(Request $request, Team $currentTeam)
     {
+        $q = $request->query('q', '');
+
         $customers = $currentTeam->customers()
+            ->when($q, fn ($query) => $query->where(function ($q2) use ($q) {
+                $q2->where('name', 'like', "%{$q}%")
+                   ->orWhere('phone', 'like', "%{$q}%")
+                   ->orWhere('email', 'like', "%{$q}%");
+            }))
             ->orderBy('name')
             ->get();
 
         return Inertia::render('customers/index', [
             'customers' => $customers,
+            'search' => $q,
         ]);
     }
 

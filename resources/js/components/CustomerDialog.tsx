@@ -28,7 +28,12 @@ type FormData = {
     loyalty_points: string;
 };
 
-export default function CustomerDialog({ open, onOpenChange, teamSlug, customer }: Props) {
+export default function CustomerDialog({
+    open,
+    onOpenChange,
+    teamSlug,
+    customer,
+}: Props) {
     const isEditing = customer !== undefined;
 
     const { data, setData, post, put, processing, errors, reset, clearErrors } =
@@ -82,13 +87,16 @@ export default function CustomerDialog({ open, onOpenChange, teamSlug, customer 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                     {/* Name */}
                     <div className="flex flex-col gap-1.5">
-                        <Label htmlFor="customer-name" className="text-text-primary">
+                        <Label
+                            htmlFor="customer-name"
+                            className="text-text-primary"
+                        >
                             Name <span className="text-danger-fg">*</span>
                         </Label>
                         <Input
                             id="customer-name"
                             value={data.name}
-                            onChange={e => setData('name', e.target.value)}
+                            onChange={(e) => setData('name', e.target.value)}
                             placeholder="e.g. Fatima Hassan"
                             autoFocus
                             className="border-border-soft"
@@ -98,13 +106,16 @@ export default function CustomerDialog({ open, onOpenChange, teamSlug, customer 
 
                     {/* Phone */}
                     <div className="flex flex-col gap-1.5">
-                        <Label htmlFor="customer-phone" className="text-text-primary">
+                        <Label
+                            htmlFor="customer-phone"
+                            className="text-text-primary"
+                        >
                             Phone <span className="text-danger-fg">*</span>
                         </Label>
                         <Input
                             id="customer-phone"
                             value={data.phone}
-                            onChange={e => setData('phone', e.target.value)}
+                            onChange={(e) => setData('phone', e.target.value)}
                             placeholder="e.g. +252 61 234 5678"
                             className="border-border-soft"
                         />
@@ -113,15 +124,20 @@ export default function CustomerDialog({ open, onOpenChange, teamSlug, customer 
 
                     {/* Email */}
                     <div className="flex flex-col gap-1.5">
-                        <Label htmlFor="customer-email" className="text-text-primary">
+                        <Label
+                            htmlFor="customer-email"
+                            className="text-text-primary"
+                        >
                             Email{' '}
-                            <span className="text-text-secondary text-xs font-normal">(optional)</span>
+                            <span className="text-xs font-normal text-text-secondary">
+                                (optional)
+                            </span>
                         </Label>
                         <Input
                             id="customer-email"
                             type="email"
                             value={data.email}
-                            onChange={e => setData('email', e.target.value)}
+                            onChange={(e) => setData('email', e.target.value)}
                             placeholder="e.g. fatima@example.com"
                             className="border-border-soft"
                         />
@@ -130,14 +146,19 @@ export default function CustomerDialog({ open, onOpenChange, teamSlug, customer 
 
                     {/* Address */}
                     <div className="flex flex-col gap-1.5">
-                        <Label htmlFor="customer-address" className="text-text-primary">
+                        <Label
+                            htmlFor="customer-address"
+                            className="text-text-primary"
+                        >
                             Address{' '}
-                            <span className="text-text-secondary text-xs font-normal">(optional)</span>
+                            <span className="text-xs font-normal text-text-secondary">
+                                (optional)
+                            </span>
                         </Label>
                         <Input
                             id="customer-address"
                             value={data.address}
-                            onChange={e => setData('address', e.target.value)}
+                            onChange={(e) => setData('address', e.target.value)}
                             placeholder="e.g. Hodan District, Mogadishu"
                             className="border-border-soft"
                         />
@@ -146,7 +167,10 @@ export default function CustomerDialog({ open, onOpenChange, teamSlug, customer 
 
                     {/* Loyalty Points */}
                     <div className="flex flex-col gap-1.5">
-                        <Label htmlFor="customer-loyalty" className="text-text-primary">
+                        <Label
+                            htmlFor="customer-loyalty"
+                            className="text-text-primary"
+                        >
                             Loyalty Points
                         </Label>
                         <Input
@@ -154,7 +178,9 @@ export default function CustomerDialog({ open, onOpenChange, teamSlug, customer 
                             type="number"
                             min="0"
                             value={data.loyalty_points}
-                            onChange={e => setData('loyalty_points', e.target.value)}
+                            onChange={(e) =>
+                                setData('loyalty_points', e.target.value)
+                            }
                             className="border-border-soft"
                         />
                         <InputError message={errors.loyalty_points} />
@@ -178,8 +204,8 @@ export default function CustomerDialog({ open, onOpenChange, teamSlug, customer 
                             {processing
                                 ? 'Saving…'
                                 : isEditing
-                                    ? 'Save Changes'
-                                    : 'Add Customer'}
+                                  ? 'Save Changes'
+                                  : 'Add Customer'}
                         </Button>
                     </DialogFooter>
                 </form>

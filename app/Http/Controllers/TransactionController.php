@@ -57,6 +57,23 @@ class TransactionController extends Controller
         ]);
     }
 
+    public function pos(Team $currentTeam)
+    {
+        $products = $currentTeam->products()
+        ->where('stock_quantity', '>', 0)
+        ->orderBy('name')
+        ->get();
+
+        $customers = $currentTeam->customers()
+        ->orderBy('name')
+        ->get();
+
+        return Inertia::render('pos/index', [
+            'products' => $products,
+            'customers' => $customers,
+        ]);
+    }
+
     public function store(Request $request, Team $currentTeam)
     {
         $validated = $request->validate([
@@ -121,7 +138,7 @@ class TransactionController extends Controller
         });
 
         return redirect()
-            ->route('transactions.index', $currentTeam->slug)
+            ->route('pos.index', $currentTeam->slug)
             ->with('success', 'Transaction recorded successfully.');
     }
 }

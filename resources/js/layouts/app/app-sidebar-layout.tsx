@@ -38,19 +38,19 @@ export default function AppSidebarLayout({
 
     return (
         <div className="flex min-h-screen bg-canvas">
-            {/* Desktop sidebar — hidden on mobile */}
+            {/* Desktop sidebar — hidden on mobile, collapsible */}
             <div className="hidden lg:flex">
                 <Appsidebar />
             </div>
 
-            {/* Mobile sidebar — Sheet drawer */}
+            {/* Mobile sidebar — Sheet drawer, always full width/labels */}
             <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
                 <SheetContent
                     side="left"
                     className="w-64 border-r border-border-soft p-0"
                 >
                     <SheetTitle className="sr-only">Navigation menu</SheetTitle>
-                    <Appsidebar />
+                    <Appsidebar collapsible={false} />
                 </SheetContent>
             </Sheet>
 

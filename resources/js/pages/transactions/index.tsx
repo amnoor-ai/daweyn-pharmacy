@@ -1,5 +1,5 @@
 import { Head, router, usePage } from '@inertiajs/react';
-import { Plus, Eye } from 'lucide-react';
+import { Eye, ShoppingCart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { Transaction } from '@/types';
 
@@ -35,12 +35,12 @@ export default function TransactionsIndex({ transactions }: Props) {
                     </div>
                     <Button
                         onClick={() =>
-                            router.visit(`/${teamSlug}/transactions/create`)
+                            router.visit(`/${teamSlug}/pos`)
                         }
                         className="gap-2 bg-brand hover:bg-brand-dark"
                     >
-                        <Plus className="h-4 w-4" />
-                        New Sale
+                        <ShoppingCart className="h-4 w-4" />
+                        Go to POS
                     </Button>
                 </div>
 

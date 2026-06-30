@@ -44,6 +44,9 @@ Route::prefix('{current_team}')
         Route::post('transactions', [TransactionController::class, 'store'])->name('transactions.store');
         Route::get('transactions/{transaction}', [TransactionController::class, 'show'])->name('transactions.show');
 
+        //POS
+        Route::get('pos', [TransactionController::class, 'pos'])->name('pos.index');
+
         // Users / Staff
         Route::get('users', [UserController::class, 'index'])->name('users.index');
     });

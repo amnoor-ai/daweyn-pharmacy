@@ -159,6 +159,15 @@ export default function TransactionShow({ transaction }: Props) {
                         </div>
                     </div>
                 </div>
+
+                {transaction.customer && (
+                    <div className="rounded-xl border border-border-soft bg-surface p-6">
+                        <div className="flex justify-between items-center text-sm font-medium text-success-fg">
+                            <span>Points earned</span>
+                            <span>+{Math.floor(Number(transaction.total))} pts</span>
+                        </div>
+                    </div>
+                )}
             </div>
         </>
     );

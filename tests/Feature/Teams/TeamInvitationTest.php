@@ -46,8 +46,8 @@ test('invitation email for existing users uses login route', function () {
 
     $mail = (new TeamInvitationNotification($invitation))->toMail($invitedUser);
 
-    expect($mail->actionUrl)->toBe(route('login', ['invitation' => $invitation->code]));
-    $this->assertStringContainsString('dashboard', implode(' ', $mail->introLines));
+    expect($mail->actionUrl)->toBe(route('register', ['invitation' => $invitation->code]));
+    $this->assertStringContainsString('Daaweyn Pharmacy', implode(' ', $mail->introLines));
 });
 
 test('invitation email for unknown users uses login route', function () {
@@ -64,8 +64,8 @@ test('invitation email for unknown users uses login route', function () {
 
     $mail = (new TeamInvitationNotification($invitation))->toMail((object) []);
 
-    expect($mail->actionUrl)->toBe(route('login', ['invitation' => $invitation->code]));
-    $this->assertStringContainsString('log in', strtolower(implode(' ', $mail->introLines)));
+    expect($mail->actionUrl)->toBe(route('register', ['invitation' => $invitation->code]));
+    $this->assertStringContainsString('daaweyn pharmacy', strtolower(implode(' ', $mail->introLines)));
 });
 
 test('team invitations can be created by admins', function () {

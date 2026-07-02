@@ -86,7 +86,7 @@ class TransactionController extends Controller
             'items.*.quantity'          => ['required', 'integer', 'min:1'],
         ]);
 
-        DB::transaction(function () use ($validated, $currentTeam, $request) {
+        $transaction = DB::transaction(function () use ($validated, $currentTeam, $request) {
             // Calculate totals
             $subtotal = 0;
             $itemsData = [];
@@ -135,7 +135,16 @@ class TransactionController extends Controller
 
             // Create transaction items
             $transaction->items()->createMany($itemsData);
+
+            return $transaction;
         });
+
+        if ($validated['customer_id'] ?? null) {
+            $points = (int) floor($transaction->total);
+            if ($points > 0) {
+                \App\Models\Customer::find($validated['customer_id'])?->increment('loyalty_points', $points);
+            }
+        }
 
         return redirect()
             ->route('pos.index', $currentTeam->slug)

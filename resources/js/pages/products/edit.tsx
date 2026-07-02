@@ -19,6 +19,7 @@ type FormData = {
     selling_price: string;
     stock_quantity: string;
     alert_threshold: string;
+    expiry_date: string;
 };
 
 export default function ProductEdit({ product, categories }: Props) {
@@ -34,6 +35,7 @@ export default function ProductEdit({ product, categories }: Props) {
         selling_price: String(product.selling_price),
         stock_quantity: String(product.stock_quantity),
         alert_threshold: String(product.alert_threshold),
+        expiry_date: product.expiry_date ?? '',
     });
 
     function handleSubmit(e: React.FormEvent) {
@@ -220,6 +222,21 @@ export default function ProductEdit({ product, categories }: Props) {
                             />
                             <InputError message={errors.alert_threshold} />
                         </div>
+                    </div>
+
+                    {/* Expiry Date */}
+                    <div className="flex flex-col gap-1.5">
+                        <Label htmlFor="expiry_date" className="text-text-primary">
+                            Expiry Date <span className="text-xs font-normal text-text-secondary">(optional)</span>
+                        </Label>
+                        <Input
+                            id="expiry_date"
+                            type="date"
+                            value={data.expiry_date}
+                            onChange={(e) => setData('expiry_date', e.target.value)}
+                            className="border-border-soft"
+                        />
+                        <InputError message={errors.expiry_date} />
                     </div>
 
                     {/* Actions */}

@@ -89,6 +89,16 @@ export default function ProductTable({ products, teamSlug, onEdit }: Props) {
                                             quantity={product.stock_quantity}
                                             threshold={product.alert_threshold}
                                         />
+                                        {product.stock_status === 'expired' && (
+                                            <span className="inline-flex items-center rounded-full bg-danger-bg px-2.5 py-0.5 text-xs font-medium text-danger-fg">
+                                                Expired
+                                            </span>
+                                        )}
+                                        {product.stock_status === 'expiring_soon' && (
+                                            <span className="inline-flex items-center rounded-full bg-warning-bg px-2.5 py-0.5 text-xs font-medium text-warning-fg">
+                                                Exp. Soon
+                                            </span>
+                                        )}
                                     </div>
                                 </td>
                                 <td className="px-6 py-4 text-right">

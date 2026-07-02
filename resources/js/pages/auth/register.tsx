@@ -17,6 +17,9 @@ type Props = {
 };
 
 export default function Register({ passwordRules, teamInvitation }: Props) {
+    const urlParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+    const invitationCode = urlParams?.get('invitation') || teamInvitation?.code || '';
+
     return (
         <>
             <Head title="Register" />
@@ -28,6 +31,8 @@ export default function Register({ passwordRules, teamInvitation }: Props) {
             >
                 {({ processing, errors }) => (
                     <>
+                        <input type="hidden" name="invitation" value={invitationCode} />
+
                         {teamInvitation && (
                             <TeamInvitationAlert
                                 invitation={teamInvitation}

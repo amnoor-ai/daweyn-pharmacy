@@ -6,14 +6,23 @@ enum TeamRole: string
 {
     case Owner = 'owner';
     case Admin = 'admin';
+    case Pharmacist = 'pharmacist';
+    case Cashier = 'cashier';
     case Member = 'member';
+   
 
     /**
      * Get the display label for the role.
      */
     public function label(): string
     {
-        return ucfirst($this->value);
+        return match ($this) {
+        self::Owner => 'Owner',
+        self::Admin => 'Admin',
+        self::Pharmacist => 'Pharmacist',
+        self::Cashier => 'Cashier',
+        self::Member => 'Member',
+        };
     }
 
     /**
@@ -29,6 +38,16 @@ enum TeamRole: string
                 TeamPermission::UpdateTeam,
                 TeamPermission::CreateInvitation,
                 TeamPermission::CancelInvitation,
+            ],
+            self::Pharmacist => [
+                TeamPermission::ViewProducts,
+                TeamPermission::CreateProduct,
+                TeamPermission::UpdateProduct,
+                TeamPermission::DeleteProduct,
+            ],
+            self::Cashier => [
+                TeamPermission::ViewTransactions,
+                TeamPermission::CreateTransaction,
             ],
             self::Member => [],
         };
@@ -49,9 +68,11 @@ enum TeamRole: string
     public function level(): int
     {
         return match ($this) {
-            self::Owner => 3,
-            self::Admin => 2,
-            self::Member => 1,
+        self::Owner => 4,
+        self::Admin => 3,
+        self::Pharmacist => 2,
+        self::Cashier => 1,
+        self::Member => 1,
         };
     }
 

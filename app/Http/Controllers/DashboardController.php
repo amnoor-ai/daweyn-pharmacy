@@ -81,6 +81,20 @@ class DashboardController extends Controller
                 'total' => (float) $item->total,
             ]);
 
+        // 6. Expiring soon products (expiry_date between today and today + 30 days)
+        $expiringProducts = $current_team->products()
+            ->whereNotNull('expiry_date')
+            ->whereBetween('expiry_date', [\Illuminate\Support\Carbon::today(), \Illuminate\Support\Carbon::today()->addDays(30)])
+            ->orderBy('expiry_date', 'asc')
+            ->get()
+            ->map(fn ($p) => [
+                'id' => $p->id,
+                'name' => $p->name,
+                'sku' => $p->sku,
+                'expiry_date' => $p->expiry_date ? $p->expiry_date->toDateString() : null,
+                'days_remaining' => $p->expiry_date ? (int) \Illuminate\Support\Carbon::today()->diffInDays($p->expiry_date, false) : 0,
+            ]);
+
         return Inertia::render('dashboard', [
             'pendingInvitations' => $pendingInvitations,
             'stats' => [
@@ -92,6 +106,7 @@ class DashboardController extends Controller
             'lowStockProducts' => $lowStockProducts,
             'recentTransactions' => $recentTransactions,
             'revenueByPaymentMethod' => $revenueByPaymentMethod,
+            'expiringProducts' => $expiringProducts,
         ]);
     }
 }

@@ -37,18 +37,18 @@ class TeamInvitation extends Notification implements ShouldQueue
     {
         $team = $this->invitation->team;
         $inviter = $this->invitation->inviter;
+        $roleStr = $this->invitation->role->value;
+        $article = in_array(strtolower(substr($roleStr, 0, 1)), ['a', 'e', 'i', 'o', 'u']) ? 'an' : 'a';
 
         return (new MailMessage)
-            ->subject(__("You've been invited to join :teamName", ['teamName' => $team->name]))
-            ->line(__(':inviterName has invited you to join the :teamName team.', [
-                'inviterName' => $inviter->name,
-                'teamName' => $team->name,
-            ]))
-            ->line(__('Log in and visit your dashboard to accept or decline this invitation.'))
-            ->action(
-                __('Log in'),
-                route('login', ['invitation' => $this->invitation->code]),
-            );
+            ->subject("You've been invited to join {$team->name} on Daaweyn Pharmacy")
+            ->greeting("Hello,")
+            ->line("{$inviter->name} has invited you to join {$team->name} as {$article} {$roleStr} on Daaweyn Pharmacy — a modern pharmacy management platform built for clinical efficiency.")
+            ->line("Click below to create your account and accept the invitation.")
+            ->action("Accept Invitation & Register", route('register', ['invitation' => $this->invitation->code]))
+            ->line("[Already have an account? Sign in instead](" . route('login', ['invitation' => $this->invitation->code]) . ")")
+            ->line("This invitation expires in 7 days. If you were not expecting this, you can safely ignore this email.")
+            ->salutation("The Daaweyn Pharmacy Team\n© 2026 Daaweyn Pharmacy. All rights reserved.");
     }
 
     /**

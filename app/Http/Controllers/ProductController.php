@@ -12,6 +12,7 @@ class ProductController extends Controller
    public function index(Request $request, Team $currentTeam)
 {
     $q = $request->query('q', '');
+    $today = \Illuminate\Support\Carbon::today();
 
     $products = $currentTeam->products()
         ->with('category')
@@ -20,7 +21,20 @@ class ProductController extends Controller
                ->orWhere('sku', 'like', "%{$q}%");
         }))
         ->orderBy('name')
-        ->get();
+        ->get()
+        ->map(function ($product) use ($today) {
+            $status = 'valid';
+            if ($product->expiry_date) {
+                $expiry = \Illuminate\Support\Carbon::parse($product->expiry_date)->startOfDay();
+                if ($expiry->lessThan($today)) {
+                    $status = 'expired';
+                } elseif ($expiry->lessThanOrEqualTo($today->copy()->addDays(30))) {
+                    $status = 'expiring_soon';
+                }
+            }
+            $product->stock_status = $status;
+            return $product;
+        });
 
     $categories = $currentTeam->categories()
         ->orderBy('name')
@@ -53,6 +67,7 @@ public function store(Request $request, Team $currentTeam)
         'selling_price'   => ['required', 'numeric', 'min:0'],
         'stock_quantity'  => ['required', 'integer', 'min:0'],
         'alert_threshold' => ['required', 'integer', 'min:0'],
+        'expiry_date'     => ['nullable', 'date', 'after:today'],
     ]);
 
     $currentTeam->products()->create($validated);
@@ -87,6 +102,7 @@ public function update(Request $request, Team $currentTeam, Product $product)
         'selling_price'   => ['required', 'numeric', 'min:0'],
         'stock_quantity'  => ['required', 'integer', 'min:0'],
         'alert_threshold' => ['required', 'integer', 'min:0'],
+        'expiry_date'     => ['nullable', 'date'],
     ]);
 
     $product->update($validated);

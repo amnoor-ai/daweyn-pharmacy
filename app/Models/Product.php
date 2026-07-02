@@ -19,6 +19,7 @@ use Illuminate\Support\Carbon;
  * @property float $selling_price
  * @property int $stock_quantity
  * @property int $alert_threshold
+ * @property string|null $expiry_date
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Team $team
@@ -35,10 +36,18 @@ use Illuminate\Support\Carbon;
     'selling_price',
     'stock_quantity',
     'alert_threshold',
+    'expiry_date',
 ])]
 
 class Product extends Model {
     use HasFactory;    
+
+    protected function casts(): array
+    {
+        return [
+            'expiry_date' => 'date',
+        ];
+    }
 
     public function team(): BelongsTo {
         return $this->belongsTo(Team::class);

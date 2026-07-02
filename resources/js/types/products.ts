@@ -12,5 +12,7 @@ export type Product = {
     selling_price: number;
     stock_quantity: number;
     alert_threshold: number;
+    expiry_date: string | null;
+    stock_status?: 'expired' | 'expiring_soon' | 'valid';
     created_at: string | null;
 };

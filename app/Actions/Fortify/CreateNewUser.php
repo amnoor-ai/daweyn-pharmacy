@@ -19,16 +19,12 @@ class CreateNewUser implements CreatesNewUsers
         //
     }
 
-    /**
-     * Validate and create a newly registered user.
-     *
-     * @param  array<string, string>  $input
-     */
     public function create(array $input): User
     {
         Validator::make($input, [
             ...$this->profileRules(),
             'password' => $this->passwordRules(),
+            'invitation' => ['nullable', 'string'],
         ])->validate();
 
         return DB::transaction(function () use ($input) {
@@ -39,6 +35,29 @@ class CreateNewUser implements CreatesNewUsers
             ]);
 
             $this->createTeam->handle($user, $user->name."'s Team", isPersonal: true);
+
+            if (!empty($input['invitation'])) {
+                $invitation = \App\Models\TeamInvitation::query()
+                    ->where('code', $input['invitation'])
+                    ->whereNull('accepted_at')
+                    ->where(fn ($query) => $query
+                        ->whereNull('expires_at')
+                        ->orWhere('expires_at', '>=', now()))
+                    ->first();
+
+                if ($invitation) {
+                    $team = $invitation->team;
+
+                    $team->memberships()->firstOrCreate(
+                        ['user_id' => $user->id],
+                        ['role' => $invitation->role],
+                    );
+
+                    $invitation->update(['accepted_at' => now()]);
+
+                    $user->switchTeam($team);
+                }
+            }
 
             return $user;
         });

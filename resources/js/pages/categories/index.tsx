@@ -46,10 +46,10 @@ export default function CategoriesIndex({ categories }: Props) {
                 {/* Page header */}
                 <div className="flex flex-wrap items-center justify-between gap-y-3">
                     <div>
-                        <h1 className="text-xl font-bold tracking-tight text-[#161A30] sm:text-2xl">
+                        <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
                             Categories
                         </h1>
-                        <p className="mt-1 text-sm text-[#8A8FA6]">
+                        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                             Manage your pharmacy product categories.
                         </p>
                     </div>

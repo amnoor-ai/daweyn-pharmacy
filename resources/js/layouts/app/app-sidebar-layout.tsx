@@ -20,8 +20,9 @@ export default function AppSidebarLayout({
     children,
     breadcrumbs = [],
 }: AppLayoutProps) {
-    const { props } = usePage();
+    const { props, url } = usePage();
     const { auth } = props;
+    const isPos = url.split('?')[0].endsWith('/pos');
     const getInitials = useInitials();
     const { resolvedAppearance, updateAppearance } = useAppearance();
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -142,7 +143,7 @@ export default function AppSidebarLayout({
                     <AppHeader breadcrumbs={breadcrumbs} />
                 </div>
 
-                <main className="flex-1 p-4 lg:p-6">{children}</main>
+                <main className={`flex-1 ${isPos ? 'p-0' : 'p-4 lg:p-6'}`}>{children}</main>
             </div>
         </div>
     );

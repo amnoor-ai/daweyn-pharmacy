@@ -1,9 +1,7 @@
 import { Head, usePage } from '@inertiajs/react';
-import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import CustomerDialog from '@/components/CustomerDialog';
 import CustomerTable from '@/components/CustomerTable';
-import { Button } from '@/components/ui/button';
 import type { Customer } from '@/types';
 
 type Props = {
@@ -40,30 +38,12 @@ export default function CustomersIndex({ customers }: Props) {
     return (
         <>
             <Head title="Customers" />
-            <div className="flex flex-col gap-6 p-4 lg:p-6">
-                {/* Header */}
-                <div className="flex flex-wrap items-center justify-between gap-y-3">
-                    <div>
-                        <h1 className="text-xl font-bold tracking-tight text-text-primary sm:text-2xl">
-                            Customers
-                        </h1>
-                        <p className="mt-1 text-sm text-text-secondary">
-                            Manage your pharmacy customers.
-                        </p>
-                    </div>
-                    <Button
-                        onClick={handleAdd}
-                        className="gap-2 bg-brand hover:bg-brand-dark"
-                    >
-                        <Plus className="h-4 w-4" />
-                        Add Customer
-                    </Button>
-                </div>
-
+            <div className="flex flex-col gap-6">
                 <CustomerTable
                     customers={customers}
                     teamSlug={teamSlug}
                     onEdit={handleEdit}
+                    onAdd={handleAdd}
                 />
             </div>
 

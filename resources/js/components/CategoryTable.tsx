@@ -1,5 +1,5 @@
 import { router } from '@inertiajs/react';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { Category } from '@/types';
 
@@ -7,9 +7,10 @@ type Props = {
     categories: Category[];
     teamSlug: string;
     onEdit: (category: Category) => void;
+    onAdd: () => void;
 };
 
-export default function CategoryTable({ categories, teamSlug, onEdit }: Props) {
+export default function CategoryTable({ categories, teamSlug, onEdit, onAdd }: Props) {
     function handleDelete(category: Category) {
         if (!confirm(`Delete "${category.name}"? This cannot be undone.`)) {
             return;
@@ -22,7 +23,7 @@ export default function CategoryTable({ categories, teamSlug, onEdit }: Props) {
 
     if (categories.length === 0) {
         return (
-            <div className="rounded-xl border border-border-soft bg-surface">
+            <div className="rounded-lg border border-border-soft bg-surface">
                 <p className="p-8 text-center text-sm text-text-secondary">
                     No categories yet. Click &quot;Add Category&quot; to create
                     one.
@@ -32,7 +33,7 @@ export default function CategoryTable({ categories, teamSlug, onEdit }: Props) {
     }
 
     return (
-        <div className="overflow-hidden rounded-xl border border-border-soft bg-surface shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
+        <div className="overflow-hidden rounded-lg border border-border-soft bg-surface shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
             <div className="overflow-x-auto">
                 <table className="w-full min-w-[500px] text-sm">
                     {/* Header */}
@@ -48,7 +49,17 @@ export default function CategoryTable({ categories, teamSlug, onEdit }: Props) {
                                 Description
                             </th>
                             <th className="px-6 py-3.5 text-right text-[13px] font-medium text-text-secondary">
-                                Actions
+                                <div className="flex items-center justify-end gap-3">
+                                    <span>Actions</span>
+                                    <Button
+                                        onClick={onAdd}
+                                        size="sm"
+                                        className="h-7 gap-1.5 bg-brand px-3 text-xs hover:bg-brand-dark"
+                                    >
+                                        <Plus className="h-3.5 w-3.5" />
+                                        Add Category
+                                    </Button>
+                                </div>
                             </th>
                         </tr>
                     </thead>
@@ -96,7 +107,7 @@ export default function CategoryTable({ categories, teamSlug, onEdit }: Props) {
                                             onClick={() =>
                                                 handleDelete(category)
                                             }
-                                            className="h-8 w-8 p-0 text-text-secondary hover:text-red-600"
+                                            className="h-8 w-8 p-0 text-text-secondary hover:text-danger-fg"
                                         >
                                             <Trash2 className="h-4 w-4" />
                                             <span className="sr-only">

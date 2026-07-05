@@ -98,9 +98,6 @@ export default function PosIndex({ products, customers }: Props) {
 
                 {/* LEFT — Product search */}
                 <div className="flex flex-1 flex-col gap-4 overflow-hidden p-6">
-                    <div className="flex items-center justify-between">
-                        <h1 className="text-xl font-bold text-text-primary">Point of Sale</h1>
-                    </div>
                     <Input
                         placeholder="Search by name or SKU..."
                         value={search}
@@ -112,7 +109,7 @@ export default function PosIndex({ products, customers }: Props) {
                             <button
                                 key={product.id}
                                 onClick={() => addToCart(product)}
-                                className="flex flex-col gap-1 rounded-xl border border-border-soft bg-surface p-4 text-left hover:border-brand hover:shadow-sm transition-all"
+                                className="flex flex-col gap-1 rounded-lg border border-border-soft bg-surface p-4 text-left hover:border-brand hover:shadow-sm transition-all"
                             >
                                 <span className="font-medium text-text-primary text-sm">{product.name}</span>
                                 <span className="text-xs text-text-secondary">{product.sku}</span>
@@ -235,7 +232,7 @@ export default function PosIndex({ products, customers }: Props) {
                     <Button
                         onClick={handleSubmit}
                         disabled={cart.length === 0}
-                        className="w-full bg-brand hover:bg-brand-dark"
+                        className="w-full bg-brand hover:bg-brand-dark transition-all duration-200 hover:-translate-y-0.5"
                     >
                         Complete Sale • ${total.toFixed(2)}
                     </Button>

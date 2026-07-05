@@ -128,11 +128,11 @@ export default function Profile({
     );
 }
 
-Profile.layout = {
+Profile.layout = () => ({
     breadcrumbs: [
         {
             title: 'Profile settings',
             href: edit(),
         },
     ],
-};
+});

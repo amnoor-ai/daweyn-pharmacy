@@ -137,11 +137,11 @@ export default function Security(props: Props) {
     );
 }
 
-Security.layout = {
+Security.layout = () => ({
     breadcrumbs: [
         {
             title: 'Security settings',
             href: edit(),
         },
     ],
-};
+});

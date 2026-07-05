@@ -259,7 +259,7 @@ export default function ProductCreate({ categories }: Props) {
                         <Button
                             type="submit"
                             disabled={processing}
-                            className="bg-brand hover:bg-brand-dark"
+                            className="bg-brand hover:bg-brand-dark transition-all duration-200 hover:-translate-y-0.5"
                         >
                             {processing ? 'Saving...' : 'Create Product'}
                         </Button>

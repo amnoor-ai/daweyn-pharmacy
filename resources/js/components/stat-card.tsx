@@ -16,10 +16,10 @@ export default function StatCard({
     iconColorClass,
 }: StatCardProps) {
     return (
-        <div className="rounded-2xl border border-border-soft bg-surface p-6 shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
+        <div className="rounded-xl border border-border-soft bg-surface p-6 shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
             <div className="flex flex-col gap-4">
                 <div
-                    className={`flex h-11 w-11 items-center justify-center rounded-xl ${iconBgClass}`}
+                    className={`flex h-11 w-11 items-center justify-center rounded-md ${iconBgClass}`}
                 >
                     <Icon className={`h-[22px] w-[22px] ${iconColorClass}`} />
                 </div>

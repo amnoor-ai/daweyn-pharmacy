@@ -1,5 +1,5 @@
 import { router } from '@inertiajs/react';
-import { Pencil, Trash2, Eye } from 'lucide-react';
+import { Eye, Pencil, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { Customer } from '@/types';
 
@@ -7,9 +7,10 @@ type Props = {
     customers: Customer[];
     teamSlug: string;
     onEdit: (customer: Customer) => void;
+    onAdd: () => void;
 };
 
-export default function CustomerTable({ customers, teamSlug, onEdit }: Props) {
+export default function CustomerTable({ customers, teamSlug, onEdit, onAdd }: Props) {
     function handleDelete(customer: Customer) {
         if (!confirm(`Delete "${customer.name}"? This cannot be undone.`)) {
             return;
@@ -22,7 +23,7 @@ export default function CustomerTable({ customers, teamSlug, onEdit }: Props) {
 
     if (customers.length === 0) {
         return (
-            <div className="rounded-xl border border-border-soft bg-surface">
+            <div className="rounded-lg border border-border-soft bg-surface">
                 <p className="p-8 text-center text-sm text-text-secondary">
                     No customers yet. Click &quot;Add Customer&quot; to create
                     one.
@@ -32,11 +33,11 @@ export default function CustomerTable({ customers, teamSlug, onEdit }: Props) {
     }
 
     return (
-        <div className="overflow-hidden rounded-xl border border-border-soft bg-surface shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
+        <div className="overflow-hidden rounded-lg border border-border-soft bg-surface shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
             <div className="overflow-x-auto">
                 <table className="w-full min-w-[550px] text-sm">
                     <thead>
-                        <tr className="border-b border-border-soft">
+                        <tr className="border-b border-divider">
                             <th className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary">
                                 Name
                             </th>
@@ -50,7 +51,17 @@ export default function CustomerTable({ customers, teamSlug, onEdit }: Props) {
                                 Loyalty Points
                             </th>
                             <th className="px-6 py-3.5 text-right text-[13px] font-medium text-text-secondary">
-                                Actions
+                                <div className="flex items-center justify-end gap-3">
+                                    <span>Actions</span>
+                                    <Button
+                                        onClick={onAdd}
+                                        size="sm"
+                                        className="h-7 gap-1.5 bg-brand px-3 text-xs hover:bg-brand-dark"
+                                    >
+                                        <Plus className="h-3.5 w-3.5" />
+                                        Add Customer
+                                    </Button>
+                                </div>
                             </th>
                         </tr>
                     </thead>
@@ -60,7 +71,7 @@ export default function CustomerTable({ customers, teamSlug, onEdit }: Props) {
                                 key={customer.id}
                                 className={
                                     idx !== customers.length - 1
-                                        ? 'border-b border-border-soft'
+                                        ? 'border-b border-divider'
                                         : ''
                                 }
                             >

@@ -28,31 +28,10 @@ export default function UsersIndex({ members }: Props) {
     return (
         <>
             <Head title="Staff Directory" />
-            <div className="flex flex-col gap-6 p-6">
-                {/* Header */}
-                <div className="flex flex-wrap items-center justify-between gap-y-3">
-                    <div>
-                        <h1 className="text-xl font-bold tracking-tight text-text-primary sm:text-2xl">
-                            Staff
-                        </h1>
-                        <p className="mt-1 text-sm text-text-secondary">
-                            View and manage your pharmacy staff directory.
-                        </p>
-                    </div>
-                    <Button
-                        asChild
-                        className="cursor-pointer gap-2 bg-brand hover:bg-brand-dark"
-                    >
-                        <Link href={`/settings/teams/${teamSlug}`}>
-                            <Plus className="h-4 w-4" />
-                            Invite Member
-                        </Link>
-                    </Button>
-                </div>
-
+            <div className="flex flex-col gap-6">
                 {/* Table / List */}
                 {members.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center rounded-xl border border-border-soft bg-surface py-12 text-center">
+                    <div className="flex flex-col items-center justify-center rounded-lg border border-border-soft bg-surface py-12 text-center">
                         <Users className="mb-3 h-8 w-8 text-text-secondary opacity-60" />
                         <p className="text-sm font-medium text-text-primary">
                             No staff members found
@@ -62,11 +41,11 @@ export default function UsersIndex({ members }: Props) {
                         </p>
                     </div>
                 ) : (
-                    <div className="overflow-hidden rounded-xl border border-border-soft bg-surface shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
+                    <div className="overflow-hidden rounded-lg border border-border-soft bg-surface shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
                         <div className="overflow-x-auto">
                             <table className="w-full text-sm">
                                 <thead>
-                                    <tr className="border-b border-border-soft">
+                                    <tr className="border-b border-divider">
                                         <th className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary">
                                             Staff Member
                                         </th>
@@ -77,7 +56,19 @@ export default function UsersIndex({ members }: Props) {
                                             Role
                                         </th>
                                         <th className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary">
-                                            Joined Date
+                                            <div className="flex items-center justify-between gap-3">
+                                                <span>Joined Date</span>
+                                                <Button
+                                                    asChild
+                                                    size="sm"
+                                                    className="h-7 gap-1.5 bg-brand px-3 text-xs hover:bg-brand-dark"
+                                                >
+                                                    <Link href={`/settings/teams/${teamSlug}`}>
+                                                        <Plus className="h-3.5 w-3.5" />
+                                                        Invite Member
+                                                    </Link>
+                                                </Button>
+                                            </div>
                                         </th>
                                     </tr>
                                 </thead>
@@ -87,7 +78,7 @@ export default function UsersIndex({ members }: Props) {
                                             key={member.id}
                                             className={
                                                 idx !== members.length - 1
-                                                    ? 'border-b border-border-soft'
+                                                     ? 'border-b border-divider'
                                                     : ''
                                             }
                                         >

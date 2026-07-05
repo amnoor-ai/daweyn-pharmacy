@@ -22,42 +22,20 @@ export default function TransactionsIndex({ transactions }: Props) {
     return (
         <>
             <Head title="Transactions" />
-            <div className="flex flex-col gap-6 p-6">
-                {/* Header */}
-                <div className="flex flex-wrap items-center justify-between gap-y-3">
-                    <div>
-                        <h1 className="text-xl font-bold tracking-tight text-text-primary sm:text-2xl">
-                            Transactions
-                        </h1>
-                        <p className="mt-1 text-sm text-text-secondary">
-                            Sales history and receipts.
-                        </p>
-                    </div>
-                    <Button
-                        onClick={() =>
-                            router.visit(`/${teamSlug}/pos`)
-                        }
-                        className="gap-2 bg-brand hover:bg-brand-dark"
-                    >
-                        <ShoppingCart className="h-4 w-4" />
-                        Go to POS
-                    </Button>
-                </div>
-
-                {/* Table */}
+            {/* Table */}
                 {transactions.length === 0 ? (
-                    <div className="rounded-xl border border-border-soft bg-surface">
+                    <div className="rounded-lg border border-border-soft bg-surface">
                         <p className="p-8 text-center text-sm text-text-secondary">
                             No transactions yet. Click &quot;New Sale&quot; to
                             record one.
                         </p>
                     </div>
                 ) : (
-                    <div className="overflow-hidden rounded-xl border border-border-soft bg-surface shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
+                    <div className="overflow-hidden rounded-lg border border-border-soft bg-surface shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
                         <div className="overflow-x-auto">
                             <table className="w-full min-w-[620px] text-sm">
                                 <thead>
-                                    <tr className="border-b border-border-soft">
+                                    <tr className="border-b border-divider">
                                         <th className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary">
                                             Invoice
                                         </th>
@@ -74,7 +52,17 @@ export default function TransactionsIndex({ transactions }: Props) {
                                             Date
                                         </th>
                                         <th className="px-6 py-3.5 text-right text-[13px] font-medium text-text-secondary">
-                                            Actions
+                                            <div className="flex items-center justify-end gap-3">
+                                                <span>Actions</span>
+                                                <Button
+                                                    onClick={() => router.visit(`/${teamSlug}/pos`)}
+                                                    size="sm"
+                                                    className="h-7 gap-1.5 bg-brand px-3 text-xs hover:bg-brand-dark"
+                                                >
+                                                    <ShoppingCart className="h-3.5 w-3.5" />
+                                                    Go to POS
+                                                </Button>
+                                            </div>
                                         </th>
                                     </tr>
                                 </thead>
@@ -84,7 +72,7 @@ export default function TransactionsIndex({ transactions }: Props) {
                                             key={tx.id}
                                             className={
                                                 idx !== transactions.length - 1
-                                                    ? 'border-b border-border-soft'
+                                                     ? 'border-b border-divider'
                                                     : ''
                                             }
                                         >
@@ -146,7 +134,6 @@ export default function TransactionsIndex({ transactions }: Props) {
                         </div>
                     </div>
                 )}
-            </div>
         </>
     );
 }

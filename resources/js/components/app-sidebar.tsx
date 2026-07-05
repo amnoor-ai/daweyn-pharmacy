@@ -163,7 +163,7 @@ export default function Appsidebar({ collapsible = true }: AppsidebarProps) {
                 {navItems.map(({ section, links }) => (
                     <div key={section}>
                         {!collapsed && (
-                            <p className="mb-1.5 px-2 text-[11px] font-bold tracking-[0.09em] text-brand uppercase">
+                            <p className="mb-1.5 px-2 text-[11px] font-medium tracking-[0.05em] text-text-muted uppercase">
                                 {section}
                             </p>
                         )}
@@ -177,7 +177,7 @@ export default function Appsidebar({ collapsible = true }: AppsidebarProps) {
             {/* Preferences */}
             <div className="border-t border-border-soft px-3 pt-3 pb-4">
                 {!collapsed && (
-                    <p className="mb-1.5 px-2 text-[11px] font-bold tracking-[0.09em] text-brand uppercase">
+                    <p className="mb-1.5 px-2 text-[11px] font-medium tracking-[0.05em] text-text-muted uppercase">
                         Preferences
                     </p>
                 )}

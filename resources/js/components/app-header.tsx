@@ -1,7 +1,6 @@
-import { Link, router, usePage } from '@inertiajs/react';
-import { Moon, Search, Sun, X } from 'lucide-react';
-import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
-import AppLogo from '@/components/app-logo';
+import { router, usePage } from '@inertiajs/react';
+import { Moon, Search, Sun } from 'lucide-react';
+import { useRef, useState, useSyncExternalStore } from 'react';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { TeamSwitcher } from '@/components/team-switcher';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -15,7 +14,6 @@ import { Input } from '@/components/ui/input';
 import { UserMenuContent } from '@/components/user-menu-content';
 import { useAppearance } from '@/hooks/use-appearance';
 import { useInitials } from '@/hooks/use-initials';
-import { dashboard } from '@/routes';
 import type { BreadcrumbItem } from '@/types';
 
 type Props = {
@@ -27,7 +25,6 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
     const { auth, currentTeam } = page.props;
     const getInitials = useInitials();
     const { resolvedAppearance, updateAppearance } = useAppearance();
-    const dashboardUrl = currentTeam ? dashboard(currentTeam.slug) : '/';
 
     const emptySubscribe = () => () => {};
     const mounted = useSyncExternalStore(
@@ -35,41 +32,8 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
         () => true,
         () => false,
     );
-    const [searchOpen, setSearchOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
-    const searchRef = useRef<HTMLInputElement>(null);
     const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-    useEffect(() => {
-        if (searchOpen) {
-            searchRef.current?.focus();
-        }
-    }, [searchOpen]);
-
-    useEffect(() => {
-        function onKeyDown(e: KeyboardEvent) {
-            if (e.key === 'Escape') {
-                closeSearch();
-            }
-        }
-
-        document.addEventListener('keydown', onKeyDown);
-
-        return () => document.removeEventListener('keydown', onKeyDown);
-    }, []);
-
-    function openSearch() {
-        setSearchOpen(true);
-    }
-
-    function closeSearch() {
-        setSearchOpen(false);
-        setSearchQuery('');
-
-        if (debounceRef.current) {
-            clearTimeout(debounceRef.current);
-        }
-    }
 
     function handleSearchChange(value: string) {
         setSearchQuery(value);
@@ -104,55 +68,31 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
         updateAppearance(resolvedAppearance === 'dark' ? 'light' : 'dark');
     }
 
+    // Derive the page title from the last breadcrumb
+    const pageTitle = breadcrumbs.length > 0 ? breadcrumbs[breadcrumbs.length - 1].title : '';
+
     return (
         <>
             <div className="sticky top-0 z-50 border-b border-sidebar-border/80 bg-white dark:bg-background">
-                <div className="mx-auto flex h-16 items-center px-4 md:max-w-7xl">
-                    {/* Logo */}
-                    <Link
-                        href={dashboardUrl}
-                        prefetch
-                        className="flex items-center space-x-2"
-                    >
-
-                    </Link>
+                <div className="mx-auto flex h-16 items-center gap-4 px-4 md:max-w-7xl">
+                    {/* Page title — shows current page name */}
+                    {pageTitle && (
+                        <h1 className="text-base font-semibold text-text-primary shrink-0">
+                            {pageTitle}
+                        </h1>
+                    )}
 
                     {/* Right section */}
                     <div className="ml-auto flex items-center space-x-2">
                         {/* Inline search */}
-                        <div className="flex items-center">
-                            {searchOpen ? (
-                                <div className="flex items-center gap-1">
-                                    <Input
-                                        ref={searchRef}
-                                        value={searchQuery}
-                                        onChange={(e) =>
-                                            handleSearchChange(e.target.value)
-                                        }
-                                        placeholder="Search..."
-                                        className="h-8 w-48 text-sm transition-all duration-200 focus-visible:w-64"
-                                    />
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={closeSearch}
-                                        className="h-8 w-8 shrink-0"
-                                        aria-label="Close search"
-                                    >
-                                        <X className="size-4" />
-                                    </Button>
-                                </div>
-                            ) : (
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={openSearch}
-                                    className="group h-9 w-9 cursor-pointer"
-                                    aria-label="Open search"
-                                >
-                                    <Search className="size-5! opacity-80 group-hover:opacity-100" />
-                                </Button>
-                            )}
+                        <div className="relative hidden items-center sm:flex">
+                            <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-text-muted" strokeWidth={2} />
+                            <Input
+                                value={searchQuery}
+                                onChange={(e) => handleSearchChange(e.target.value)}
+                                placeholder="Search anything"
+                                className="h-10 w-[280px] rounded-full border border-border-soft bg-canvas pl-10 text-sm text-text-primary placeholder:text-text-muted focus-visible:ring-1 focus-visible:ring-brand/30 dark:bg-surface"
+                            />
                         </div>
 
                         {/* Dark mode toggle */}

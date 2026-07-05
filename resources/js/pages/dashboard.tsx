@@ -102,7 +102,7 @@ export default function Dashboard({
                 onOpenChange={setShowInvitations}
             />
 
-            <div className="flex flex-col gap-6 p-6">
+            <div className="flex flex-col gap-6">
                 {/* 4 StatCards Grid */}
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                     <StatCard
@@ -122,22 +122,22 @@ export default function Dashboard({
                         title="Transactions"
                         value={stats.totalTransactions.toLocaleString()}
                         icon={Receipt}
-                        iconBgClass="bg-[#FCE9F4]"
-                        iconColorClass="text-[#D13B93]"
+                        iconBgClass="bg-chip-pink"
+                        iconColorClass="text-danger-fg"
                     />
                     <StatCard
                         title="Customers"
                         value={stats.totalCustomers.toLocaleString()}
                         icon={Users}
-                        iconBgClass="bg-[#E9EAFC]"
-                        iconColorClass="text-[#4C5FD5]"
+                        iconBgClass="bg-chip-blue"
+                        iconColorClass="text-accent-indigo"
                     />
                     <StatCard
                         title="Products"
                         value={stats.totalProducts.toLocaleString()}
                         icon={Pill}
-                        iconBgClass="bg-[#FDEADB]"
-                        iconColorClass="text-[#D97706]"
+                        iconBgClass="bg-chip-orange"
+                        iconColorClass="text-warning-fg"
                     />
                 </div>
 

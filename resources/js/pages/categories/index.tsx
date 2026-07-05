@@ -1,9 +1,7 @@
 import { Head, usePage } from '@inertiajs/react';
-import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import CategoryDialog from '@/components/CategoryDialog';
 import CategoryTable from '@/components/CategoryTable';
-import { Button } from '@/components/ui/button';
 import type { Category } from '@/types';
 
 type Props = {
@@ -42,32 +40,13 @@ export default function CategoriesIndex({ categories }: Props) {
         <>
             <Head title="Categories" />
 
-            <div className="flex flex-col gap-6 p-6">
-                {/* Page header */}
-                <div className="flex flex-wrap items-center justify-between gap-y-3">
-                    <div>
-                        <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
-                            Categories
-                        </h1>
-                        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                            Manage your pharmacy product categories.
-                        </p>
-                    </div>
-
-                    <Button
-                        onClick={openCreate}
-                        className="gap-2 bg-[#1B2559] hover:bg-[#141C45]"
-                    >
-                        <Plus className="h-4 w-4" />
-                        Add Category
-                    </Button>
-                </div>
-
+            <div className="flex flex-col gap-6">
                 {/* Table */}
                 <CategoryTable
                     categories={categories}
                     teamSlug={teamSlug}
                     onEdit={openEdit}
+                    onAdd={openCreate}
                 />
             </div>
 

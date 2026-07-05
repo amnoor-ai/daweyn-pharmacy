@@ -73,8 +73,8 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
 
     return (
         <>
-            <div className="sticky top-0 z-50 border-b border-sidebar-border/80 bg-white dark:bg-background">
-                <div className="mx-auto flex h-16 items-center gap-4 px-4 md:max-w-7xl">
+            <div className="border-b border-border-soft bg-white dark:bg-surface">
+                <div className="flex h-16 items-center gap-4 px-4 lg:px-6">
                     {/* Page title — shows current page name */}
                     {pageTitle && (
                         <h1 className="text-base font-semibold text-text-primary shrink-0">
@@ -144,7 +144,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
 
             {breadcrumbs.length > 1 && (
                 <div className="flex w-full border-b border-sidebar-border/70">
-                    <div className="mx-auto flex h-12 w-full items-center justify-start px-4 text-neutral-500 md:max-w-7xl">
+                    <div className="flex h-12 w-full items-center justify-start px-4 lg:px-6 text-neutral-500">
                         <Breadcrumbs breadcrumbs={breadcrumbs} />
                     </div>
                 </div>

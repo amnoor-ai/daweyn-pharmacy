@@ -10,8 +10,8 @@ import {
     Users,
     UserCog,
     Settings,
-    ChevronLeft,
-    ChevronRight,
+    PanelLeftClose,
+    PanelLeftOpen,
 } from 'lucide-react';
 
 type NavItem = {
@@ -125,36 +125,40 @@ export default function Appsidebar({ collapsible = true }: AppsidebarProps) {
                 collapsed ? 'w-[72px]' : 'w-64'
             }`}
         >
-            {/* Floating toggle button, sits on the sidebar's right edge — desktop only */}
-            {collapsible && (
-                <button
-                    type="button"
-                    onClick={() => setCollapsed((prev) => !prev)}
-                    aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-                    aria-expanded={!collapsed}
-                    className="absolute -right-3 top-8 z-50 flex h-6 w-6 items-center justify-center rounded-full border border-border-soft bg-surface text-text-secondary shadow-sm transition-colors hover:bg-primary-50 hover:text-brand"
-                >
-                    {collapsed ? (
-                        <ChevronRight size={14} strokeWidth={2} />
-                    ) : (
-                        <ChevronLeft size={14} strokeWidth={2} />
-                    )}
-                </button>
-            )}
-
-            {/* Logo */}
             <div
-                className={`flex items-center gap-3 border-b border-border-soft px-5 py-6 ${
-                    collapsed ? 'justify-center px-0' : ''
+                className={`flex h-16 shrink-0 items-center border-b border-border-soft transition-all duration-200 ${
+                    collapsed ? 'justify-between px-2.5' : 'justify-between px-5'
                 }`}
             >
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-brand">
-                    <PillBottle size={20} stroke="#fff" strokeWidth={1.8} />
+                <div 
+                    onClick={collapsed ? () => setCollapsed(false) : undefined}
+                    className={`flex items-center gap-2 ${collapsed ? 'cursor-pointer' : ''}`}
+                >
+                    <div className={`flex shrink-0 items-center justify-center rounded-[10px] bg-brand transition-all duration-200 ${collapsed ? 'h-7 w-7' : 'h-9 w-9'}`}>
+                        <PillBottle size={collapsed ? 14 : 18} stroke="#fff" strokeWidth={1} />
+                    </div>
+                    {!collapsed && (
+                        <span className="text-lg font-bold tracking-tight text-brand">
+                            Daaweyn
+                        </span>
+                    )}
                 </div>
-                {!collapsed && (
-                    <span className="text-lg font-bold tracking-tight text-brand">
-                        Daaweyn
-                    </span>
+
+                {collapsible && (
+                    <button
+                        type="button"
+                        onClick={() => setCollapsed((prev) => !prev)}
+                        aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+                        className={`flex shrink-0 p-0 items-center justify-center rounded-md text-text-secondary hover:bg-primary-50 hover:text-brand transition-colors ${
+                            collapsed ? 'size-7' : 'size-8'
+                        }`}
+                    >
+                        {collapsed ? (
+                            <PanelLeftOpen size={14} strokeWidth={1.8} />
+                        ) : (
+                            <PanelLeftClose size={18} strokeWidth={1.8} />
+                        )}
+                    </button>
                 )}
             </div>
 

@@ -14,6 +14,7 @@ export type TransactionItem = {
 };
 
 export type Transaction = {
+    receipt_number: any;
     id: number;
     team_id: number;
     customer_id: number | null;

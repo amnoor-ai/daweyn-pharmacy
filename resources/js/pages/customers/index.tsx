@@ -1,7 +1,11 @@
 import { Head, usePage } from '@inertiajs/react';
+import { Plus, Search } from 'lucide-react';
 import { useState } from 'react';
 import CustomerDialog from '@/components/CustomerDialog';
 import CustomerTable from '@/components/CustomerTable';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useTableSearch } from '@/hooks/use-table-search';
 import type { Customer } from '@/types';
 
 type Props = {
@@ -11,6 +15,12 @@ type Props = {
 export default function CustomersIndex({ customers }: Props) {
     const { props } = usePage();
     const teamSlug = (props.currentTeam as { slug: string } | null)?.slug ?? '';
+    const [query, setQuery] = useState('');
+
+    const filteredCustomers = customers.filter((c) =>
+        c.name.toLowerCase().includes(query.toLowerCase()) ||
+        c.phone?.toLowerCase().includes(query.toLowerCase())
+    );
 
     const [dialogOpen, setDialogOpen] = useState(false);
     const [editingCustomer, setEditingCustomer] = useState<
@@ -29,21 +39,44 @@ export default function CustomersIndex({ customers }: Props) {
 
     function handleDialogChange(open: boolean) {
         setDialogOpen(open);
-
-        if (!open) {
-            setEditingCustomer(undefined);
-        }
+        if (!open) setEditingCustomer(undefined);
     }
 
     return (
         <>
             <Head title="Customers" />
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-4">
+                {/* Toolbar */}
+                <div className="flex items-center gap-3">
+                    {/* Search */}
+                    <div className="relative flex-1 max-w-xs">
+                        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
+                        <Input
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value)}
+                            placeholder="Search customers…"
+                            className="h-9 pl-9 text-sm"
+                        />
+                    </div>
+
+                    {/* Spacer */}
+                    <div className="flex-1" />
+
+                    {/* Primary action */}
+                    <Button
+                        onClick={handleAdd}
+                        className="gap-2 bg-brand hover:bg-brand-dark transition-all duration-200 hover:-translate-y-0.5"
+                    >
+                        <Plus className="h-4 w-4" />
+                        Add Customer
+                    </Button>
+                </div>
+
+                {/* Table */}
                 <CustomerTable
-                    customers={customers}
+                    customers={filteredCustomers}
                     teamSlug={teamSlug}
                     onEdit={handleEdit}
-                    onAdd={handleAdd}
                 />
             </div>
 

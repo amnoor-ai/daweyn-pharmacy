@@ -38,7 +38,7 @@ export default function AppSidebarLayout({
     }
 
     return (
-        <div className="flex min-h-screen bg-canvas">
+        <div className="flex h-screen overflow-hidden bg-canvas">
             {/* Desktop sidebar — hidden on mobile, collapsible */}
             <div className="hidden lg:flex">
                 <Appsidebar />
@@ -55,8 +55,8 @@ export default function AppSidebarLayout({
                 </SheetContent>
             </Sheet>
 
-            {/* Right side: top bar + main content */}
-            <div className="flex min-w-0 flex-1 flex-col">
+            {/* Right side: top bar + main content — scrolls as a unit */}
+            <div className="flex min-w-0 flex-1 flex-col overflow-y-auto">
                 {/* Mobile top bar — hamburger + logo + actions, hidden on lg+ */}
                 <div className="sticky top-0 z-50 flex items-center justify-between border-b border-border-soft bg-white px-4 py-3 lg:hidden dark:bg-background">
                     {/* Left: hamburger + logo */}
@@ -138,8 +138,8 @@ export default function AppSidebarLayout({
                     </div>
                 </div>
 
-                {/* Desktop header bar — hidden on mobile */}
-                <div className="hidden lg:block">
+                {/* Desktop header bar — sticky, hidden on mobile */}
+                <div className="sticky top-0 z-50 hidden lg:block">
                     <AppHeader breadcrumbs={breadcrumbs} />
                 </div>
 

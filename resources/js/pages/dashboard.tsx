@@ -79,6 +79,7 @@ export default function Dashboard({
     const [showInvitations, setShowInvitations] = useState(
         pendingInvitations.length > 0,
     );
+    const [activeAlertTab, setActiveAlertTab] = useState<'stock' | 'expiry'>('stock');
 
     const formatPaymentMethod = (method: string) => {
         switch (method.toLowerCase()) {
@@ -187,9 +188,6 @@ export default function Dashboard({
                                                     Customer
                                                 </th>
                                                 <th className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary">
-                                                    Payment
-                                                </th>
-                                                <th className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary">
                                                     Total
                                                 </th>
                                                 <th className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary">
@@ -226,11 +224,6 @@ export default function Dashboard({
                                                                 }
                                                             </div>
                                                         </td>
-                                                        <td className="px-6 py-4 text-text-secondary">
-                                                            {formatPaymentMethod(
-                                                                tx.payment_method,
-                                                            )}
-                                                        </td>
                                                         <td className="px-6 py-4 font-medium text-text-primary">
                                                             $
                                                             {tx.total.toFixed(
@@ -263,136 +256,143 @@ export default function Dashboard({
 
                     {/* Alerts Column */}
                     <div className="flex flex-col gap-6">
-                        {/* Low Stock Alerts */}
                         <div className="flex flex-col gap-4">
-                            <div>
-                                <h2 className="text-lg font-bold text-text-primary">
-                                    Low Stock Alert
-                                </h2>
-                                <p className="mt-0.5 text-xs text-text-secondary">
-                                    Items at or below warning levels.
+                            <div className="flex flex-col gap-2">
+                                <div className="flex items-center justify-between">
+                                    <h2 className="text-lg font-bold text-text-primary">
+                                        Inventory Alerts
+                                    </h2>
+                                    
+                                    <div className="flex rounded-lg bg-canvas p-0.5 border border-border-soft shrink-0">
+                                        <button
+                                            type="button"
+                                            onClick={() => setActiveAlertTab('stock')}
+                                            className={`rounded-[6px] px-2.5 py-1 text-xs font-semibold transition-all ${
+                                                activeAlertTab === 'stock'
+                                                    ? 'bg-surface text-brand shadow-[0_1px_3px_rgba(20,28,64,0.08)]'
+                                                    : 'text-text-secondary hover:text-text-primary'
+                                            }`}
+                                        >
+                                            Low Stock ({lowStockProducts.length})
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setActiveAlertTab('expiry')}
+                                            className={`rounded-[6px] px-2.5 py-1 text-xs font-semibold transition-all ${
+                                                activeAlertTab === 'expiry'
+                                                    ? 'bg-surface text-brand shadow-[0_1px_3px_rgba(20,28,64,0.08)]'
+                                                    : 'text-text-secondary hover:text-text-primary'
+                                            }`}
+                                        >
+                                            Expiring ({expiringProducts.length})
+                                        </button>
+                                    </div>
+                                </div>
+                                <p className="text-xs text-text-secondary">
+                                    {activeAlertTab === 'stock'
+                                        ? 'Items at or below warning levels.'
+                                        : 'Products expiring within 30 days.'}
                                 </p>
                             </div>
 
-                            {lowStockProducts.length === 0 ? (
-                                <div className="flex h-[280px] flex-col items-center justify-center rounded-xl border border-border-soft bg-surface px-4 py-8 text-center">
-                                    <CheckCircle2 className="mb-3 h-10 w-10 text-success-fg" />
-                                    <p className="text-sm font-medium text-text-primary">
-                                        Inventory fully stocked
-                                    </p>
-                                    <p className="mx-auto mt-1 max-w-[200px] text-xs text-text-secondary">
-                                        All items are currently above their warning
-                                        thresholds.
-                                    </p>
-                                </div>
-                            ) : (
-                                <div className="flex max-h-[400px] flex-col gap-3 overflow-y-auto rounded-xl border border-border-soft bg-surface p-4 shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
-                                    {lowStockProducts.map((p) => (
-                                        <div
-                                            key={p.id}
-                                            className="flex items-start justify-between gap-3 rounded-lg border border-border-soft p-3 transition-colors hover:bg-canvas/50"
-                                        >
-                                            <div className="flex flex-col gap-0.5">
-                                                <span className="line-clamp-1 text-sm font-semibold text-text-primary">
-                                                    {p.name}
-                                                </span>
-                                                <span className="text-[11px] text-text-secondary">
-                                                    SKU:{' '}
-                                                    <span className="font-mono">
-                                                        {p.sku}
-                                                    </span>{' '}
-                                                    · {p.category_name}
-                                                </span>
-                                                <span className="mt-1 text-xs text-text-secondary">
-                                                    Stock:{' '}
-                                                    <span className="font-bold text-text-primary">
-                                                        {p.stock_quantity}
-                                                    </span>{' '}
-                                                    (Alert: {p.alert_threshold})
-                                                </span>
-                                            </div>
-                                            <StockAlertBadge
-                                                quantity={p.stock_quantity}
-                                                threshold={p.alert_threshold}
-                                            />
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Expiring Soon Alerts */}
-                        <div className="flex flex-col gap-4">
-                            <div>
-                                <h2 className="text-lg font-bold text-text-primary">
-                                    Expiring Soon
-                                </h2>
-                                <p className="mt-0.5 text-xs text-text-secondary">
-                                    Products expiring within 30 days.
-                                </p>
-                            </div>
-
-                            {expiringProducts.length === 0 ? (
-                                <div className="flex h-[200px] flex-col items-center justify-center rounded-xl border border-border-soft bg-surface px-4 py-8 text-center">
-                                    <CheckCircle2 className="mb-3 h-10 w-10 text-success-fg" />
-                                    <p className="text-sm font-medium text-text-primary">
-                                        No expiring products
-                                    </p>
-                                    <p className="mx-auto mt-1 max-w-[200px] text-xs text-text-secondary">
-                                        All products have a valid expiry status.
-                                    </p>
-                                </div>
-                            ) : (
-                                <div className="flex max-h-[400px] flex-col gap-3 overflow-y-auto rounded-xl border border-border-soft bg-surface p-4 shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
-                                    {expiringProducts.map((p) => (
-                                        <div
-                                            key={p.id}
-                                            className="flex items-start justify-between gap-3 rounded-lg border border-border-soft p-3 transition-colors hover:bg-canvas/50"
-                                        >
-                                            <div className="flex flex-col gap-0.5">
-                                                <span className="line-clamp-1 text-sm font-semibold text-text-primary">
-                                                    {p.name}
-                                                </span>
-                                                <span className="text-[11px] text-text-secondary">
-                                                    SKU:{' '}
-                                                    <span className="font-mono">
-                                                        {p.sku}
-                                                    </span>
-                                                </span>
-                                                <span className="mt-1 text-xs text-text-secondary">
-                                                    Expiry:{' '}
-                                                    <span className="font-bold text-text-primary">
-                                                        {p.expiry_date
-                                                            ? new Date(
-                                                                  p.expiry_date,
-                                                              ).toLocaleDateString(
-                                                                  'en-GB',
-                                                                  {
-                                                                      day: 'numeric',
-                                                                      month: 'short',
-                                                                      year: 'numeric',
-                                                                  },
-                                                              )
-                                                            : '—'}
-                                                    </span>
-                                                </span>
-                                            </div>
-                                            <span
-                                                className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                                                    p.days_remaining === 0
-                                                        ? 'bg-danger-bg text-danger-fg'
-                                                        : 'bg-warning-bg text-warning-fg'
-                                                }`}
+                            {activeAlertTab === 'stock' ? (
+                                lowStockProducts.length === 0 ? (
+                                    <div className="flex h-[280px] flex-col items-center justify-center rounded-xl border border-border-soft bg-surface px-4 py-8 text-center">
+                                        <CheckCircle2 className="mb-3 h-10 w-10 text-success-fg" />
+                                        <p className="text-sm font-medium text-text-primary">
+                                            Inventory fully stocked
+                                        </p>
+                                        <p className="mx-auto mt-1 max-w-[200px] text-xs text-text-secondary">
+                                            All items are currently above their warning thresholds.
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <div className="flex max-h-[400px] flex-col gap-4 overflow-y-auto rounded-xl border border-border-soft bg-surface p-4 shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
+                                        {lowStockProducts.map((p) => (
+                                            <div
+                                                key={p.id}
+                                                className="flex items-start justify-between gap-3 rounded-lg border border-border-soft p-3 transition-colors hover:bg-canvas/50"
                                             >
-                                                {p.days_remaining === 0
-                                                    ? 'Expires today'
-                                                    : p.days_remaining === 1
-                                                      ? '1 day left'
-                                                      : `${p.days_remaining} days left`}
-                                            </span>
-                                        </div>
-                                    ))}
-                                </div>
+                                                <div className="flex flex-col gap-0.5">
+                                                    <span className="line-clamp-1 text-sm font-semibold text-text-primary">
+                                                        {p.name}
+                                                    </span>
+                                                    <span className="text-[11px] text-text-secondary">
+                                                        {p.category_name}
+                                                    </span>
+                                                    <span className="mt-1 text-xs text-text-secondary">
+                                                        Stock:{' '}
+                                                        <span className="font-bold text-text-primary">
+                                                            {p.stock_quantity}
+                                                        </span>{' '}
+                                                        (Alert: {p.alert_threshold})
+                                                    </span>
+                                                </div>
+                                                <StockAlertBadge
+                                                    quantity={p.stock_quantity}
+                                                    threshold={p.alert_threshold}
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                )
+                            ) : (
+                                expiringProducts.length === 0 ? (
+                                    <div className="flex h-[280px] flex-col items-center justify-center rounded-xl border border-border-soft bg-surface px-4 py-8 text-center">
+                                        <CheckCircle2 className="mb-3 h-10 w-10 text-success-fg" />
+                                        <p className="text-sm font-medium text-text-primary">
+                                            No expiring products
+                                        </p>
+                                        <p className="mx-auto mt-1 max-w-[200px] text-xs text-text-secondary">
+                                            All products have a valid expiry status.
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <div className="flex max-h-[400px] flex-col gap-4 overflow-y-auto rounded-xl border border-border-soft bg-surface p-4 shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
+                                        {expiringProducts.map((p) => (
+                                            <div
+                                                key={p.id}
+                                                className="flex items-start justify-between gap-3 rounded-lg border border-border-soft p-3 transition-colors hover:bg-canvas/50"
+                                            >
+                                                <div className="flex flex-col gap-0.5">
+                                                    <span className="line-clamp-1 text-sm font-semibold text-text-primary">
+                                                        {p.name}
+                                                    </span>
+                                                    <span className="mt-1 text-xs text-text-secondary">
+                                                        Expiry:{' '}
+                                                        <span className="font-bold text-text-primary">
+                                                            {p.expiry_date
+                                                                ? new Date(
+                                                                      p.expiry_date,
+                                                                  ).toLocaleDateString(
+                                                                      'en-GB',
+                                                                      {
+                                                                          day: 'numeric',
+                                                                          month: 'short',
+                                                                          year: 'numeric',
+                                                                      },
+                                                                  )
+                                                                : '—'}
+                                                        </span>
+                                                    </span>
+                                                </div>
+                                                <span
+                                                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                                                        p.days_remaining === 0
+                                                            ? 'bg-danger-bg text-danger-fg'
+                                                            : 'bg-warning-bg text-warning-fg'
+                                                    }`}
+                                                >
+                                                    {p.days_remaining === 0
+                                                        ? 'Expires today'
+                                                        : p.days_remaining === 1
+                                                          ? '1 day left'
+                                                          : `${p.days_remaining} days left`}
+                                                </span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )
                             )}
                         </div>
                     </div>

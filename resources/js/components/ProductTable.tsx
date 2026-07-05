@@ -1,5 +1,5 @@
 import { router } from '@inertiajs/react';
-import { Pencil, Plus, Trash2 } from 'lucide-react';
+import { Pencil, Trash2 } from 'lucide-react';
 import StockAlertBadge from '@/components/StockAlertBadge';
 import { Button } from '@/components/ui/button';
 import type { Product } from '@/types';
@@ -8,10 +8,9 @@ type Props = {
     products: Product[];
     teamSlug: string;
     onEdit: (product: Product) => void;
-    createUrl: string;
 };
 
-export default function ProductTable({ products, teamSlug, onEdit, createUrl }: Props) {
+export default function ProductTable({ products, teamSlug, onEdit }: Props) {
     function handleDelete(product: Product) {
         if (!confirm(`Delete "${product.name}"? This cannot be undone.`)) {
             return;
@@ -55,17 +54,7 @@ export default function ProductTable({ products, teamSlug, onEdit, createUrl }: 
                                 Stock
                             </th>
                             <th className="px-6 py-3.5 text-right text-[13px] font-medium text-text-secondary">
-                                <div className="flex items-center justify-end gap-3">
-                                    <span>Actions</span>
-                                    <Button
-                                        onClick={() => (window.location.href = createUrl)}
-                                        size="sm"
-                                        className="h-7 gap-1.5 bg-brand px-3 text-xs hover:bg-brand-dark"
-                                    >
-                                        <Plus className="h-3.5 w-3.5" />
-                                        Add Product
-                                    </Button>
-                                </div>
+                                Actions
                             </th>
                         </tr>
                     </thead>

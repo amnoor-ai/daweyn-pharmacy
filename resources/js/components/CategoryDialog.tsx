@@ -88,7 +88,7 @@ export default function CategoryDialog({
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle className="text-[#161A30]">
+                    <DialogTitle className="text-foreground">
                         {isEditing ? 'Edit Category' : 'Add Category'}
                     </DialogTitle>
                 </DialogHeader>

@@ -3,6 +3,13 @@ import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import type { Category, Product } from '@/types';
 
 type Props = {
@@ -59,27 +66,24 @@ export default function ProductEdit({ product, categories }: Props) {
                 <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                     {/* Category */}
                     <div className="flex flex-col gap-1.5">
-                        <Label
-                            htmlFor="category_id"
-                            className="text-text-primary"
-                        >
+                        <Label htmlFor="category_id" className="text-text-primary">
                             Category <span className="text-danger-fg">*</span>
                         </Label>
-                        <select
-                            id="category_id"
+                        <Select
                             value={data.category_id}
-                            onChange={(e) =>
-                                setData('category_id', e.target.value)
-                            }
-                            className="w-full rounded-md border border-border-soft bg-surface px-3 py-2 text-sm text-text-primary focus:border-brand focus:ring-1 focus:ring-brand focus:outline-none"
+                            onValueChange={(val) => setData('category_id', val)}
                         >
-                            <option value="">Select a category</option>
-                            {categories.map((cat) => (
-                                <option key={cat.id} value={String(cat.id)}>
-                                    {cat.name}
-                                </option>
-                            ))}
-                        </select>
+                            <SelectTrigger id="category_id" className="w-full border-border-soft">
+                                <SelectValue placeholder="Select a category" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {categories.map((cat) => (
+                                    <SelectItem key={cat.id} value={String(cat.id)}>
+                                        {cat.name}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                         <InputError message={errors.category_id} />
                     </div>
 

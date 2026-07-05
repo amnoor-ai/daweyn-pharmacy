@@ -1,5 +1,5 @@
 import { router } from '@inertiajs/react';
-import { Eye, Pencil, Plus, Trash2 } from 'lucide-react';
+import { Eye, Pencil, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { Customer } from '@/types';
 
@@ -7,10 +7,9 @@ type Props = {
     customers: Customer[];
     teamSlug: string;
     onEdit: (customer: Customer) => void;
-    onAdd: () => void;
 };
 
-export default function CustomerTable({ customers, teamSlug, onEdit, onAdd }: Props) {
+export default function CustomerTable({ customers, teamSlug, onEdit }: Props) {
     function handleDelete(customer: Customer) {
         if (!confirm(`Delete "${customer.name}"? This cannot be undone.`)) {
             return;
@@ -51,17 +50,7 @@ export default function CustomerTable({ customers, teamSlug, onEdit, onAdd }: Pr
                                 Loyalty Points
                             </th>
                             <th className="px-6 py-3.5 text-right text-[13px] font-medium text-text-secondary">
-                                <div className="flex items-center justify-end gap-3">
-                                    <span>Actions</span>
-                                    <Button
-                                        onClick={onAdd}
-                                        size="sm"
-                                        className="h-7 gap-1.5 bg-brand px-3 text-xs hover:bg-brand-dark"
-                                    >
-                                        <Plus className="h-3.5 w-3.5" />
-                                        Add Customer
-                                    </Button>
-                                </div>
+                                Actions
                             </th>
                         </tr>
                     </thead>

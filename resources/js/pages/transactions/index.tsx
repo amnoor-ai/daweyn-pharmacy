@@ -1,6 +1,16 @@
 import { Head, router, usePage } from '@inertiajs/react';
-import { Eye, ShoppingCart } from 'lucide-react';
+import { Eye, Search, ShoppingCart } from 'lucide-react';
+import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import { useTableSearch } from '@/hooks/use-table-search';
 import type { Transaction } from '@/types';
 
 type Props = {
@@ -15,18 +25,85 @@ const paymentBadge: Record<string, string> = {
     card: 'bg-warning-bg text-warning-fg',
 };
 
+const PAYMENT_OPTIONS = [
+    { value: '', label: 'All Payment' },
+    { value: 'cash', label: 'Cash' },
+    { value: 'zaad', label: 'ZAAD' },
+    { value: 'evc', label: 'EVC' },
+    { value: 'jeeb', label: 'Jeeb' },
+    { value: 'card', label: 'Card' },
+];
+
 export default function TransactionsIndex({ transactions }: Props) {
     const { props } = usePage();
     const teamSlug = (props.currentTeam as { slug: string } | null)?.slug ?? '';
+    const [query, setQuery] = useState('');
+
+    const [paymentFilter, setPaymentFilter] = useState('');
+
+    // Client-side payment method filter (on top of search)
+    const filteredTx = useMemo(() => {
+        return transactions.filter((tx) => {
+            const matchQuery = !query || 
+                (tx.invoice_number ?? '').toLowerCase().includes(query.toLowerCase()) || 
+                (tx.customer?.name ?? '').toLowerCase().includes(query.toLowerCase());
+            const matchPayment = !paymentFilter || tx.payment_method === paymentFilter;
+            return matchQuery && matchPayment;
+        });
+    }, [transactions, query, paymentFilter]);
 
     return (
         <>
             <Head title="Transactions" />
-            {/* Table */}
-                {transactions.length === 0 ? (
+            <div className="flex flex-col gap-4">
+                {/* Toolbar */}
+                <div className="flex flex-wrap items-center gap-3">
+                    {/* Search */}
+                    <div className="relative flex-1 max-w-xs">
+                        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
+                        <Input
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value)}
+                            placeholder="Search transactions…"
+                            className="h-9 pl-9 text-sm"
+                        />
+                    </div>
+
+                    {/* Payment filter */}
+                    <Select
+                        value={paymentFilter}
+                        onValueChange={setPaymentFilter}
+                    >
+                        <SelectTrigger className="h-9 min-w-[140px]">
+                            <SelectValue placeholder="All Payment" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {PAYMENT_OPTIONS.map((o) => (
+                                <SelectItem key={o.value} value={o.value}>
+                                    {o.label}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+
+                    {/* Spacer */}
+                    <div className="flex-1" />
+
+                    {/* Primary action */}
+                    <Button
+                        onClick={() => router.visit(`/${teamSlug}/pos`)}
+                        className="gap-2 bg-brand hover:bg-brand-dark transition-all duration-200 hover:-translate-y-0.5"
+                    >
+                        <ShoppingCart className="h-4 w-4" />
+                        Go to POS
+                    </Button>
+                </div>
+
+                {/* Table */}
+                {filteredTx.length === 0 ? (
                     <div className="rounded-lg border border-border-soft bg-surface">
                         <p className="p-8 text-center text-sm text-text-secondary">
-                            No transactions yet. Click &quot;New Sale&quot; to
+                            No transactions yet. Click &quot;Go to POS&quot; to
                             record one.
                         </p>
                     </div>
@@ -52,27 +129,17 @@ export default function TransactionsIndex({ transactions }: Props) {
                                             Date
                                         </th>
                                         <th className="px-6 py-3.5 text-right text-[13px] font-medium text-text-secondary">
-                                            <div className="flex items-center justify-end gap-3">
-                                                <span>Actions</span>
-                                                <Button
-                                                    onClick={() => router.visit(`/${teamSlug}/pos`)}
-                                                    size="sm"
-                                                    className="h-7 gap-1.5 bg-brand px-3 text-xs hover:bg-brand-dark"
-                                                >
-                                                    <ShoppingCart className="h-3.5 w-3.5" />
-                                                    Go to POS
-                                                </Button>
-                                            </div>
+                                            Actions
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {transactions.map((tx, idx) => (
+                                    {filteredTx.map((tx, idx) => (
                                         <tr
                                             key={tx.id}
                                             className={
-                                                idx !== transactions.length - 1
-                                                     ? 'border-b border-divider'
+                                                idx !== filteredTx.length - 1
+                                                    ? 'border-b border-divider'
                                                     : ''
                                             }
                                         >
@@ -134,6 +201,7 @@ export default function TransactionsIndex({ transactions }: Props) {
                         </div>
                     </div>
                 )}
+            </div>
         </>
     );
 }

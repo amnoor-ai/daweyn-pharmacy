@@ -4,6 +4,13 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import type { Customer, Product } from '@/types';
 
 type Props = {
@@ -202,30 +209,38 @@ export default function PosIndex({ products, customers }: Props) {
                     <div className="flex flex-col gap-3 border-t border-border-soft pt-3">
                         <div className="flex flex-col gap-1">
                             <Label className="text-xs text-text-secondary">Customer (optional)</Label>
-                            <select
+                            <Select
                                 value={customerId}
-                                onChange={e => setCustomerId(e.target.value)}
-                                className="w-full rounded-md border border-border-soft bg-surface px-3 py-2 text-xs text-text-primary focus:border-brand focus:outline-none"
+                                onValueChange={setCustomerId}
                             >
-                                <option value="">Walk-in customer</option>
-                                {customers.map(c => (
-                                    <option key={c.id} value={String(c.id)}>{c.name}</option>
-                                ))}
-                            </select>
+                                <SelectTrigger size="sm" className="w-full text-xs">
+                                    <SelectValue placeholder="Walk-in customer" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="">Walk-in customer</SelectItem>
+                                    {customers.map(c => (
+                                        <SelectItem key={c.id} value={String(c.id)}>{c.name}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
                         <div className="flex flex-col gap-1">
                             <Label className="text-xs text-text-secondary">Payment Method</Label>
-                            <select
+                            <Select
                                 value={paymentMethod}
-                                onChange={e => setPaymentMethod(e.target.value)}
-                                className="w-full rounded-md border border-border-soft bg-surface px-3 py-2 text-xs text-text-primary focus:border-brand focus:outline-none"
+                                onValueChange={setPaymentMethod}
                             >
-                                <option value="cash">Cash</option>
-                                <option value="zaad">Zaad</option>
-                                <option value="evc">EVC</option>
-                                <option value="jeeb">Jeeb</option>
-                                <option value="card">Card</option>
-                            </select>
+                                <SelectTrigger size="sm" className="w-full text-xs">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="cash">Cash</SelectItem>
+                                    <SelectItem value="zaad">Zaad</SelectItem>
+                                    <SelectItem value="evc">EVC</SelectItem>
+                                    <SelectItem value="jeeb">Jeeb</SelectItem>
+                                    <SelectItem value="card">Card</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
                     </div>
 

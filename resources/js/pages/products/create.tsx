@@ -3,6 +3,13 @@ import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import type { Category } from '@/types';
 
 type Props = {
@@ -45,7 +52,7 @@ export default function ProductCreate({ categories }: Props) {
     return (
         <>
             <Head title="Add Product" />
-            <div className="flex max-w-2xl flex-col gap-6 p-6">
+            <div className="mx-auto max-w-2xl flex-col items-center  bg-surface gap-6 p-6">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-text-primary">
                         Add Product
@@ -58,27 +65,24 @@ export default function ProductCreate({ categories }: Props) {
                 <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                     {/* Category */}
                     <div className="flex flex-col gap-1.5">
-                        <Label
-                            htmlFor="category_id"
-                            className="text-text-primary"
-                        >
+                        <Label htmlFor="category_id" className="text-foreground">
                             Category <span className="text-danger-fg">*</span>
                         </Label>
-                        <select
-                            id="category_id"
+                        <Select
                             value={data.category_id}
-                            onChange={(e) =>
-                                setData('category_id', String(e.target.value))
-                            }
-                            className="w-full rounded-md border border-border-soft bg-white px-3 py-2 text-sm text-text-primary focus:border-brand focus:ring-1 focus:ring-brand focus:outline-none"
+                            onValueChange={(val) => setData('category_id', val)}
                         >
-                            <option value="">Select a category</option>
-                            {categories.map((cat) => (
-                                <option key={cat.id} value={String(cat.id)}>
-                                    {cat.name}
-                                </option>
-                            ))}
-                        </select>
+                            <SelectTrigger id="category_id" className="w-full border-border-soft">
+                                <SelectValue placeholder="Select a category" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {categories.map((cat) => (
+                                    <SelectItem key={cat.id} value={String(cat.id)}>
+                                        {cat.name}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                         <InputError message={errors.category_id} />
                     </div>
 
@@ -116,10 +120,10 @@ export default function ProductCreate({ categories }: Props) {
                     <div className="flex flex-col gap-1.5">
                         <Label
                             htmlFor="description"
-                            className="text-text-primary"
+                            className="text-foreground"
                         >
                             Description{' '}
-                            <span className="text-xs font-normal text-text-secondary">
+                            <span className="text-xs font-normal">
                                 (optional)
                             </span>
                         </Label>
@@ -131,7 +135,7 @@ export default function ProductCreate({ categories }: Props) {
                             }
                             placeholder="Short description..."
                             rows={3}
-                            className="w-full rounded-md border border-border-soft bg-white px-3 py-2 text-sm text-text-primary placeholder:text-text-secondary focus:border-brand focus:ring-1 focus:ring-brand focus:outline-none"
+                            className="w-full rounded-md border border-border-soft px-3 py-2 text-sm text-foreground focus:border-brand focus:ring-1 focus:ring-brand focus:outline-none"
                         />
                         <InputError message={errors.description} />
                     </div>

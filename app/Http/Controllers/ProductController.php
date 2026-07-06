@@ -56,21 +56,30 @@ public function create(Team $currentTeam)
     ]);
 }
 
-public function store(Request $request, Team $currentTeam)
-{
-    $validated = $request->validate([
-        'category_id'     => ['required', 'exists:categories,id'],
-        'sku'             => ['required', 'string', 'max:100'],
-        'name'            => ['required', 'string', 'max:255'],
-        'description'     => ['nullable', 'string'],
-        'cost_price'      => ['required', 'numeric', 'min:0'],
-        'selling_price'   => ['required', 'numeric', 'min:0'],
-        'stock_quantity'  => ['required', 'integer', 'min:0'],
-        'alert_threshold' => ['required', 'integer', 'min:0'],
-        'expiry_date'     => ['nullable', 'date', 'after:today'],
-    ]);
+    public function store(Request $request, Team $currentTeam)
+    {
+        $validated = $request->validate([
+            'category_id'     => ['required', 'exists:categories,id'],
+            'sku'             => ['required', 'string', 'max:100'],
+            'name'            => ['required', 'string', 'max:255'],
+            'description'     => ['nullable', 'string'],
+            'cost_price'      => ['required', 'numeric', 'min:0'],
+            'selling_price'   => ['required', 'numeric', 'min:0'],
+            'stock_quantity'  => ['required', 'integer', 'min:0'],
+            'alert_threshold' => ['required', 'integer', 'min:0'],
+            'expiry_date'     => ['nullable', 'date', 'after:today'],
+            'image'           => ['nullable', 'image', 'max:2048'], // Max 2MB
+        ]);
 
-    $currentTeam->products()->create($validated);
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('products', 'public');
+        }
+
+        $currentTeam->products()->create([
+            ...$validated,
+            'image_path' => $imagePath,
+        ]);
 
     return redirect()
         ->route('products.index', $currentTeam->slug)
@@ -89,23 +98,31 @@ public function edit(Team $currentTeam, Product $product)
     ]);
 }
 
-public function update(Request $request, Team $currentTeam, Product $product)
-{
-    abort_unless($product->team_id === $currentTeam->id, 403);
+    public function update(Request $request, Team $currentTeam, Product $product)
+    {
+        abort_unless($product->team_id === $currentTeam->id, 403);
 
-    $validated = $request->validate([
-        'category_id'     => ['required', 'exists:categories,id'],
-        'sku'             => ['required', 'string', 'max:100'],
-        'name'            => ['required', 'string', 'max:255'],
-        'description'     => ['nullable', 'string'],
-        'cost_price'      => ['required', 'numeric', 'min:0'],
-        'selling_price'   => ['required', 'numeric', 'min:0'],
-        'stock_quantity'  => ['required', 'integer', 'min:0'],
-        'alert_threshold' => ['required', 'integer', 'min:0'],
-        'expiry_date'     => ['nullable', 'date'],
-    ]);
+        $validated = $request->validate([
+            'category_id'     => ['required', 'exists:categories,id'],
+            'sku'             => ['required', 'string', 'max:100'],
+            'name'            => ['required', 'string', 'max:255'],
+            'description'     => ['nullable', 'string'],
+            'cost_price'      => ['required', 'numeric', 'min:0'],
+            'selling_price'   => ['required', 'numeric', 'min:0'],
+            'stock_quantity'  => ['required', 'integer', 'min:0'],
+            'alert_threshold' => ['required', 'integer', 'min:0'],
+            'expiry_date'     => ['nullable', 'date'],
+            'image'           => ['nullable', 'image', 'max:2048'],
+        ]);
 
-    $product->update($validated);
+        if ($request->hasFile('image')) {
+            if ($product->image_path) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($product->image_path);
+            }
+            $validated['image_path'] = $request->file('image')->store('products', 'public');
+        }
+
+        $product->update($validated);
 
     return redirect()
         ->route('products.index', $currentTeam->slug)

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Team;
 use App\Models\TeamInvitation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -95,6 +96,18 @@ class DashboardController extends Controller
                 'days_remaining' => $p->expiry_date ? (int) \Illuminate\Support\Carbon::today()->diffInDays($p->expiry_date, false) : 0,
             ]);
 
+        // 7. Daily revenue for the last 30 days (for the line chart)
+        $revenueByDay = $current_team->transactions()
+            ->selectRaw('DATE(created_at) as date, SUM(total) as total')
+            ->where('created_at', '>=', Carbon::now()->subDays(29)->startOfDay())
+            ->groupByRaw('DATE(created_at)')
+            ->orderBy('date')
+            ->get()
+            ->map(fn ($item) => [
+                'date'  => $item->date,
+                'total' => (float) $item->total,
+            ]);
+
         return Inertia::render('dashboard', [
             'pendingInvitations' => $pendingInvitations,
             'stats' => [
@@ -107,6 +120,7 @@ class DashboardController extends Controller
             'recentTransactions' => $recentTransactions,
             'revenueByPaymentMethod' => $revenueByPaymentMethod,
             'expiringProducts' => $expiringProducts,
+            'revenueByDay' => $revenueByDay,
         ]);
     }
 }

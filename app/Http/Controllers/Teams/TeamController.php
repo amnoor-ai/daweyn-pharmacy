@@ -65,7 +65,8 @@ class TeamController extends Controller
                     'id' => $member->id,
                     'name' => $member->name,
                     'email' => $member->email,
-                    'avatar' => $member->avatar ?? null,
+                    'avatar' => $member->avatar_url ?? $member->avatar ?? null,
+                    'last_seen_at' => $member->last_seen_at?->toISOString(),
                     'role' => $membership->role->value,
                     'role_label' => $membership->role->label(),
                 ];

@@ -47,7 +47,7 @@ export default function CustomersIndex({ customers }: Props) {
             <Head title="Customers" />
             <div className="flex flex-col gap-4">
                 {/* Toolbar */}
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap sm:flex-nowrap items-center gap-3">
                     {/* Search */}
                     <div className="relative flex-1 max-w-xs">
                         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />

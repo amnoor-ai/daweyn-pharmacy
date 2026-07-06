@@ -120,10 +120,10 @@ export default function ProductsIndex({ products, categories = [] }: Props) {
                     {/* Primary action */}
                     <Button
                         onClick={() => (window.location.href = `/${teamSlug}/products/create`)}
-                        className="gap-2 bg-brand hover:bg-brand-dark transition-all duration-200 hover:-translate-y-0.5"
+                        className="gap-1.5 bg-brand hover:bg-brand-dark transition-all duration-200 hover:-translate-y-0.5 px-3"
                     >
                         <Plus className="h-4 w-4" />
-                        Add Product
+                        <span className="hidden sm:inline">Add Product</span>
                     </Button>
                 </div>
 

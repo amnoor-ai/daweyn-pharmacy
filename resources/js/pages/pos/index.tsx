@@ -101,27 +101,42 @@ export default function PosIndex({ products, customers }: Props) {
     return (
         <>
             <Head title="POS" />
-            <div className="flex h-[calc(100vh-4rem)] gap-0">
+            <div className="flex flex-col lg:flex-row min-h-[calc(100vh-4rem)] lg:h-[calc(100vh-4rem)] gap-0">
 
                 {/* LEFT — Product search */}
-                <div className="flex flex-1 flex-col gap-4 overflow-hidden p-6">
+                <div className="flex flex-1 flex-col gap-4 lg:overflow-hidden p-4 sm:p-6">
                     <Input
                         placeholder="Search by name or SKU..."
                         value={search}
                         onChange={e => setSearch(e.target.value)}
                         className="border-border-soft"
                     />
-                    <div className="grid grid-cols-2 gap-3 overflow-y-auto xl:grid-cols-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 lg:overflow-y-auto pb-4">
                         {filteredProducts.map(product => (
                             <button
                                 key={product.id}
                                 onClick={() => addToCart(product)}
-                                className="flex flex-col gap-1 rounded-lg border border-border-soft bg-surface p-4 text-left hover:border-brand hover:shadow-sm transition-all"
+                                className="flex flex-row items-center gap-3 rounded-lg border border-border-soft bg-surface p-3 text-left hover:border-brand hover:shadow-sm transition-all"
                             >
-                                <span className="font-medium text-text-primary text-sm">{product.name}</span>
-                                <span className="text-xs text-text-secondary">{product.sku}</span>
-                                <span className="mt-1 text-sm font-semibold text-brand">${Number(product.selling_price).toFixed(2)}</span>
-                                <span className="text-xs text-text-secondary">Stock: {product.stock_quantity}</span>
+                                {product.image_url ? (
+                                    <img
+                                        src={product.image_url}
+                                        alt={product.name}
+                                        className="h-12 w-12 rounded-md object-cover border border-border-soft shrink-0"
+                                    />
+                                ) : (
+                                    <div className="h-12 w-12 rounded-md bg-canvas border border-border-soft flex items-center justify-center shrink-0">
+                                        <span className="text-[10px] text-text-secondary">No img</span>
+                                    </div>
+                                )}
+                                <div className="flex flex-col min-w-0 flex-1">
+                                    <span className="font-medium text-text-primary text-sm truncate">{product.name}</span>
+                                    <span className="text-xs text-text-secondary truncate">{product.sku}</span>
+                                    <div className="mt-1 flex items-center justify-between">
+                                        <span className="text-sm font-semibold text-brand">${Number(product.selling_price).toFixed(2)}</span>
+                                        <span className="text-xs text-text-secondary">Stock: {product.stock_quantity}</span>
+                                    </div>
+                                </div>
                             </button>
                         ))}
                         {filteredProducts.length === 0 && (
@@ -133,7 +148,7 @@ export default function PosIndex({ products, customers }: Props) {
                 </div>
 
                 {/* RIGHT — Cart */}
-                <div className="flex w-80 flex-col gap-4 border-l border-border-soft bg-surface p-5 overflow-y-auto">
+                <div className="flex w-full lg:w-80 flex-col gap-4 border-t lg:border-t-0 lg:border-l border-border-soft bg-surface p-4 sm:p-5 lg:overflow-y-auto">
                     <div className="flex items-center gap-2">
                         <ShoppingCart className="h-5 w-5 text-brand" />
                         <h2 className="text-lg font-semibold text-text-primary">Cart</h2>
@@ -151,6 +166,17 @@ export default function PosIndex({ products, customers }: Props) {
                         )}
                         {cart.map(item => (
                             <div key={item.product.id} className="flex items-center gap-2 rounded-lg border border-border-soft p-2">
+                                {item.product.image_url ? (
+                                    <img
+                                        src={item.product.image_url}
+                                        alt={item.product.name}
+                                        className="h-8 w-8 rounded object-cover shrink-0 border border-border-soft"
+                                    />
+                                ) : (
+                                    <div className="h-8 w-8 rounded bg-canvas border border-border-soft flex items-center justify-center shrink-0">
+                                        <span className="text-[8px] text-text-secondary">No img</span>
+                                    </div>
+                                )}
                                 <div className="flex-1 min-w-0">
                                     <p className="text-xs font-medium text-text-primary truncate">{item.product.name}</p>
                                     <p className="text-xs text-text-secondary">${Number(item.product.selling_price).toFixed(2)} each</p>

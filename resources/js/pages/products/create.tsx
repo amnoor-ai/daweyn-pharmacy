@@ -26,6 +26,7 @@ type FormData = {
     stock_quantity: string;
     alert_threshold: string;
     expiry_date: string;
+    image: File | null;
 };
 
 export default function ProductCreate({ categories }: Props) {
@@ -42,6 +43,7 @@ export default function ProductCreate({ categories }: Props) {
         stock_quantity: '',
         alert_threshold: '10',
         expiry_date: '',
+        image: null,
     });
 
     function handleSubmit(e: React.FormEvent) {
@@ -84,6 +86,21 @@ export default function ProductCreate({ categories }: Props) {
                             </SelectContent>
                         </Select>
                         <InputError message={errors.category_id} />
+                    </div>
+
+                    {/* Image */}
+                    <div className="flex flex-col gap-1.5">
+                        <Label htmlFor="image" className="text-text-primary">
+                            Product Image <span className="text-xs font-normal text-text-secondary">(optional)</span>
+                        </Label>
+                        <Input
+                            id="image"
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => setData('image', e.target.files?.[0] || null)}
+                            className="border-border-soft"
+                        />
+                        <InputError message={errors.image as string} />
                     </div>
 
                     {/* Name */}
@@ -141,7 +158,7 @@ export default function ProductCreate({ categories }: Props) {
                     </div>
 
                     {/* Prices */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="flex flex-col gap-1.5">
                             <Label
                                 htmlFor="cost_price"
@@ -189,7 +206,7 @@ export default function ProductCreate({ categories }: Props) {
                     </div>
 
                     {/* Stock */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="flex flex-col gap-1.5">
                             <Label
                                 htmlFor="stock_quantity"

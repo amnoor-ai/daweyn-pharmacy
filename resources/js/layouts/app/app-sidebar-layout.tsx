@@ -26,7 +26,7 @@ export default function AppSidebarLayout({
     const getInitials = useInitials();
     const { resolvedAppearance, updateAppearance } = useAppearance();
     const [mobileOpen, setMobileOpen] = useState(false);
-    const emptySubscribe = () => () => {};
+    const emptySubscribe = () => () => { };
     const mounted = useSyncExternalStore(
         emptySubscribe,
         () => true,
@@ -120,15 +120,18 @@ export default function AppSidebarLayout({
                                     variant="ghost"
                                     className="size-8 rounded-full p-0.5"
                                 >
-                                    <Avatar className="size-7 overflow-hidden rounded-full">
-                                        <AvatarImage
-                                            src={auth.user.avatar}
-                                            alt={auth.user.name}
-                                        />
-                                        <AvatarFallback className="rounded-full bg-primary-50 text-xs font-semibold text-brand">
-                                            {getInitials(auth.user.name)}
-                                        </AvatarFallback>
-                                    </Avatar>
+                                    <div className="relative">
+                                        <Avatar className="size-7 overflow-hidden rounded-full">
+                                            <AvatarImage
+                                                src={auth.user.avatar_url ?? auth.user.avatar}
+                                                alt={auth.user.name}
+                                            />
+                                            <AvatarFallback className="rounded-full bg-primary-50 text-xs font-semibold text-brand">
+                                                {getInitials(auth.user.name)}
+                                            </AvatarFallback>
+                                        </Avatar>
+                                        <div className="absolute bottom-0 right-0 size-2.5 rounded-full border-2 border-white bg-success-fg dark:border-background"></div>
+                                    </div>
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="w-56" align="end">

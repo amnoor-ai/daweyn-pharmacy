@@ -12,7 +12,9 @@ import {
     Settings,
     PanelLeftClose,
     PanelLeftOpen,
+    Activity,
 } from 'lucide-react';
+
 
 type NavItem = {
     label: string;
@@ -29,6 +31,7 @@ const navItems: { section: string; links: NavItem[] }[] = [
             { label: 'Products', icon: Pill, path: 'products' },
             { label: 'POS', icon: ShoppingCart, path: 'pos' },
             { label: 'Transactions', icon: Receipt, path: 'transactions' },
+            { label: 'Reports', icon: Activity, path: 'reports' },
         ],
     },
     {
@@ -60,20 +63,26 @@ export default function Appsidebar({ collapsible = true }: AppsidebarProps) {
     const { url, props } = usePage();
     const { currentTeam } = props as { currentTeam?: { slug: string } };
 
-    // Read persisted state synchronously so there's no flash of the wrong width on load.
-    const [collapsedState, setCollapsed] = useState(() => {
-        if (typeof window === 'undefined') return false;
-        return window.localStorage.getItem(STORAGE_KEY) === '1';
-    });
+    // Default to false for SSR matching
+    const [collapsedState, setCollapsed] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+        if (typeof window !== 'undefined') {
+            const stored = window.localStorage.getItem(STORAGE_KEY) === '1';
+            setCollapsed(stored);
+        }
+    }, []);
 
     // Non-collapsible instances (mobile drawer) always render fully expanded,
     // regardless of what desktop has saved to localStorage.
     const collapsed = collapsible && collapsedState;
 
     useEffect(() => {
-        if (!collapsible) return;
+        if (!collapsible || !isMounted) return;
         window.localStorage.setItem(STORAGE_KEY, collapsedState ? '1' : '0');
-    }, [collapsedState, collapsible]);
+    }, [collapsedState, collapsible, isMounted]);
 
     const getHref = (path: string, isScoped = true) => {
         if (!isScoped) {

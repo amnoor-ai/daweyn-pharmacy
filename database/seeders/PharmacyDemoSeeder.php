@@ -143,10 +143,14 @@ class PharmacyDemoSeeder extends Seeder
             if ($existing) {
                 $products[] = $existing;
             } else {
+                $color = substr(md5($prod['name']), 0, 6);
+                $initials = strtoupper(substr($prod['name'], 0, 2));
+                
                 $products[] = Product::create([
                     'team_id' => $team->id,
                     'category_id' => $catId,
                     'sku' => $prod['sku'],
+                    'image_path' => null, // Let the accessor handle it using UI Avatars, no need to download files in seeder to keep it fast
                     'name' => $prod['name'],
                     'description' => 'Reliable pharmacy option for ' . $prod['name'] . '.',
                     'cost_price' => $prod['cost'],

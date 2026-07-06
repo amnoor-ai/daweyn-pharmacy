@@ -18,6 +18,7 @@ type Props = {
 };
 
 type FormData = {
+    _method: 'put';
     category_id: string;
     sku: string;
     name: string;
@@ -27,13 +28,15 @@ type FormData = {
     stock_quantity: string;
     alert_threshold: string;
     expiry_date: string;
+    image: File | null;
 };
 
 export default function ProductEdit({ product, categories }: Props) {
     const { props } = usePage();
     const teamSlug = (props.currentTeam as { slug: string } | null)?.slug ?? '';
 
-    const { data, setData, put, processing, errors } = useForm<FormData>({
+    const { data, setData, post, processing, errors } = useForm<FormData>({
+        _method: 'put',
         category_id: String(product.category_id),
         sku: product.sku,
         name: product.name,
@@ -43,17 +46,18 @@ export default function ProductEdit({ product, categories }: Props) {
         stock_quantity: String(product.stock_quantity),
         alert_threshold: String(product.alert_threshold),
         expiry_date: product.expiry_date ?? '',
+        image: null,
     });
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-        put(`/${teamSlug}/products/${product.id}`);
+        post(`/${teamSlug}/products/${product.id}`);
     }
 
     return (
         <>
             <Head title="Edit Product" />
-            <div className="flex max-w-2xl flex-col gap-6 p-6">
+            <div className="mx-auto max-w-2xl flex-col items-center bg-surface gap-6 p-6">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-text-primary">
                         Edit Product
@@ -66,7 +70,7 @@ export default function ProductEdit({ product, categories }: Props) {
                 <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                     {/* Category */}
                     <div className="flex flex-col gap-1.5">
-                        <Label htmlFor="category_id" className="text-text-primary">
+                        <Label htmlFor="category_id" className="text-foreground">
                             Category <span className="text-danger-fg">*</span>
                         </Label>
                         <Select
@@ -85,6 +89,31 @@ export default function ProductEdit({ product, categories }: Props) {
                             </SelectContent>
                         </Select>
                         <InputError message={errors.category_id} />
+                    </div>
+
+                    {/* Image */}
+                    <div className="flex flex-col gap-1.5">
+                        <Label htmlFor="image" className="text-text-primary">
+                            Product Image <span className="text-xs font-normal text-text-secondary">(optional)</span>
+                        </Label>
+                        
+                        <div className="flex items-center gap-4">
+                            {product.image_url && (
+                                <img 
+                                    src={product.image_url} 
+                                    alt={product.name} 
+                                    className="h-12 w-12 rounded-md object-cover border border-border-soft"
+                                />
+                            )}
+                            <Input
+                                id="image"
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => setData('image', e.target.files?.[0] || null)}
+                                className="border-border-soft flex-1"
+                            />
+                        </div>
+                        <InputError message={errors.image as string} />
                     </div>
 
                     {/* Name */}
@@ -119,10 +148,10 @@ export default function ProductEdit({ product, categories }: Props) {
                     <div className="flex flex-col gap-1.5">
                         <Label
                             htmlFor="description"
-                            className="text-text-primary"
+                            className="text-foreground"
                         >
                             Description{' '}
-                            <span className="text-xs font-normal text-text-secondary">
+                            <span className="text-xs font-normal">
                                 (optional)
                             </span>
                         </Label>
@@ -133,13 +162,13 @@ export default function ProductEdit({ product, categories }: Props) {
                                 setData('description', e.target.value)
                             }
                             rows={3}
-                            className="w-full rounded-md border border-border-soft px-3 py-2 text-sm text-text-primary placeholder:text-text-secondary focus:border-brand focus:ring-1 focus:ring-brand focus:outline-none"
+                            className="w-full rounded-md border border-border-soft px-3 py-2 text-sm text-foreground focus:border-brand focus:ring-1 focus:ring-brand focus:outline-none"
                         />
                         <InputError message={errors.description} />
                     </div>
 
                     {/* Prices */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="flex flex-col gap-1.5">
                             <Label
                                 htmlFor="cost_price"
@@ -185,7 +214,7 @@ export default function ProductEdit({ product, categories }: Props) {
                     </div>
 
                     {/* Stock */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="flex flex-col gap-1.5">
                             <Label
                                 htmlFor="stock_quantity"

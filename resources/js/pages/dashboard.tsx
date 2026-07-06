@@ -5,10 +5,13 @@ import {
     DollarSign,
     Pill,
     Receipt,
+    TrendingUp,
     Users,
 } from 'lucide-react';
 import { useState } from 'react';
+import PaymentMethodDonut from '@/components/PaymentMethodDonut';
 import PendingInvitationsModal from '@/components/pending-invitations-modal';
+import RevenueLineChart from '@/components/RevenueLineChart';
 import StatCard from '@/components/stat-card';
 import StockAlertBadge from '@/components/StockAlertBadge';
 import type { DashboardInvitation } from '@/types';
@@ -45,6 +48,11 @@ type RevenueByPaymentMethod = {
     total: number;
 };
 
+type RevenueByDay = {
+    date: string;
+    total: number;
+};
+
 type ExpiringProduct = {
     id: number;
     name: string;
@@ -59,6 +67,7 @@ type Props = {
     lowStockProducts: LowStockProduct[];
     recentTransactions: RecentTransaction[];
     revenueByPaymentMethod: RevenueByPaymentMethod[];
+    revenueByDay: RevenueByDay[];
     expiringProducts?: ExpiringProduct[];
 };
 
@@ -67,6 +76,8 @@ export default function Dashboard({
     stats,
     lowStockProducts = [],
     recentTransactions = [],
+    revenueByPaymentMethod = [],
+    revenueByDay = [],
     expiringProducts = [],
 }: Props) {
     const { props: pageProps } = usePage();
@@ -142,6 +153,40 @@ export default function Dashboard({
                     />
                 </div>
 
+                {/* Charts Row: Revenue Line (2/3) + Payment Donut (1/3) */}
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+                    {/* Revenue Line Chart */}
+                    <div className="flex flex-col gap-3 rounded-xl border border-border-soft bg-surface p-5 shadow-[0_2px_10px_rgba(20,28,64,0.05)] lg:col-span-2">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <h2 className="text-base font-bold text-text-primary">
+                                    Daily Revenue
+                                </h2>
+                                <p className="mt-0.5 text-xs text-text-secondary">
+                                    Last 30 days of sales totals.
+                                </p>
+                            </div>
+                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-info-bg">
+                                <TrendingUp className="h-4 w-4 text-info-fg" />
+                            </div>
+                        </div>
+                        <RevenueLineChart data={revenueByDay} />
+                    </div>
+
+                    {/* Payment Method Donut */}
+                    <div className="flex flex-col gap-3 rounded-xl border border-border-soft bg-surface p-5 shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
+                        <div>
+                            <h2 className="text-base font-bold text-text-primary">
+                                Payment Methods
+                            </h2>
+                            <p className="mt-0.5 text-xs text-text-secondary">
+                                Revenue split by payment type.
+                            </p>
+                        </div>
+                        <PaymentMethodDonut data={revenueByPaymentMethod} />
+                    </div>
+                </div>
+
                 {/* Main Content Grid: 2/3 Recent Transactions, 1/3 Low Stock Alerts */}
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                     {/* Recent Transactions Table */}
@@ -202,7 +247,7 @@ export default function Dashboard({
                                                         key={tx.id}
                                                         className={
                                                             idx !==
-                                                            recentTransactions.length -
+                                                                recentTransactions.length -
                                                                 1
                                                                 ? 'border-b border-border-soft'
                                                                 : ''
@@ -233,15 +278,15 @@ export default function Dashboard({
                                                         <td className="px-6 py-4 text-text-secondary">
                                                             {tx.created_at
                                                                 ? new Date(
-                                                                      tx.created_at,
-                                                                  ).toLocaleDateString(
-                                                                      'en-GB',
-                                                                      {
-                                                                          day: 'numeric',
-                                                                          month: 'short',
-                                                                          year: 'numeric',
-                                                                      },
-                                                                  )
+                                                                    tx.created_at,
+                                                                ).toLocaleDateString(
+                                                                    'en-GB',
+                                                                    {
+                                                                        day: 'numeric',
+                                                                        month: 'short',
+                                                                        year: 'numeric',
+                                                                    },
+                                                                )
                                                                 : '—'}
                                                         </td>
                                                     </tr>
@@ -262,27 +307,25 @@ export default function Dashboard({
                                     <h2 className="text-lg font-bold text-text-primary">
                                         Inventory Alerts
                                     </h2>
-                                    
+
                                     <div className="flex rounded-lg bg-canvas p-0.5 border border-border-soft shrink-0">
                                         <button
                                             type="button"
                                             onClick={() => setActiveAlertTab('stock')}
-                                            className={`rounded-[6px] px-2.5 py-1 text-xs font-semibold transition-all ${
-                                                activeAlertTab === 'stock'
+                                            className={`rounded-[6px] px-2.5 py-1 text-xs font-semibold transition-all ${activeAlertTab === 'stock'
                                                     ? 'bg-surface text-brand shadow-[0_1px_3px_rgba(20,28,64,0.08)]'
                                                     : 'text-text-secondary hover:text-text-primary'
-                                            }`}
+                                                }`}
                                         >
                                             Low Stock ({lowStockProducts.length})
                                         </button>
                                         <button
                                             type="button"
                                             onClick={() => setActiveAlertTab('expiry')}
-                                            className={`rounded-[6px] px-2.5 py-1 text-xs font-semibold transition-all ${
-                                                activeAlertTab === 'expiry'
+                                            className={`rounded-[6px] px-2.5 py-1 text-xs font-semibold transition-all ${activeAlertTab === 'expiry'
                                                     ? 'bg-surface text-brand shadow-[0_1px_3px_rgba(20,28,64,0.08)]'
                                                     : 'text-text-secondary hover:text-text-primary'
-                                            }`}
+                                                }`}
                                         >
                                             Expiring ({expiringProducts.length})
                                         </button>
@@ -363,31 +406,30 @@ export default function Dashboard({
                                                         <span className="font-bold text-text-primary">
                                                             {p.expiry_date
                                                                 ? new Date(
-                                                                      p.expiry_date,
-                                                                  ).toLocaleDateString(
-                                                                      'en-GB',
-                                                                      {
-                                                                          day: 'numeric',
-                                                                          month: 'short',
-                                                                          year: 'numeric',
-                                                                      },
-                                                                  )
+                                                                    p.expiry_date,
+                                                                ).toLocaleDateString(
+                                                                    'en-GB',
+                                                                    {
+                                                                        day: 'numeric',
+                                                                        month: 'short',
+                                                                        year: 'numeric',
+                                                                    },
+                                                                )
                                                                 : '—'}
                                                         </span>
                                                     </span>
                                                 </div>
                                                 <span
-                                                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                                                        p.days_remaining === 0
+                                                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${p.days_remaining === 0
                                                             ? 'bg-danger-bg text-danger-fg'
                                                             : 'bg-warning-bg text-warning-fg'
-                                                    }`}
+                                                        }`}
                                                 >
                                                     {p.days_remaining === 0
                                                         ? 'Expires today'
                                                         : p.days_remaining === 1
-                                                          ? '1 day left'
-                                                          : `${p.days_remaining} days left`}
+                                                            ? '1 day left'
+                                                            : `${p.days_remaining} days left`}
                                                 </span>
                                             </div>
                                         ))}

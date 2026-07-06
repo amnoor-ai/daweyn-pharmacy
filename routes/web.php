@@ -49,6 +49,9 @@ Route::prefix('{current_team}')
 
         // Users / Staff
         Route::get('users', [UserController::class, 'index'])->name('users.index');
+
+        // Reports
+        Route::get('reports', [\App\Http\Controllers\Reports\ReportController::class, 'index'])->name('reports.index');
     });
 
 Route::middleware(['auth'])->group(function () {

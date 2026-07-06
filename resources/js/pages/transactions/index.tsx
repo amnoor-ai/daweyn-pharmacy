@@ -44,8 +44,8 @@ export default function TransactionsIndex({ transactions }: Props) {
     // Client-side payment method filter (on top of search)
     const filteredTx = useMemo(() => {
         return transactions.filter((tx) => {
-            const matchQuery = !query || 
-                (tx.invoice_number ?? '').toLowerCase().includes(query.toLowerCase()) || 
+            const matchQuery = !query ||
+                (tx.invoice_number ?? '').toLowerCase().includes(query.toLowerCase()) ||
                 (tx.customer?.name ?? '').toLowerCase().includes(query.toLowerCase());
             const matchPayment = !paymentFilter || tx.payment_method === paymentFilter;
             return matchQuery && matchPayment;
@@ -166,15 +166,15 @@ export default function TransactionsIndex({ transactions }: Props) {
                                             <td className="px-6 py-4 text-text-secondary">
                                                 {tx.created_at
                                                     ? new Date(
-                                                          tx.created_at,
-                                                      ).toLocaleDateString(
-                                                          'en-GB',
-                                                          {
-                                                              day: 'numeric',
-                                                              month: 'short',
-                                                              year: 'numeric',
-                                                          },
-                                                      )
+                                                        tx.created_at,
+                                                    ).toLocaleDateString(
+                                                        'en-GB',
+                                                        {
+                                                            day: 'numeric',
+                                                            month: 'short',
+                                                            year: 'numeric',
+                                                        },
+                                                    )
                                                     : '—'}
                                             </td>
                                             <td className="px-6 py-4 text-right">

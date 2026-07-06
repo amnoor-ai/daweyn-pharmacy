@@ -17,6 +17,7 @@ export type TeamMember = {
     avatar?: string | null;
     role: TeamRole;
     role_label: string;
+    last_seen_at?: string | null;
     created_at: string | null;
 };
 

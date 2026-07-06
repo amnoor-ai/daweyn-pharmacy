@@ -27,6 +27,7 @@ import {
 import { useInitials } from '@/hooks/use-initials';
 import { edit, index, update } from '@/routes/teams';
 import { update as updateMember } from '@/routes/teams/members';
+import { formatRelativeTime } from '@/lib/utils';
 import type {
     RoleOption,
     Team,
@@ -174,17 +175,22 @@ export default function TeamEdit({
                                 className="flex items-center justify-between rounded-lg border p-4"
                             >
                                 <div className="flex items-center gap-4">
-                                    <Avatar className="h-10 w-10">
-                                        {member.avatar ? (
-                                            <AvatarImage
-                                                src={member.avatar}
-                                                alt={member.name}
-                                            />
+                                    <div className="relative">
+                                        <Avatar className="h-10 w-10">
+                                            {member.avatar ? (
+                                                <AvatarImage
+                                                    src={member.avatar}
+                                                    alt={member.name}
+                                                />
+                                            ) : null}
+                                            <AvatarFallback>
+                                                {getInitials(member.name)}
+                                            </AvatarFallback>
+                                        </Avatar>
+                                        {member.last_seen_at && new Date(member.last_seen_at).getTime() > Date.now() - 5 * 60 * 1000 ? (
+                                            <div className="absolute bottom-0 right-0 size-3 rounded-full border-2 border-white bg-success-fg dark:border-background"></div>
                                         ) : null}
-                                        <AvatarFallback>
-                                            {getInitials(member.name)}
-                                        </AvatarFallback>
-                                    </Avatar>
+                                    </div>
                                     <div>
                                         <div className="font-medium">
                                             {member.name}
@@ -195,7 +201,12 @@ export default function TeamEdit({
                                     </div>
                                 </div>
 
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-4">
+                                    <div className="text-sm text-muted-foreground hidden sm:block">
+                                        {member.last_seen_at && new Date(member.last_seen_at).getTime() > Date.now() - 5 * 60 * 1000
+                                            ? <span className="text-success-fg">Active Now</span>
+                                            : `Last active: ${formatRelativeTime(member.last_seen_at)}`}
+                                    </div>
                                     {member.role !== 'owner' &&
                                     permissions.canUpdateMember ? (
                                         <DropdownMenu>

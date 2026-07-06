@@ -6,6 +6,8 @@ export type Product = {
     category_id: number;
     category?: Category;
     sku: string;
+    image_path: string | null;
+    image_url: string;
     name: string;
     description: string | null;
     cost_price: number;

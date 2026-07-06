@@ -47,6 +47,23 @@ export default function Profile({
                     {({ processing, errors }) => (
                         <>
                             <div className="grid gap-2">
+                                <Label htmlFor="avatar">Profile Picture</Label>
+                                <div className="flex items-center gap-4">
+                                    <div className="size-16 rounded-full overflow-hidden bg-canvas shrink-0">
+                                        <img src={auth.user.avatar_url ?? auth.user.avatar} className="object-cover size-full" alt="Avatar" />
+                                    </div>
+                                    <Input
+                                        id="avatar"
+                                        type="file"
+                                        accept="image/*"
+                                        name="avatar"
+                                        className="mt-1 block w-full text-sm file:bg-surface file:text-text-primary file:border-0 file:mr-4 file:py-1 file:px-3 file:rounded-md hover:file:bg-border-soft"
+                                    />
+                                </div>
+                                <InputError className="mt-2" message={errors.avatar} />
+                            </div>
+
+                            <div className="grid gap-2">
                                 <Label htmlFor="name">Name</Label>
 
                                 <Input

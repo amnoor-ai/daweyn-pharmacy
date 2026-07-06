@@ -6,6 +6,15 @@ import StockAlertBadge from '@/components/StockAlertBadge';
 import { Button } from '@/components/ui/button';
 import type { Product } from '@/types';
 
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
+
 type Props = {
     products: Product[];
     teamSlug: string;
@@ -43,121 +52,101 @@ export default function ProductTable({ products, teamSlug, onEdit }: Props) {
                 onConfirm={confirmDelete}
             />
 
-            <div className="overflow-hidden rounded-lg border border-border-soft bg-surface shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
-                <div className="overflow-x-auto">
-                    <table className="w-full min-w-[600px] text-sm">
-                        <thead>
-                            <tr className="border-b border-divider">
-                                <th className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary">
-                                    Product
-                                </th>
-                                <th className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary">
-                                    Image
-                                </th>
-                                <th className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary">
-                                    Category
-                                </th>
-                                <th className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary">
-                                    SKU
-                                </th>
-                                <th className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary">
-                                    Price
-                                </th>
-                                <th className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary">
-                                    Stock
-                                </th>
-                                <th className="px-6 py-3.5 text-right text-[13px] font-medium text-text-secondary">
-                                    Actions
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {products.map((product, idx) => (
-                                <tr
-                                    key={product.id}
-                                    className={
-                                        idx !== products.length - 1
-                                            ? 'border-b border-divider'
-                                            : ''
-                                    }
-                                >
-                                    <td className="px-6 py-4 font-medium text-text-primary">
-                                        {product.name}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        {product.image_url ? (
-                                            <img
-                                                src={product.image_url}
-                                                alt={product.name}
-                                                className="h-10 w-10 rounded-md object-cover border border-border-soft"
-                                            />
-                                        ) : (
-                                            <div className="h-10 w-10 rounded-md bg-canvas border border-border-soft flex items-center justify-center">
-                                                <span className="text-xs text-text-secondary">No img</span>
-                                            </div>
-                                        )}
-                                    </td>
-                                    <td className="px-6 py-4 text-text-secondary">
-                                        {product.category?.name ?? '—'}
-                                    </td>
-                                    <td className="px-6 py-4 font-mono text-xs text-text-secondary">
-                                        {product.sku}
-                                    </td>
-                                    <td className="px-6 py-4 text-text-primary">
-                                        ${product.selling_price}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-text-primary">
-                                                {product.stock_quantity}
+            <div className="flex-1 overflow-hidden rounded-lg border border-border-soft bg-surface shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
+                <Table className="min-w-[800px]">
+                    <TableHeader>
+                        <TableRow className="border-b border-divider hover:bg-transparent">
+                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Product</TableHead>
+                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Image</TableHead>
+                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Category</TableHead>
+                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">SKU</TableHead>
+                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Price</TableHead>
+                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Stock</TableHead>
+                            <TableHead className="px-6 py-3.5 text-right text-[13px] font-medium text-text-secondary uppercase">Actions</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {products.map((product) => (
+                            <TableRow
+                                key={product.id}
+                                className="border-b border-divider hover:bg-primary-50 transition-colors"
+                            >
+                                <TableCell className="px-6 py-4 font-medium text-text-primary">
+                                    {product.name}
+                                </TableCell>
+                                <TableCell className="px-6 py-4">
+                                    {product.image_url ? (
+                                        <img
+                                            src={product.image_url}
+                                            alt={product.name}
+                                            className="h-10 w-10 rounded-md object-cover border border-border-soft"
+                                        />
+                                    ) : (
+                                        <div className="h-10 w-10 rounded-md bg-canvas border border-border-soft flex items-center justify-center">
+                                            <span className="text-xs text-text-secondary">No img</span>
+                                        </div>
+                                    )}
+                                </TableCell>
+                                <TableCell className="px-6 py-4 text-text-secondary">
+                                    {product.category?.name ?? '—'}
+                                </TableCell>
+                                <TableCell className="px-6 py-4 font-mono text-xs text-text-secondary">
+                                    {product.sku}
+                                </TableCell>
+                                <TableCell className="px-6 py-4 text-text-primary">
+                                    ${product.selling_price}
+                                </TableCell>
+                                <TableCell className="px-6 py-4">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-text-primary">
+                                            {product.stock_quantity}
+                                        </span>
+                                        <StockAlertBadge
+                                            quantity={product.stock_quantity}
+                                            threshold={product.alert_threshold}
+                                        />
+                                        {product.stock_status === 'expired' && (
+                                            <span className="inline-flex items-center rounded-full bg-danger-bg px-2.5 py-0.5 text-xs font-medium text-danger-fg">
+                                                Expired
                                             </span>
-                                            <StockAlertBadge
-                                                quantity={product.stock_quantity}
-                                                threshold={product.alert_threshold}
-                                            />
-                                            {product.stock_status === 'expired' && (
-                                                <span className="inline-flex items-center rounded-full bg-danger-bg px-2.5 py-0.5 text-xs font-medium text-danger-fg">
-                                                    Expired
-                                                </span>
-                                            )}
-                                            {product.stock_status === 'expiring_soon' && (
-                                                <span className="inline-flex items-center rounded-full bg-warning-bg px-2.5 py-0.5 text-xs font-medium text-warning-fg">
-                                                    Exp. Soon
-                                                </span>
-                                            )}
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 text-right">
-                                        <div className="flex items-center justify-end gap-1">
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                onClick={() => onEdit(product)}
-                                                className="h-8 w-8 p-0 text-text-secondary hover:text-brand"
-                                            >
-                                                <Pencil className="h-4 w-4" />
-                                                <span className="sr-only">
-                                                    Edit {product.name}
-                                                </span>
-                                            </Button>
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                onClick={() => setDeleteTarget(product)}
-                                                className="h-8 w-8 p-0 text-text-secondary hover:text-danger-fg"
-                                            >
-                                                <Trash2 className="h-4 w-4" />
-                                                <span className="sr-only">
-                                                    Delete {product.name}
-                                                </span>
-                                            </Button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                                        )}
+                                        {product.stock_status === 'expiring_soon' && (
+                                            <span className="inline-flex items-center rounded-full bg-warning-bg px-2.5 py-0.5 text-xs font-medium text-warning-fg">
+                                                Exp. Soon
+                                            </span>
+                                        )}
+                                    </div>
+                                </TableCell>
+                                <TableCell className="px-6 py-4 text-right">
+                                    <div className="flex items-center justify-end gap-1">
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => onEdit(product)}
+                                            className="h-8 w-8 p-0 text-text-secondary hover:text-brand"
+                                        >
+                                            <Pencil className="h-4 w-4" />
+                                            <span className="sr-only">
+                                                Edit {product.name}
+                                            </span>
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => setDeleteTarget(product)}
+                                            className="h-8 w-8 p-0 text-text-secondary hover:text-danger-fg"
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                            <span className="sr-only">
+                                                Delete {product.name}
+                                            </span>
+                                        </Button>
+                                    </div>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
             </div>
         </>
     );

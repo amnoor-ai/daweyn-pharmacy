@@ -5,6 +5,15 @@ import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 import { Button } from '@/components/ui/button';
 import type { Customer } from '@/types';
 
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
+
 type Props = {
     customers: Customer[];
     teamSlug: string;
@@ -42,100 +51,72 @@ export default function CustomerTable({ customers, teamSlug, onEdit }: Props) {
                 onConfirm={confirmDelete}
             />
 
-            <div className="overflow-hidden rounded-lg border border-border-soft bg-surface shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
-                <div className="overflow-x-auto">
-                    <table className="w-full min-w-[550px] text-sm">
-                        <thead>
-                            <tr className="border-b border-divider">
-                                <th className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary">
-                                    Name
-                                </th>
-                                <th className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary">
-                                    Phone
-                                </th>
-                                <th className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary">
-                                    Email
-                                </th>
-                                <th className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary">
-                                    Loyalty Points
-                                </th>
-                                <th className="px-6 py-3.5 text-right text-[13px] font-medium text-text-secondary">
-                                    Actions
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {customers.map((customer, idx) => (
-                                <tr
-                                    key={customer.id}
-                                    className={
-                                        idx !== customers.length - 1
-                                            ? 'border-b border-divider'
-                                            : ''
-                                    }
-                                >
-                                    <td className="px-6 py-4 font-medium text-text-primary">
-                                        {customer.name}
-                                    </td>
-                                    <td className="px-6 py-4 text-text-secondary">
-                                        {customer.phone}
-                                    </td>
-                                    <td className="px-6 py-4 text-text-secondary">
-                                        {customer.email ?? (
-                                            <span className="text-text-secondary italic">
-                                                —
-                                            </span>
-                                        )}
-                                    </td>
-                                    <td className="px-6 py-4 text-text-primary">
-                                        {customer.loyalty_points}
-                                    </td>
-                                    <td className="px-6 py-4 text-right">
-                                        <div className="flex items-center justify-end gap-1">
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                onClick={() =>
-                                                    router.visit(
-                                                        `/${teamSlug}/customers/${customer.id}`,
-                                                    )
-                                                }
-                                                className="h-8 w-8 p-0 text-text-secondary hover:text-brand"
-                                            >
-                                                <Eye className="h-4 w-4" />
-                                                <span className="sr-only">
-                                                    View {customer.name}
-                                                </span>
-                                            </Button>
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                onClick={() => onEdit(customer)}
-                                                className="h-8 w-8 p-0 text-text-secondary hover:text-brand"
-                                            >
-                                                <Pencil className="h-4 w-4" />
-                                                <span className="sr-only">
-                                                    Edit {customer.name}
-                                                </span>
-                                            </Button>
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                onClick={() => setDeleteTarget(customer)}
-                                                className="h-8 w-8 p-0 text-text-secondary hover:text-danger-fg"
-                                            >
-                                                <Trash2 className="h-4 w-4" />
-                                                <span className="sr-only">
-                                                    Delete {customer.name}
-                                                </span>
-                                            </Button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+            <div className="flex-1 overflow-hidden rounded-lg border border-border-soft bg-surface shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
+                <Table className="min-w-[800px]">
+                    <TableHeader>
+                        <TableRow className="border-b border-divider hover:bg-transparent">
+                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Name</TableHead>
+                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Phone</TableHead>
+                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Email</TableHead>
+                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Loyalty Points</TableHead>
+                            <TableHead className="px-6 py-3.5 text-right text-[13px] font-medium text-text-secondary uppercase">Actions</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {customers.map((customer) => (
+                            <TableRow
+                                key={customer.id}
+                                className="border-b border-divider hover:bg-primary-50 transition-colors"
+                            >
+                                <TableCell className="px-6 py-4 font-medium text-text-primary">
+                                    {customer.name}
+                                </TableCell>
+                                <TableCell className="px-6 py-4 text-text-secondary">
+                                    {customer.phone}
+                                </TableCell>
+                                <TableCell className="px-6 py-4 text-text-secondary">
+                                    {customer.email ?? (
+                                        <span className="text-text-secondary italic">—</span>
+                                    )}
+                                </TableCell>
+                                <TableCell className="px-6 py-4 text-text-primary">
+                                    {customer.loyalty_points}
+                                </TableCell>
+                                <TableCell className="px-6 py-4 text-right">
+                                    <div className="flex items-center justify-end gap-1">
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => router.visit(`/${teamSlug}/customers/${customer.id}`)}
+                                            className="h-8 w-8 p-0 text-text-secondary hover:text-brand"
+                                        >
+                                            <Eye className="h-4 w-4" />
+                                            <span className="sr-only">View {customer.name}</span>
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => onEdit(customer)}
+                                            className="h-8 w-8 p-0 text-text-secondary hover:text-brand"
+                                        >
+                                            <Pencil className="h-4 w-4" />
+                                            <span className="sr-only">Edit {customer.name}</span>
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => setDeleteTarget(customer)}
+                                            className="h-8 w-8 p-0 text-text-secondary hover:text-danger-fg"
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                            <span className="sr-only">Delete {customer.name}</span>
+                                        </Button>
+                                    </div>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
             </div>
         </>
     );

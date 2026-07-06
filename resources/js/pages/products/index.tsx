@@ -1,6 +1,7 @@
 import { Head, usePage } from '@inertiajs/react';
 import { Plus, Search } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import ProductSheet from '@/components/ProductSheet';
 import ProductTable from '@/components/ProductTable';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -37,8 +38,22 @@ export default function ProductsIndex({ products, categories = [] }: Props) {
     const [categoryFilter, setCategoryFilter] = useState('');
     const [statusFilter, setStatusFilter] = useState('');
 
+    const [sheetOpen, setSheetOpen] = useState(false);
+    const [editingProduct, setEditingProduct] = useState<Product | undefined>(undefined);
+
+    function handleAdd() {
+        setEditingProduct(undefined);
+        setSheetOpen(true);
+    }
+
     function handleEdit(product: Product) {
-        window.location.href = `/${teamSlug}/products/${product.id}/edit`;
+        setEditingProduct(product);
+        setSheetOpen(true);
+    }
+
+    function handleSheetChange(open: boolean) {
+        setSheetOpen(open);
+        if (!open) setEditingProduct(undefined);
     }
 
     // Client-side category & status filter (applied on top of server-side q= search)
@@ -63,7 +78,7 @@ export default function ProductsIndex({ products, categories = [] }: Props) {
     return (
         <>
             <Head title="Products" />
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col flex-1 gap-4">
                 {/* Toolbar */}
                 <div className="flex flex-wrap items-center gap-3">
                     {/* Search */}
@@ -119,7 +134,7 @@ export default function ProductsIndex({ products, categories = [] }: Props) {
 
                     {/* Primary action */}
                     <Button
-                        onClick={() => (window.location.href = `/${teamSlug}/products/create`)}
+                        onClick={handleAdd}
                         className="gap-1.5 bg-brand hover:bg-brand-dark transition-all duration-200 hover:-translate-y-0.5 px-3"
                     >
                         <Plus className="h-4 w-4" />
@@ -128,12 +143,22 @@ export default function ProductsIndex({ products, categories = [] }: Props) {
                 </div>
 
                 {/* Table */}
-                <ProductTable
-                    products={filteredProducts}
-                    teamSlug={teamSlug}
-                    onEdit={handleEdit}
-                />
+                <div className="flex-1 flex flex-col min-h-0">
+                    <ProductTable
+                        products={filteredProducts}
+                        teamSlug={teamSlug}
+                        onEdit={handleEdit}
+                    />
+                </div>
             </div>
+
+            <ProductSheet
+                open={sheetOpen}
+                onOpenChange={handleSheetChange}
+                teamSlug={teamSlug}
+                categories={categories}
+                product={editingProduct}
+            />
         </>
     );
 }

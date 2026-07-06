@@ -45,7 +45,7 @@ export default function CustomersIndex({ customers }: Props) {
     return (
         <>
             <Head title="Customers" />
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col flex-1 gap-4">
                 {/* Toolbar */}
                 <div className="flex flex-wrap sm:flex-nowrap items-center gap-3">
                     {/* Search */}
@@ -73,11 +73,13 @@ export default function CustomersIndex({ customers }: Props) {
                 </div>
 
                 {/* Table */}
-                <CustomerTable
-                    customers={filteredCustomers}
-                    teamSlug={teamSlug}
-                    onEdit={handleEdit}
-                />
+                <div className="flex-1 flex flex-col min-h-0">
+                    <CustomerTable
+                        customers={filteredCustomers}
+                        teamSlug={teamSlug}
+                        onEdit={handleEdit}
+                    />
+                </div>
             </div>
 
             <CustomerDialog

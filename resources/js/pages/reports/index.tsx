@@ -33,30 +33,30 @@ export default function ReportsIndex() {
     ];
 
     return (
-        <AppSidebarLayout breadcrumbs={breadcrumbs}>
+        <>
             <Head title="Reports & Analytics" />
             <div className="flex flex-col flex-1 space-y-6">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <Heading
                         title="Reports & Analytics"
                         description="View sales trends, profits, and top products."
                     />
                     
-                    <div className="flex items-center gap-2">
-                        <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                        <div className="flex flex-1 sm:flex-none items-center gap-2">
                             <Label htmlFor="start" className="sr-only">Start Date</Label>
-                            <Input type="date" id="start" value={start} onChange={(e) => setStart(e.target.value)} className="w-auto h-9 text-sm" />
+                            <Input type="date" id="start" value={start} onChange={(e) => setStart(e.target.value)} className="w-full sm:w-auto h-9 text-sm" />
                         </div>
-                        <span className="text-muted-foreground">-</span>
-                        <div className="flex items-center gap-2">
+                        <span className="text-muted-foreground hidden sm:inline">-</span>
+                        <div className="flex flex-1 sm:flex-none items-center gap-2">
                             <Label htmlFor="end" className="sr-only">End Date</Label>
-                            <Input type="date" id="end" value={end} onChange={(e) => setEnd(e.target.value)} className="w-auto h-9 text-sm" />
+                            <Input type="date" id="end" value={end} onChange={(e) => setEnd(e.target.value)} className="w-full sm:w-auto h-9 text-sm" />
                         </div>
-                        <Button size="sm" onClick={handleFilter}>Filter</Button>
+                        <Button size="sm" onClick={handleFilter} className="w-full sm:w-auto mt-2 sm:mt-0">Filter</Button>
                     </div>
                 </div>
 
-                <div className="grid gap-4 md:grid-cols-3">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
@@ -140,6 +140,17 @@ export default function ReportsIndex() {
                     </Card>
                 </div>
             </div>
-        </AppSidebarLayout>
+        </>
     );
 }
+
+ReportsIndex.layout = (props: { currentTeam?: { slug: string } | null }) => ({
+    breadcrumbs: [
+        {
+            title: 'Reports & Analytics',
+            href: props.currentTeam
+                ? `/${props.currentTeam.slug}/reports`
+                : '/',
+        },
+    ],
+});

@@ -1,6 +1,14 @@
 import { Head, router, usePage } from '@inertiajs/react';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
 import type { Transaction } from '@/types';
 
 type Props = {
@@ -88,50 +96,37 @@ export default function TransactionShow({ transaction }: Props) {
 
                 {/* Items */}
                 <div className="overflow-hidden rounded-xl border border-border-soft bg-surface">
-                    <table className="w-full text-sm">
-                        <thead>
-                            <tr className="border-b border-border-soft">
-                                <th className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary">
-                                    Product
-                                </th>
-                                <th className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary">
-                                    Qty
-                                </th>
-                                <th className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary">
-                                    Unit Price
-                                </th>
-                                <th className="px-6 py-3.5 text-right text-[13px] font-medium text-text-secondary">
-                                    Total
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {transaction.items?.map((item, idx) => (
-                                <tr
+                    <Table>
+                        <TableHeader>
+                            <TableRow className="border-b border-border-soft hover:bg-transparent">
+                                <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Product</TableHead>
+                                <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Qty</TableHead>
+                                <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Unit Price</TableHead>
+                                <TableHead className="px-6 py-3.5 text-right text-[13px] font-medium text-text-secondary uppercase">Total</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {transaction.items?.map((item) => (
+                                <TableRow
                                     key={item.id}
-                                    className={
-                                        idx !==
-                                        (transaction.items?.length ?? 0) - 1
-                                            ? 'border-b border-border-soft'
-                                            : ''
-                                    }
+                                    className="border-b border-border-soft hover:bg-primary-50 transition-colors"
                                 >
-                                    <td className="px-6 py-4 text-text-primary">
+                                    <TableCell className="px-6 py-4 text-text-primary">
                                         {item.product?.name ?? '—'}
-                                    </td>
-                                    <td className="px-6 py-4 text-text-secondary">
+                                    </TableCell>
+                                    <TableCell className="px-6 py-4 text-text-secondary">
                                         {item.quantity}
-                                    </td>
-                                    <td className="px-6 py-4 text-text-secondary">
+                                    </TableCell>
+                                    <TableCell className="px-6 py-4 text-text-secondary">
                                         ${Number(item.unit_price).toFixed(2)}
-                                    </td>
-                                    <td className="px-6 py-4 text-right font-medium text-text-primary">
+                                    </TableCell>
+                                    <TableCell className="px-6 py-4 text-right font-medium text-text-primary">
                                         ${Number(item.total).toFixed(2)}
-                                    </td>
-                                </tr>
+                                    </TableCell>
+                                </TableRow>
                             ))}
-                        </tbody>
-                    </table>
+                        </TableBody>
+                    </Table>
                 </div>
 
                 {/* Totals */}

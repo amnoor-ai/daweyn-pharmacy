@@ -12,6 +12,14 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
 import { useInitials } from '@/hooks/use-initials';
 import type { TeamMember } from '@/types';
 
@@ -59,8 +67,8 @@ export default function UsersIndex({ members }: Props) {
 
     return (
         <>
-            <Head title="Staff Directory" />
-            <div className="flex flex-col gap-4">
+            <Head title="Staff & Users" />
+            <div className="flex flex-col flex-1 gap-4">
                 {/* Toolbar */}
                 <div className="flex flex-wrap items-center gap-3">
                     {/* Search */}
@@ -118,85 +126,71 @@ export default function UsersIndex({ members }: Props) {
                         </p>
                     </div>
                 ) : (
-                    <div className="overflow-hidden rounded-lg border border-border-soft bg-surface shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-sm">
-                                <thead>
-                                    <tr className="border-b border-divider">
-                                        <th className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary">
-                                            Staff Member
-                                        </th>
-                                        <th className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary">
-                                            Email Address
-                                        </th>
-                                        <th className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary">
-                                            Role
-                                        </th>
-                                        <th className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary">
-                                            Joined Date
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filteredMembers.map((member, idx) => (
-                                        <tr
-                                            key={member.id}
-                                            className={
-                                                idx !== filteredMembers.length - 1
-                                                    ? 'border-b border-divider'
-                                                    : ''
-                                            }
-                                        >
-                                            <td className="px-6 py-4">
-                                                <div className="flex items-center gap-3">
-                                                    <Avatar className="h-9 w-9">
-                                                        {member.avatar ? (
-                                                            <AvatarImage
-                                                                src={member.avatar}
-                                                                alt={member.name}
-                                                            />
-                                                        ) : null}
-                                                        <AvatarFallback className="bg-brand/10 text-xs font-semibold text-brand">
-                                                            {getInitials(member.name)}
-                                                        </AvatarFallback>
-                                                    </Avatar>
-                                                    <span className="font-medium text-text-primary">
-                                                        {member.name}
-                                                    </span>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4 text-text-secondary">
-                                                {member.email}
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <Badge
-                                                    className={
-                                                        roleBadgeStyles[member.role] ||
-                                                        roleBadgeStyles.member
-                                                    }
-                                                >
-                                                    {member.role_label}
-                                                </Badge>
-                                            </td>
-                                            <td className="px-6 py-4 text-text-secondary">
-                                                {member.created_at
-                                                    ? new Date(
-                                                          member.created_at,
-                                                      ).toLocaleDateString(
-                                                          'en-GB',
-                                                          {
-                                                              day: 'numeric',
-                                                              month: 'short',
-                                                              year: 'numeric',
-                                                          },
-                                                      )
-                                                    : '—'}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                    <div className="flex-1 overflow-hidden rounded-lg border border-border-soft bg-surface shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
+                        <Table className="min-w-[800px]">
+                            <TableHeader>
+                                <TableRow className="border-b border-divider hover:bg-transparent">
+                                    <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Staff Member</TableHead>
+                                    <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Email Address</TableHead>
+                                    <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Role</TableHead>
+                                    <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Joined Date</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {filteredMembers.map((member) => (
+                                    <TableRow
+                                        key={member.id}
+                                        className="border-b border-divider hover:bg-primary-50 transition-colors"
+                                    >
+                                        <TableCell className="px-6 py-4">
+                                            <div className="flex items-center gap-3">
+                                                <Avatar className="h-9 w-9">
+                                                    {member.avatar ? (
+                                                        <AvatarImage
+                                                            src={member.avatar}
+                                                            alt={member.name}
+                                                        />
+                                                    ) : null}
+                                                    <AvatarFallback className="bg-brand/10 text-xs font-semibold text-brand">
+                                                        {getInitials(member.name)}
+                                                    </AvatarFallback>
+                                                </Avatar>
+                                                <span className="font-medium text-text-primary">
+                                                    {member.name}
+                                                </span>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell className="px-6 py-4 text-text-secondary">
+                                            {member.email}
+                                        </TableCell>
+                                        <TableCell className="px-6 py-4">
+                                            <Badge
+                                                className={
+                                                    roleBadgeStyles[member.role] ||
+                                                    roleBadgeStyles.member
+                                                }
+                                            >
+                                                {member.role_label}
+                                            </Badge>
+                                        </TableCell>
+                                        <TableCell className="px-6 py-4 text-text-secondary">
+                                            {member.created_at
+                                                ? new Date(
+                                                      member.created_at,
+                                                  ).toLocaleDateString(
+                                                      'en-GB',
+                                                      {
+                                                          day: 'numeric',
+                                                          month: 'short',
+                                                          year: 'numeric',
+                                                      },
+                                                  )
+                                                : '—'}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
                     </div>
                 )}
             </div>

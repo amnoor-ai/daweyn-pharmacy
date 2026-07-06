@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import type { Category } from '@/types';
 
 type Props = {
@@ -137,7 +138,7 @@ export default function CategoryDialog({
                                 (optional)
                             </span>
                         </Label>
-                        <textarea
+                        <Textarea
                             id="category-description"
                             value={data.description}
                             onChange={(e) =>
@@ -145,7 +146,7 @@ export default function CategoryDialog({
                             }
                             placeholder="Short description of this category…"
                             rows={3}
-                            className="w-full rounded-md border border-border-soft bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:border-brand focus:ring-1 focus:ring-brand focus:outline-none"
+                            className="border-border-soft"
                         />
                         <InputError message={errors.description} />
                     </div>

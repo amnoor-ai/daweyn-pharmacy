@@ -47,14 +47,6 @@ class ProductController extends Controller
     ]);
 }
 
-public function create(Team $currentTeam)
-{
-    $categories = $currentTeam->categories()->orderBy('name')->get();
-
-    return Inertia::render('products/create', [
-        'categories' => $categories,
-    ]);
-}
 
     public function store(Request $request, Team $currentTeam)
     {
@@ -86,17 +78,6 @@ public function create(Team $currentTeam)
         ->with('success', 'Product created successfully.');
 }
 
-public function edit(Team $currentTeam, Product $product)
-{
-    abort_unless($product->team_id === $currentTeam->id, 403);
-
-    $categories = $currentTeam->categories()->orderBy('name')->get();
-
-    return Inertia::render('products/edit', [
-        'product'    => $product,
-        'categories' => $categories,
-    ]);
-}
 
     public function update(Request $request, Team $currentTeam, Product $product)
     {

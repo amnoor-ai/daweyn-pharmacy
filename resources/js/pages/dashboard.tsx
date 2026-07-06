@@ -14,6 +14,14 @@ import PendingInvitationsModal from '@/components/pending-invitations-modal';
 import RevenueLineChart from '@/components/RevenueLineChart';
 import StatCard from '@/components/stat-card';
 import StockAlertBadge from '@/components/StockAlertBadge';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
 import type { DashboardInvitation } from '@/types';
 
 type DashboardStats = {
@@ -222,79 +230,53 @@ export default function Dashboard({
                             </div>
                         ) : (
                             <div className="overflow-hidden rounded-xl border border-border-soft bg-surface shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
-                                <div className="overflow-x-auto">
-                                    <table className="w-full text-sm">
-                                        <thead>
-                                            <tr className="border-b border-border-soft">
-                                                <th className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary">
-                                                    Invoice #
-                                                </th>
-                                                <th className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary">
-                                                    Customer
-                                                </th>
-                                                <th className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary">
-                                                    Total
-                                                </th>
-                                                <th className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary">
-                                                    Date
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {recentTransactions.map(
-                                                (tx, idx) => (
-                                                    <tr
-                                                        key={tx.id}
-                                                        className={
-                                                            idx !==
-                                                                recentTransactions.length -
-                                                                1
-                                                                ? 'border-b border-border-soft'
-                                                                : ''
-                                                        }
-                                                    >
-                                                        <td className="px-6 py-4 font-mono text-xs font-semibold text-text-primary">
-                                                            {tx.invoice_number}
-                                                        </td>
-                                                        <td className="px-6 py-4">
-                                                            <div className="text-sm font-medium text-text-primary">
-                                                                {
-                                                                    tx.customer_name
-                                                                }
-                                                            </div>
-                                                            <div className="text-xs text-text-secondary">
-                                                                by{' '}
-                                                                {
-                                                                    tx.cashier_name
-                                                                }
-                                                            </div>
-                                                        </td>
-                                                        <td className="px-6 py-4 font-medium text-text-primary">
-                                                            $
-                                                            {tx.total.toFixed(
-                                                                2,
-                                                            )}
-                                                        </td>
-                                                        <td className="px-6 py-4 text-text-secondary">
-                                                            {tx.created_at
-                                                                ? new Date(
-                                                                    tx.created_at,
-                                                                ).toLocaleDateString(
-                                                                    'en-GB',
-                                                                    {
-                                                                        day: 'numeric',
-                                                                        month: 'short',
-                                                                        year: 'numeric',
-                                                                    },
-                                                                )
-                                                                : '—'}
-                                                        </td>
-                                                    </tr>
-                                                ),
-                                            )}
-                                        </tbody>
-                                    </table>
-                                </div>
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow className="border-b border-border-soft hover:bg-transparent">
+                                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Invoice #</TableHead>
+                                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Customer</TableHead>
+                                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Total</TableHead>
+                                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Date</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {recentTransactions.map((tx) => (
+                                            <TableRow
+                                                key={tx.id}
+                                                className="border-b border-border-soft hover:bg-primary-50 transition-colors"
+                                            >
+                                                <TableCell className="px-6 py-4 font-mono text-xs font-semibold text-text-primary">
+                                                    {tx.invoice_number}
+                                                </TableCell>
+                                                <TableCell className="px-6 py-4">
+                                                    <div className="text-sm font-medium text-text-primary">
+                                                        {tx.customer_name}
+                                                    </div>
+                                                    <div className="text-xs text-text-secondary">
+                                                        by {tx.cashier_name}
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="px-6 py-4 font-medium text-text-primary">
+                                                    ${tx.total.toFixed(2)}
+                                                </TableCell>
+                                                <TableCell className="px-6 py-4 text-text-secondary">
+                                                    {tx.created_at
+                                                        ? new Date(
+                                                              tx.created_at,
+                                                          ).toLocaleDateString(
+                                                              'en-GB',
+                                                              {
+                                                                  day: 'numeric',
+                                                                  month: 'short',
+                                                                  year: 'numeric',
+                                                              },
+                                                          )
+                                                        : '—'}
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
                             </div>
                         )}
                     </div>

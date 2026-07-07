@@ -18,7 +18,9 @@ export function useTableSearch() {
         (value: string) => {
             setQuery(value);
 
-            if (debounceRef.current) clearTimeout(debounceRef.current);
+            if (debounceRef.current) {
+clearTimeout(debounceRef.current);
+}
 
             debounceRef.current = setTimeout(() => {
                 const url = page.url;

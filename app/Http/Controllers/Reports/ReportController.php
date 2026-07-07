@@ -12,13 +12,13 @@ use Inertia\Inertia;
 
 class ReportController extends Controller
 {
-    public function index(Request $request, Team $team)
+    public function index(Request $request, Team $currentTeam)
     {
         $startDate = $request->query('start', now()->subDays(30)->startOfDay()->toDateTimeString());
         $endDate = $request->query('end', now()->endOfDay()->toDateTimeString());
 
         // Basic metrics
-        $transactionsQuery = $team->transactions()->whereBetween('created_at', [$startDate, $endDate]);
+        $transactionsQuery = $currentTeam->transactions()->whereBetween('created_at', [$startDate, $endDate]);
         
         $totalRevenue = $transactionsQuery->sum('total');
         $transactionCount = $transactionsQuery->count();
@@ -28,7 +28,7 @@ class ReportController extends Controller
         $profitData = DB::table('transactions')
             ->join('transaction_items', 'transactions.id', '=', 'transaction_items.transaction_id')
             ->join('products', 'transaction_items.product_id', '=', 'products.id')
-            ->where('transactions.team_id', $team->id)
+            ->where('transactions.team_id', $currentTeam->id)
             ->whereBetween('transactions.created_at', [$startDate, $endDate])
             ->selectRaw('SUM(transaction_items.total - (transaction_items.quantity * products.cost_price)) as total_profit')
             ->first();
@@ -37,7 +37,7 @@ class ReportController extends Controller
 
         // Sales over time (daily)
         $salesTrend = DB::table('transactions')
-            ->where('team_id', $team->id)
+            ->where('team_id', $currentTeam->id)
             ->whereBetween('created_at', [$startDate, $endDate])
             ->selectRaw('DATE(created_at) as date, SUM(total) as revenue, COUNT(id) as count')
             ->groupBy('date')
@@ -48,7 +48,7 @@ class ReportController extends Controller
         $topProducts = DB::table('transactions')
             ->join('transaction_items', 'transactions.id', '=', 'transaction_items.transaction_id')
             ->join('products', 'transaction_items.product_id', '=', 'products.id')
-            ->where('transactions.team_id', $team->id)
+            ->where('transactions.team_id', $currentTeam->id)
             ->whereBetween('transactions.created_at', [$startDate, $endDate])
             ->selectRaw('products.name, SUM(transaction_items.quantity) as quantity_sold, SUM(transaction_items.total) as total_revenue')
             ->groupBy('products.id', 'products.name')
@@ -58,7 +58,7 @@ class ReportController extends Controller
 
         // Payment Methods
         $paymentMethods = DB::table('transactions')
-            ->where('team_id', $team->id)
+            ->where('team_id', $currentTeam->id)
             ->whereBetween('created_at', [$startDate, $endDate])
             ->selectRaw('payment_method, COUNT(id) as count, SUM(total) as total')
             ->groupBy('payment_method')

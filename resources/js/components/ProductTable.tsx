@@ -2,10 +2,10 @@ import { router } from '@inertiajs/react';
 import { Pencil, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
+import ProductAvatar from '@/components/ProductAvatar';
 import StockAlertBadge from '@/components/StockAlertBadge';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import type { Product } from '@/types';
-
 import {
     Table,
     TableBody,
@@ -14,6 +14,8 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import type { Product } from '@/types';
+
 
 type Props = {
     products: Product[];
@@ -25,7 +27,10 @@ export default function ProductTable({ products, teamSlug, onEdit }: Props) {
     const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);
 
     function confirmDelete() {
-        if (!deleteTarget) return;
+        if (!deleteTarget) {
+return;
+}
+
         router.delete(`/${teamSlug}/products/${deleteTarget.id}`, {
             preserveScroll: true,
         });
@@ -60,8 +65,10 @@ export default function ProductTable({ products, teamSlug, onEdit }: Props) {
                             <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Image</TableHead>
                             <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Category</TableHead>
                             <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">SKU</TableHead>
-                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Price</TableHead>
+                            <TableHead className="px-6 py-3.5 text-right text-[13px] font-medium text-text-secondary uppercase">Cost</TableHead>
+                            <TableHead className="px-6 py-3.5 text-right text-[13px] font-medium text-text-secondary uppercase">Price</TableHead>
                             <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Stock</TableHead>
+                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Expiry</TableHead>
                             <TableHead className="px-6 py-3.5 text-right text-[13px] font-medium text-text-secondary uppercase">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -75,25 +82,18 @@ export default function ProductTable({ products, teamSlug, onEdit }: Props) {
                                     {product.name}
                                 </TableCell>
                                 <TableCell className="px-6 py-4">
-                                    {product.image_url ? (
-                                        <img
-                                            src={product.image_url}
-                                            alt={product.name}
-                                            className="h-10 w-10 rounded-md object-cover border border-border-soft"
-                                        />
-                                    ) : (
-                                        <div className="h-10 w-10 rounded-md bg-canvas border border-border-soft flex items-center justify-center">
-                                            <span className="text-xs text-text-secondary">No img</span>
-                                        </div>
-                                    )}
+                                    <ProductAvatar src={product.image_url} alt={product.name} />
                                 </TableCell>
                                 <TableCell className="px-6 py-4 text-text-secondary">
                                     {product.category?.name ?? '—'}
                                 </TableCell>
-                                <TableCell className="px-6 py-4 font-mono text-xs text-text-secondary">
+                                <TableCell className="px-6 py-4 font-mono text-xs text-text-secondary text-left">
                                     {product.sku}
                                 </TableCell>
-                                <TableCell className="px-6 py-4 text-text-primary">
+                                <TableCell className="px-6 py-4 text-text-secondary text-right">
+                                    ${product.cost_price}
+                                </TableCell>
+                                <TableCell className="px-6 py-4 text-text-primary text-right font-medium">
                                     ${product.selling_price}
                                 </TableCell>
                                 <TableCell className="px-6 py-4">
@@ -106,16 +106,19 @@ export default function ProductTable({ products, teamSlug, onEdit }: Props) {
                                             threshold={product.alert_threshold}
                                         />
                                         {product.stock_status === 'expired' && (
-                                            <span className="inline-flex items-center rounded-full bg-danger-bg px-2.5 py-0.5 text-xs font-medium text-danger-fg">
+                                            <Badge variant="secondary" className="rounded-full bg-danger-bg text-danger-fg hover:bg-danger-bg/80 border-transparent shadow-none">
                                                 Expired
-                                            </span>
+                                            </Badge>
                                         )}
                                         {product.stock_status === 'expiring_soon' && (
-                                            <span className="inline-flex items-center rounded-full bg-warning-bg px-2.5 py-0.5 text-xs font-medium text-warning-fg">
+                                            <Badge variant="secondary" className="rounded-full bg-warning-bg text-warning-fg hover:bg-warning-bg/80 border-transparent shadow-none">
                                                 Exp. Soon
-                                            </span>
+                                            </Badge>
                                         )}
                                     </div>
+                                </TableCell>
+                                <TableCell className="px-6 py-4 text-text-secondary text-left">
+                                    {product.expiry_date ? new Date(product.expiry_date).toLocaleDateString() : '—'}
                                 </TableCell>
                                 <TableCell className="px-6 py-4 text-right">
                                     <div className="flex items-center justify-end gap-1">

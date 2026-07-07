@@ -1,6 +1,7 @@
 import { Head, router, usePage } from '@inertiajs/react';
 import { Eye, Search, ShoppingCart } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -18,7 +19,6 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { useTableSearch } from '@/hooks/use-table-search';
 import type { Transaction } from '@/types';
 
 type Props = {
@@ -26,11 +26,11 @@ type Props = {
 };
 
 const paymentBadge: Record<string, string> = {
-    cash: 'bg-success-bg text-success-fg',
-    zaad: 'bg-info-bg text-info-fg',
-    evc: 'bg-info-bg text-info-fg',
-    jeeb: 'bg-info-bg text-info-fg',
-    card: 'bg-warning-bg text-warning-fg',
+    cash: 'bg-success-bg text-success-fg hover:bg-success-bg/80 border-transparent shadow-none',
+    zaad: 'bg-info-bg text-info-fg hover:bg-info-bg/80 border-transparent shadow-none',
+    evc: 'bg-info-bg text-info-fg hover:bg-info-bg/80 border-transparent shadow-none',
+    jeeb: 'bg-info-bg text-info-fg hover:bg-info-bg/80 border-transparent shadow-none',
+    card: 'bg-warning-bg text-warning-fg hover:bg-warning-bg/80 border-transparent shadow-none',
 };
 
 const PAYMENT_OPTIONS = [
@@ -56,6 +56,7 @@ export default function TransactionsIndex({ transactions }: Props) {
                 (tx.invoice_number ?? '').toLowerCase().includes(query.toLowerCase()) ||
                 (tx.customer?.name ?? '').toLowerCase().includes(query.toLowerCase());
             const matchPayment = !paymentFilter || tx.payment_method === paymentFilter;
+
             return matchQuery && matchPayment;
         });
     }, [transactions, query, paymentFilter]);
@@ -122,9 +123,11 @@ export default function TransactionsIndex({ transactions }: Props) {
                                 <TableRow className="border-b border-divider hover:bg-transparent">
                                     <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Invoice</TableHead>
                                     <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Customer</TableHead>
+                                    <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Cashier</TableHead>
+                                    <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Items</TableHead>
                                     <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Payment</TableHead>
-                                    <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Total</TableHead>
-                                    <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Date</TableHead>
+                                    <TableHead className="px-6 py-3.5 text-right text-[13px] font-medium text-text-secondary uppercase">Total</TableHead>
+                                    <TableHead className="px-6 py-3.5 text-right text-[13px] font-medium text-text-secondary uppercase">Date</TableHead>
                                     <TableHead className="px-6 py-3.5 text-right text-[13px] font-medium text-text-secondary uppercase">Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -138,30 +141,39 @@ export default function TransactionsIndex({ transactions }: Props) {
                                             {tx.invoice_number}
                                         </TableCell>
                                         <TableCell className="px-6 py-4 text-text-secondary">
-                                            {tx.customer?.name ?? (
-                                                <span className="italic">Walk-in</span>
+                                            {tx.customer ? tx.customer.name : (
+                                                <span className="italic">Walk-in Customer</span>
                                             )}
                                         </TableCell>
+                                        <TableCell className="px-6 py-4 text-text-secondary">
+                                            {tx.cashier?.name ?? '—'}
+                                        </TableCell>
+                                        <TableCell className="px-6 py-4 text-text-secondary text-left">
+                                            {tx.items?.reduce((sum: number, item: any) => sum + item.quantity, 0) ?? 0}
+                                        </TableCell>
                                         <TableCell className="px-6 py-4">
-                                            <span
-                                                className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${paymentBadge[tx.payment_method]}`}
+                                            <Badge
+                                                variant="secondary"
+                                                className={`bg-transparent ${paymentBadge[tx.payment_method]} border-current shadow-none`}
                                             >
                                                 {tx.payment_method.toUpperCase()}
-                                            </span>
+                                            </Badge>
                                         </TableCell>
-                                        <TableCell className="px-6 py-4 font-medium text-text-primary">
+                                        <TableCell className="px-6 py-4 font-medium text-text-primary text-right">
                                             ${Number(tx.total).toFixed(2)}
                                         </TableCell>
-                                        <TableCell className="px-6 py-4 text-text-secondary">
+                                        <TableCell className="px-6 py-4 text-text-secondary text-right">
                                             {tx.created_at
                                                 ? new Date(
                                                       tx.created_at,
-                                                  ).toLocaleDateString(
+                                                  ).toLocaleString(
                                                       'en-GB',
                                                       {
                                                           day: 'numeric',
                                                           month: 'short',
                                                           year: 'numeric',
+                                                          hour: '2-digit',
+                                                          minute: '2-digit',
                                                       },
                                                   )
                                                 : '—'}

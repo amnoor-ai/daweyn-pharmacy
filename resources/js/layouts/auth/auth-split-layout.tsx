@@ -11,7 +11,7 @@ export default function AuthSplitLayout({
     return (
         <div className="relative grid h-dvh flex-col items-center justify-center bg-canvas px-8 sm:px-0 lg:max-w-none lg:grid-cols-2 lg:px-0">
             {/* Left Panel (Desktop only) */}
-            <div className="relative hidden h-full flex-col bg-gradient-to-br from-[#1B2559] to-[#4C5FD5] p-10 text-white lg:flex">
+            <div className="relative hidden h-full flex-col bg-gradient-to-br from-brand to-accent-indigo p-10 text-white lg:flex">
                 <div className="relative z-20 flex flex-1 flex-col justify-between">
                     {/* Brand Logo header */}
                     <Link
@@ -19,7 +19,7 @@ export default function AuthSplitLayout({
                         className="flex items-center gap-2.5 text-lg font-bold tracking-tight text-white"
                     >
                         <div className="flex h-8 w-8 items-center justify-center rounded-[8px] bg-white">
-                            <PillBottle size={18} className="text-[#1B2559]" />
+                            <PillBottle size={18} className="text-brand" />
                         </div>
                         <span className="text-xl">Daaweyn</span>
                     </Link>
@@ -29,7 +29,7 @@ export default function AuthSplitLayout({
                         <p className="text-2xl font-bold tracking-tight text-white">
                             Care begins with clarity.
                         </p>
-                        <p className="mt-2 text-sm text-[#EEF0FD]/80">
+                        <p className="mt-2 text-sm text-info-bg/80">
                             Pharmacy intelligence, simplified.
                         </p>
                     </div>

@@ -32,24 +32,55 @@ class PharmacyDemoSeeder extends Seeder
             ]);
         }
 
-        $user = User::first();
-        if (!$user) {
-            $user = User::create([
-                'name' => 'Dr. Ahmed Warsame',
-                'email' => 'test@example.com',
-                'password' => bcrypt('password'),
-            ]);
+        // Ensure standard users exist
+        $admin = User::firstOrCreate(['email' => 'admin@daaweyn.com'], [
+            'name' => 'Admin (Dr. Ahmed)',
+            'password' => bcrypt('password'),
+        ]);
+
+        $pharmacist = User::firstOrCreate(['email' => 'pharmacist@daaweyn.com'], [
+            'name' => 'Pharmacist (Dr. Ali)',
+            'password' => bcrypt('password'),
+        ]);
+
+        $cashier = User::firstOrCreate(['email' => 'cashier@daaweyn.com'], [
+            'name' => 'Cashier (Hassan)',
+            'password' => bcrypt('password'),
+        ]);
+
+        $testUser = User::firstOrCreate(['email' => 'test@example.com'], [
+            'name' => 'Test User',
+            'password' => bcrypt('password'),
+        ]);
+
+        $users = [$admin, $pharmacist, $cashier, $testUser];
+
+        foreach ($users as $u) {
+            $hasMember = DB::table('team_members')
+                ->where('team_id', $team->id)
+                ->where('user_id', $u->id)
+                ->exists();
+
+            if (!$hasMember) {
+                $role = 'cashier';
+                if ($u->email === 'admin@daaweyn.com' || $u->email === 'test@example.com') {
+                    $role = 'owner';
+                } elseif ($u->email === 'pharmacist@daaweyn.com') {
+                    $role = 'pharmacist';
+                }
+
+                $team->members()->attach($u->id, ['role' => $role]);
+            }
+
+            // Ensure their current team is set to the demo team
+            if ($u->current_team_id !== $team->id) {
+                $u->current_team_id = $team->id;
+                $u->save();
+            }
         }
 
-        // Link the user to the team if not already done
-        $hasMember = DB::table('team_members')
-            ->where('team_id', $team->id)
-            ->where('user_id', $user->id)
-            ->exists();
-            
-        if (!$hasMember) {
-            $team->members()->attach($user->id, ['role' => 'owner']);
-        }
+        // For transactions, use the cashier user
+        $user = $cashier;
 
         // 2. Seed 10 Categories
         $categoriesData = [

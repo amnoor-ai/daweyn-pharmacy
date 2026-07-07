@@ -14,6 +14,8 @@ import PendingInvitationsModal from '@/components/pending-invitations-modal';
 import RevenueLineChart from '@/components/RevenueLineChart';
 import StatCard from '@/components/stat-card';
 import StockAlertBadge from '@/components/StockAlertBadge';
+import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
 import {
     Table,
     TableBody,
@@ -100,19 +102,6 @@ export default function Dashboard({
     );
     const [activeAlertTab, setActiveAlertTab] = useState<'stock' | 'expiry'>('stock');
 
-    const formatPaymentMethod = (method: string) => {
-        switch (method.toLowerCase()) {
-            case 'zaad':
-                return 'ZAAD';
-            case 'evc':
-                return 'EVC';
-            case 'jeeb':
-                return 'Jeeb';
-            default:
-                return method.charAt(0).toUpperCase() + method.slice(1);
-        }
-    };
-
     return (
         <>
             <Head title="Dashboard" />
@@ -164,7 +153,7 @@ export default function Dashboard({
                 {/* Charts Row: Revenue Line (2/3) + Payment Donut (1/3) */}
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                     {/* Revenue Line Chart */}
-                    <div className="flex flex-col gap-3 rounded-xl border border-border-soft bg-surface p-5 shadow-[0_2px_10px_rgba(20,28,64,0.05)] lg:col-span-2">
+                    <Card className="flex flex-col gap-3 p-5 lg:col-span-2">
                         <div className="flex items-center justify-between">
                             <div>
                                 <h2 className="text-base font-bold text-text-primary">
@@ -179,10 +168,10 @@ export default function Dashboard({
                             </div>
                         </div>
                         <RevenueLineChart data={revenueByDay} />
-                    </div>
+                    </Card>
 
                     {/* Payment Method Donut */}
-                    <div className="flex flex-col gap-3 rounded-xl border border-border-soft bg-surface p-5 shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
+                    <Card className="flex flex-col gap-3 p-5">
                         <div>
                             <h2 className="text-base font-bold text-text-primary">
                                 Payment Methods
@@ -192,7 +181,7 @@ export default function Dashboard({
                             </p>
                         </div>
                         <PaymentMethodDonut data={revenueByPaymentMethod} />
-                    </div>
+                    </Card>
                 </div>
 
                 {/* Main Content Grid: 2/3 Recent Transactions, 1/3 Low Stock Alerts */}
@@ -229,7 +218,7 @@ export default function Dashboard({
                                 </p>
                             </div>
                         ) : (
-                            <div className="overflow-hidden rounded-xl border border-border-soft bg-surface shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
+                            <Card className="overflow-hidden p-0">
                                 <Table>
                                     <TableHeader>
                                         <TableRow className="border-b border-border-soft hover:bg-transparent">
@@ -277,7 +266,7 @@ export default function Dashboard({
                                         ))}
                                     </TableBody>
                                 </Table>
-                            </div>
+                            </Card>
                         )}
                     </div>
 
@@ -332,7 +321,7 @@ export default function Dashboard({
                                         </p>
                                     </div>
                                 ) : (
-                                    <div className="flex max-h-[400px] flex-col gap-4 overflow-y-auto rounded-xl border border-border-soft bg-surface p-4 shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
+                                    <Card className="flex max-h-[400px] flex-col gap-4 overflow-y-auto p-4">
                                         {lowStockProducts.map((p) => (
                                             <div
                                                 key={p.id}
@@ -359,7 +348,7 @@ export default function Dashboard({
                                                 />
                                             </div>
                                         ))}
-                                    </div>
+                                    </Card>
                                 )
                             ) : (
                                 expiringProducts.length === 0 ? (
@@ -373,7 +362,7 @@ export default function Dashboard({
                                         </p>
                                     </div>
                                 ) : (
-                                    <div className="flex max-h-[400px] flex-col gap-4 overflow-y-auto rounded-xl border border-border-soft bg-surface p-4 shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
+                                    <Card className="flex max-h-[400px] flex-col gap-4 overflow-y-auto p-4">
                                         {expiringProducts.map((p) => (
                                             <div
                                                 key={p.id}
@@ -401,10 +390,11 @@ export default function Dashboard({
                                                         </span>
                                                     </span>
                                                 </div>
-                                                <span
-                                                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${p.days_remaining === 0
-                                                            ? 'bg-danger-bg text-danger-fg'
-                                                            : 'bg-warning-bg text-warning-fg'
+                                                <Badge
+                                                    variant="secondary"
+                                                    className={`rounded-full ${p.days_remaining === 0
+                                                            ? 'bg-danger-bg text-danger-fg hover:bg-danger-bg/80 border-transparent shadow-none'
+                                                            : 'bg-warning-bg text-warning-fg hover:bg-warning-bg/80 border-transparent shadow-none'
                                                         }`}
                                                 >
                                                     {p.days_remaining === 0
@@ -412,10 +402,10 @@ export default function Dashboard({
                                                         : p.days_remaining === 1
                                                             ? '1 day left'
                                                             : `${p.days_remaining} days left`}
-                                                </span>
+                                                </Badge>
                                             </div>
                                         ))}
-                                    </div>
+                                    </Card>
                                 )
                             )}
                         </div>

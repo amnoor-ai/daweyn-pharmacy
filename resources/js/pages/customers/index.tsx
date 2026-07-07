@@ -5,7 +5,6 @@ import CustomerDialog from '@/components/CustomerDialog';
 import CustomerTable from '@/components/CustomerTable';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useTableSearch } from '@/hooks/use-table-search';
 import type { Customer } from '@/types';
 
 type Props = {
@@ -39,7 +38,10 @@ export default function CustomersIndex({ customers }: Props) {
 
     function handleDialogChange(open: boolean) {
         setDialogOpen(open);
-        if (!open) setEditingCustomer(undefined);
+
+        if (!open) {
+setEditingCustomer(undefined);
+}
     }
 
     return (

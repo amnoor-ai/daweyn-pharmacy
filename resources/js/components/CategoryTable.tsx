@@ -3,8 +3,6 @@ import { Pencil, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 import { Button } from '@/components/ui/button';
-import type { Category } from '@/types';
-
 import {
     Table,
     TableBody,
@@ -13,6 +11,8 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import type { Category } from '@/types';
+
 
 type Props = {
     categories: Category[];
@@ -24,7 +24,10 @@ export default function CategoryTable({ categories, teamSlug, onEdit }: Props) {
     const [deleteTarget, setDeleteTarget] = useState<Category | null>(null);
 
     function confirmDelete() {
-        if (!deleteTarget) return;
+        if (!deleteTarget) {
+return;
+}
+
         router.delete(`/${teamSlug}/categories/${deleteTarget.id}`, {
             preserveScroll: true,
         });
@@ -51,59 +54,51 @@ export default function CategoryTable({ categories, teamSlug, onEdit }: Props) {
                 onConfirm={confirmDelete}
             />
 
-            <div className="overflow-hidden rounded-lg border border-border-soft bg-surface shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
-                <Table className="min-w-[500px]">
-                    <TableHeader>
-                        <TableRow className="border-b border-divider hover:bg-transparent">
-                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Name</TableHead>
-                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Slug</TableHead>
-                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Description</TableHead>
-                            <TableHead className="px-6 py-3.5 text-right text-[13px] font-medium text-text-secondary uppercase">Actions</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {categories.map((category) => (
-                            <TableRow
-                                key={category.id}
-                                className="border-b border-divider hover:bg-primary-50 transition-colors"
-                            >
-                                <TableCell className="px-6 py-4 font-medium text-text-primary">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {categories.map((category) => (
+                    <div
+                        key={category.id}
+                        className="group relative flex flex-col justify-between overflow-hidden rounded-xl border border-border-soft bg-surface p-5 shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5"
+                    >
+                        <div className="flex flex-col gap-2">
+                            <div className="flex items-start justify-between gap-2">
+                                <h3 className="font-semibold text-text-primary text-base line-clamp-1">
                                     {category.name}
-                                </TableCell>
-                                <TableCell className="px-6 py-4 font-mono text-xs text-text-secondary">
-                                    {category.slug}
-                                </TableCell>
-                                <TableCell className="max-w-xs px-6 py-4 text-text-secondary">
-                                    {category.description ?? (
-                                        <span className="text-text-muted italic">—</span>
-                                    )}
-                                </TableCell>
-                                <TableCell className="px-6 py-4 text-right">
-                                    <div className="flex items-center justify-end gap-1">
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            onClick={() => onEdit(category)}
-                                            className="h-8 w-8 p-0 text-text-secondary hover:text-brand"
-                                        >
-                                            <Pencil className="h-4 w-4" />
-                                            <span className="sr-only">Edit {category.name}</span>
-                                        </Button>
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            onClick={() => setDeleteTarget(category)}
-                                            className="h-8 w-8 p-0 text-text-secondary hover:text-danger-fg"
-                                        >
-                                            <Trash2 className="h-4 w-4" />
-                                            <span className="sr-only">Delete {category.name}</span>
-                                        </Button>
-                                    </div>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
+                                </h3>
+                                <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100 shrink-0">
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => onEdit(category)}
+                                        className="h-8 w-8 p-0 text-text-secondary hover:text-brand hover:bg-brand/10"
+                                    >
+                                        <Pencil className="h-4 w-4" />
+                                        <span className="sr-only">Edit {category.name}</span>
+                                    </Button>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => setDeleteTarget(category)}
+                                        className="h-8 w-8 p-0 text-text-secondary hover:text-danger-fg hover:bg-danger/10"
+                                    >
+                                        <Trash2 className="h-4 w-4" />
+                                        <span className="sr-only">Delete {category.name}</span>
+                                    </Button>
+                                </div>
+                            </div>
+                            
+                            <span className="font-mono text-xs text-text-muted truncate">
+                                /{category.slug}
+                            </span>
+                            
+                            <p className="text-sm text-text-secondary mt-3 line-clamp-2 min-h-[2.5rem]">
+                                {category.description ?? (
+                                    <span className="text-text-muted/60 italic">No description provided.</span>
+                                )}
+                            </p>
+                        </div>
+                    </div>
+                ))}
             </div>
         </>
     );

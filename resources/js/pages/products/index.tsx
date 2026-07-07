@@ -13,9 +13,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { useTableSearch } from '@/hooks/use-table-search';
-import type { Product } from '@/types';
-
-type Category = { id: number; name: string };
+import type { Product, Category } from '@/types';
 
 type Props = {
     products: Product[];
@@ -33,7 +31,7 @@ const STOCK_STATUS_OPTIONS = [
 export default function ProductsIndex({ products, categories = [] }: Props) {
     const { props } = usePage();
     const teamSlug = (props.currentTeam as { slug: string } | null)?.slug ?? '';
-    const [query, setQuery] = useState('');
+    const { query, handleSearch } = useTableSearch();
 
     const [categoryFilter, setCategoryFilter] = useState('');
     const [statusFilter, setStatusFilter] = useState('');
@@ -53,16 +51,15 @@ export default function ProductsIndex({ products, categories = [] }: Props) {
 
     function handleSheetChange(open: boolean) {
         setSheetOpen(open);
-        if (!open) setEditingProduct(undefined);
+
+        if (!open) {
+setEditingProduct(undefined);
+}
     }
 
-    // Client-side category & status filter (applied on top of server-side q= search)
+    // Client-side category & status filter (applied on top of server-side search)
     const filteredProducts = useMemo(() => {
         return products.filter((p) => {
-            const matchQuery =
-                !query ||
-                p.name.toLowerCase().includes(query.toLowerCase()) ||
-                (p.sku && p.sku.toLowerCase().includes(query.toLowerCase()));
             const matchCat =
                 !categoryFilter ||
                 String(p.category?.id ?? '') === categoryFilter;
@@ -71,24 +68,42 @@ export default function ProductsIndex({ products, categories = [] }: Props) {
                 (statusFilter === 'low'
                     ? p.stock_quantity <= (p.alert_threshold ?? 0) && p.stock_status !== 'expired'
                     : p.stock_status === statusFilter);
-            return matchQuery && matchCat && matchStatus;
+
+            return matchCat && matchStatus;
         });
-    }, [products, query, categoryFilter, statusFilter]);
+    }, [products, categoryFilter, statusFilter]);
 
     return (
         <>
             <Head title="Products" />
             <div className="flex flex-col flex-1 gap-4">
+                {/* Page Header */}
+                <div className="flex items-center justify-between mt-2">
+                    <div>
+                        <h2 className="text-2xl font-bold tracking-tight text-text-primary">Products</h2>
+                        <p className="text-sm text-text-muted mt-1">Manage your pharmacy products and monitor inventory.</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <Button
+                            onClick={handleAdd}
+                            className="gap-1.5 bg-brand hover:bg-brand-dark transition-all duration-200 shadow-sm px-4"
+                        >
+                            <Plus className="h-4 w-4" />
+                            <span className="hidden sm:inline">Add Product</span>
+                        </Button>
+                    </div>
+                </div>
+
                 {/* Toolbar */}
-                <div className="flex flex-wrap items-center gap-3">
+                <div className="flex flex-wrap items-center gap-3 p-1">
                     {/* Search */}
                     <div className="relative min-w-[200px] flex-1 max-w-xs">
                         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
                         <Input
                             value={query}
-                            onChange={(e) => setQuery(e.target.value)}
+                            onChange={(e) => handleSearch(e.target.value)}
                             placeholder="Search products…"
-                            className="h-9 pl-9 text-sm"
+                            className="h-9 pl-9 text-sm bg-surface shadow-sm"
                         />
                     </div>
 
@@ -98,7 +113,7 @@ export default function ProductsIndex({ products, categories = [] }: Props) {
                             value={categoryFilter}
                             onValueChange={setCategoryFilter}
                         >
-                            <SelectTrigger className="h-9 min-w-[140px]">
+                            <SelectTrigger className="h-9 min-w-[140px] bg-surface shadow-sm">
                                 <SelectValue placeholder="All Categories" />
                             </SelectTrigger>
                             <SelectContent>
@@ -117,7 +132,7 @@ export default function ProductsIndex({ products, categories = [] }: Props) {
                         value={statusFilter}
                         onValueChange={setStatusFilter}
                     >
-                        <SelectTrigger className="h-9 min-w-[130px]">
+                        <SelectTrigger className="h-9 min-w-[130px] bg-surface shadow-sm">
                             <SelectValue placeholder="All Status" />
                         </SelectTrigger>
                         <SelectContent>
@@ -128,18 +143,6 @@ export default function ProductsIndex({ products, categories = [] }: Props) {
                             ))}
                         </SelectContent>
                     </Select>
-
-                    {/* Spacer */}
-                    <div className="flex-1" />
-
-                    {/* Primary action */}
-                    <Button
-                        onClick={handleAdd}
-                        className="gap-1.5 bg-brand hover:bg-brand-dark transition-all duration-200 hover:-translate-y-0.5 px-3"
-                    >
-                        <Plus className="h-4 w-4" />
-                        <span className="hidden sm:inline">Add Product</span>
-                    </Button>
                 </div>
 
                 {/* Table */}

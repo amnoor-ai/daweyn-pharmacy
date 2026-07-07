@@ -1,5 +1,4 @@
 import { Link, usePage } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
 import {
     PillBottle,
     LayoutDashboard,
@@ -14,6 +13,12 @@ import {
     PanelLeftOpen,
     Activity,
 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 
 type NavItem = {
@@ -57,32 +62,15 @@ type AppsidebarProps = {
      * since the drawer already has its own open/close affordance.
      */
     collapsible?: boolean;
+    collapsed?: boolean;
+    setCollapsed?: (collapsed: boolean) => void;
 };
 
-export default function Appsidebar({ collapsible = true }: AppsidebarProps) {
+export default function Appsidebar({ collapsible = true, collapsed: externalCollapsed, setCollapsed: externalSetCollapsed }: AppsidebarProps) {
     const { url, props } = usePage();
     const { currentTeam } = props as { currentTeam?: { slug: string } };
 
-    // Default to false for SSR matching
-    const [collapsedState, setCollapsed] = useState(false);
-    const [isMounted, setIsMounted] = useState(false);
-
-    useEffect(() => {
-        setIsMounted(true);
-        if (typeof window !== 'undefined') {
-            const stored = window.localStorage.getItem(STORAGE_KEY) === '1';
-            setCollapsed(stored);
-        }
-    }, []);
-
-    // Non-collapsible instances (mobile drawer) always render fully expanded,
-    // regardless of what desktop has saved to localStorage.
-    const collapsed = collapsible && collapsedState;
-
-    useEffect(() => {
-        if (!collapsible || !isMounted) return;
-        window.localStorage.setItem(STORAGE_KEY, collapsedState ? '1' : '0');
-    }, [collapsedState, collapsible, isMounted]);
+    const collapsed = collapsible && (externalCollapsed ?? false);
 
     const getHref = (path: string, isScoped = true) => {
         if (!isScoped) {
@@ -93,7 +81,10 @@ export default function Appsidebar({ collapsible = true }: AppsidebarProps) {
     };
 
     const isActive = (href: string) => {
-        if (href === '#') return false;
+        if (href === '#') {
+return false;
+}
+
         return url === href || url.startsWith(`${href}/`);
     };
 
@@ -101,12 +92,11 @@ export default function Appsidebar({ collapsible = true }: AppsidebarProps) {
         const href = getHref(path, isScoped);
         const active = isActive(href);
 
-        return (
+        const link = (
             <Link
                 key={label}
                 href={href}
                 aria-current={active ? 'page' : undefined}
-                title={collapsed ? label : undefined}
                 className={`group relative flex items-center gap-2.5 rounded-[10px] px-3 py-2.5 text-sm font-semibold transition-colors ${
                     collapsed ? 'justify-center px-2.5' : ''
                 } ${
@@ -117,15 +107,21 @@ export default function Appsidebar({ collapsible = true }: AppsidebarProps) {
             >
                 <Icon size={18} strokeWidth={1.8} />
                 {!collapsed && <span>{label}</span>}
-
-                {/* Tooltip shown only when collapsed, on hover */}
-                {collapsed && (
-                    <span className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-md bg-surface px-2 py-1 text-xs font-medium text-text-secondary opacity-0 shadow-md ring-1 ring-border-soft transition-opacity group-hover:opacity-100">
-                        {label}
-                    </span>
-                )}
             </Link>
         );
+
+        if (collapsed) {
+            return (
+                <Tooltip key={label}>
+                    <TooltipTrigger asChild>{link}</TooltipTrigger>
+                    <TooltipContent side="right" className="bg-surface text-text-primary shadow-md border border-border-soft">
+                        {label}
+                    </TooltipContent>
+                </Tooltip>
+            );
+        }
+
+        return link;
     };
 
     return (
@@ -135,12 +131,12 @@ export default function Appsidebar({ collapsible = true }: AppsidebarProps) {
             }`}
         >
             <div
-                className={`flex h-16 shrink-0 items-center border-b border-border-soft transition-all duration-200 ${
-                    collapsed ? 'justify-between px-2.5' : 'justify-between px-5'
+                className={`flex h-16 shrink-0 items-center transition-all duration-200 ${
+                    collapsed ? 'justify-center' : 'justify-start px-5'
                 }`}
             >
                 <div 
-                    onClick={collapsed ? () => setCollapsed(false) : undefined}
+                    onClick={collapsed && externalSetCollapsed ? () => externalSetCollapsed(false) : undefined}
                     className={`flex items-center gap-2 ${collapsed ? 'cursor-pointer' : ''}`}
                 >
                     <div className={`flex shrink-0 items-center justify-center rounded-[10px] bg-brand transition-all duration-200 ${collapsed ? 'h-7 w-7' : 'h-9 w-9'}`}>
@@ -152,23 +148,6 @@ export default function Appsidebar({ collapsible = true }: AppsidebarProps) {
                         </span>
                     )}
                 </div>
-
-                {collapsible && (
-                    <button
-                        type="button"
-                        onClick={() => setCollapsed((prev) => !prev)}
-                        aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-                        className={`flex shrink-0 p-0 items-center justify-center rounded-md text-text-secondary hover:bg-primary-50 hover:text-brand transition-colors ${
-                            collapsed ? 'size-7' : 'size-8'
-                        }`}
-                    >
-                        {collapsed ? (
-                            <PanelLeftOpen size={14} strokeWidth={1.8} />
-                        ) : (
-                            <PanelLeftClose size={18} strokeWidth={1.8} />
-                        )}
-                    </button>
-                )}
             </div>
 
             {/* Nav */}

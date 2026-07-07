@@ -55,12 +55,14 @@ export default function UsersIndex({ members }: Props) {
     // Client-side search + role filter (UserController has no server-side search)
     const filteredMembers = useMemo(() => {
         const q = searchQuery.toLowerCase();
+
         return members.filter((m) => {
             const matchSearch =
                 !q ||
                 m.name.toLowerCase().includes(q) ||
                 m.email.toLowerCase().includes(q);
             const matchRole = !roleFilter || m.role === roleFilter;
+
             return matchSearch && matchRole;
         });
     }, [members, searchQuery, roleFilter]);

@@ -1,5 +1,6 @@
 import { Head, router, usePage } from '@inertiajs/react';
 import { ArrowLeft } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
     Table,
@@ -21,6 +22,14 @@ const paymentLabel: Record<string, string> = {
     evc: 'EVC',
     jeeb: 'Jeeb',
     card: 'Card',
+};
+
+const paymentBadge: Record<string, string> = {
+    cash: 'bg-success-bg text-success-fg hover:bg-success-bg/80 border-transparent shadow-none',
+    zaad: 'bg-info-bg text-info-fg hover:bg-info-bg/80 border-transparent shadow-none',
+    evc: 'bg-info-bg text-info-fg hover:bg-info-bg/80 border-transparent shadow-none',
+    jeeb: 'bg-info-bg text-info-fg hover:bg-info-bg/80 border-transparent shadow-none',
+    card: 'bg-warning-bg text-warning-fg hover:bg-warning-bg/80 border-transparent shadow-none',
 };
 
 export default function TransactionShow({ transaction }: Props) {
@@ -59,9 +68,9 @@ export default function TransactionShow({ transaction }: Props) {
                                 : '—'}
                         </p>
                     </div>
-                    <span className="inline-flex items-center rounded-full bg-success-bg px-3 py-1 text-xs font-medium text-success-fg">
+                    <Badge variant="secondary" className="rounded-full bg-success-bg text-success-fg hover:bg-success-bg/80 border-transparent shadow-none">
                         Completed
-                    </span>
+                    </Badge>
                 </div>
 
                 {/* Details */}
@@ -88,7 +97,9 @@ export default function TransactionShow({ transaction }: Props) {
                                 Payment
                             </span>
                             <span className="text-text-primary">
-                                {paymentLabel[transaction.payment_method]}
+                                <Badge variant="secondary" className={`rounded-full ${paymentBadge[transaction.payment_method]}`}>
+                                    {paymentLabel[transaction.payment_method]}
+                                </Badge>
                             </span>
                         </div>
                     </div>

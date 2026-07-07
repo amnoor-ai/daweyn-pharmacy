@@ -1,3 +1,5 @@
+import { Badge } from '@/components/ui/badge';
+
 type Props = {
     quantity: number;
     threshold: number;
@@ -6,23 +8,23 @@ type Props = {
 export default function StockAlertBadge({ quantity, threshold }: Props) {
     if (quantity === 0) {
         return (
-            <span className="inline-flex items-center rounded-full bg-danger-bg px-2.5 py-0.5 text-xs font-medium text-danger-fg">
+            <Badge variant="secondary" className="rounded-full bg-danger-bg text-danger-fg hover:bg-danger-bg/80 border-transparent shadow-none">
                 Out of Stock
-            </span>
+            </Badge>
         );
     }
 
     if (quantity <= threshold) {
         return (
-            <span className="inline-flex items-center rounded-full bg-warning-bg px-2.5 py-0.5 text-xs font-medium text-warning-fg">
+            <Badge variant="secondary" className="rounded-full bg-warning-bg text-warning-fg hover:bg-warning-bg/80 border-transparent shadow-none">
                 Low Stock
-            </span>
+            </Badge>
         );
     }
 
     return (
-        <span className="inline-flex items-center rounded-full bg-success-bg px-2.5 py-0.5 text-xs font-medium text-success-fg">
+        <Badge variant="secondary" className="rounded-full bg-success-bg text-success-fg hover:bg-success-bg/80 border-transparent shadow-none">
             In Stock
-        </span>
+        </Badge>
     );
 }

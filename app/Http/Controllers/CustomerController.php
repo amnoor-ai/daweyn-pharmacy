@@ -14,6 +14,8 @@ class CustomerController extends Controller
         $q = $request->query('q', '');
 
         $customers = $currentTeam->customers()
+            ->withSum('transactions', 'total')
+            ->withMax('transactions', 'created_at')
             ->when($q, fn ($query) => $query->where(function ($q2) use ($q) {
                 $q2->where('name', 'like', "%{$q}%")
                    ->orWhere('phone', 'like', "%{$q}%")

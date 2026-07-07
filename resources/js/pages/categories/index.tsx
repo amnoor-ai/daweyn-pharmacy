@@ -15,11 +15,7 @@ type Props = {
 export default function CategoriesIndex({ categories }: Props) {
     const { currentTeam } = usePage().props;
     const teamSlug = currentTeam?.slug ?? '';
-    const [query, setQuery] = useState('');
-
-    const filteredCategories = categories.filter((c) =>
-        c.name.toLowerCase().includes(query.toLowerCase())
-    );
+    const { query, handleSearch } = useTableSearch();
 
     const [editingCategory, setEditingCategory] = useState<
         Category | undefined
@@ -38,7 +34,10 @@ export default function CategoriesIndex({ categories }: Props) {
 
     function handleDialogChange(open: boolean) {
         setDialogOpen(open);
-        if (!open) setEditingCategory(undefined);
+
+        if (!open) {
+setEditingCategory(undefined);
+}
     }
 
     return (
@@ -46,6 +45,14 @@ export default function CategoriesIndex({ categories }: Props) {
             <Head title="Categories" />
 
             <div className="flex flex-col gap-4">
+                {/* Page Header */}
+                <div className="flex items-center justify-between mt-2">
+                    <div>
+                        <h2 className="text-2xl font-bold tracking-tight text-text-primary">Categories</h2>
+                        <p className="text-sm text-text-muted mt-1">Manage your product categories and organization.</p>
+                    </div>
+                </div>
+
                 {/* Toolbar */}
                 <div className="flex flex-wrap sm:flex-nowrap items-center gap-3">
                     {/* Search */}
@@ -53,7 +60,7 @@ export default function CategoriesIndex({ categories }: Props) {
                         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
                         <Input
                             value={query}
-                            onChange={(e) => setQuery(e.target.value)}
+                            onChange={(e) => handleSearch(e.target.value)}
                             placeholder="Search categories…"
                             className="h-9 pl-9 text-sm"
                         />
@@ -74,7 +81,7 @@ export default function CategoriesIndex({ categories }: Props) {
 
                 {/* Table */}
                 <CategoryTable
-                    categories={filteredCategories}
+                    categories={categories}
                     teamSlug={teamSlug}
                     onEdit={openEdit}
                 />

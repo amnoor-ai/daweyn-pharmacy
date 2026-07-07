@@ -25,9 +25,9 @@ import {
     TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { useInitials } from '@/hooks/use-initials';
+import { formatRelativeTime } from '@/lib/utils';
 import { edit, index, update } from '@/routes/teams';
 import { update as updateMember } from '@/routes/teams/members';
-import { formatRelativeTime } from '@/lib/utils';
 import type {
     RoleOption,
     Team,
@@ -63,6 +63,8 @@ export default function TeamEdit({
         useState(false);
     const [invitationToCancel, setInvitationToCancel] =
         useState<TeamInvitation | null>(null);
+
+    const [now] = useState(() => Date.now());
 
     const pageTitle = useMemo(
         () =>
@@ -187,7 +189,7 @@ export default function TeamEdit({
                                                 {getInitials(member.name)}
                                             </AvatarFallback>
                                         </Avatar>
-                                        {member.last_seen_at && new Date(member.last_seen_at).getTime() > Date.now() - 5 * 60 * 1000 ? (
+                                        {member.last_seen_at && new Date(member.last_seen_at).getTime() > now - 5 * 60 * 1000 ? (
                                             <div className="absolute bottom-0 right-0 size-3 rounded-full border-2 border-white bg-success-fg dark:border-background"></div>
                                         ) : null}
                                     </div>
@@ -203,7 +205,7 @@ export default function TeamEdit({
 
                                 <div className="flex items-center gap-4">
                                     <div className="text-sm text-muted-foreground hidden sm:block">
-                                        {member.last_seen_at && new Date(member.last_seen_at).getTime() > Date.now() - 5 * 60 * 1000
+                                        {member.last_seen_at && new Date(member.last_seen_at).getTime() > now - 5 * 60 * 1000
                                             ? <span className="text-success-fg">Active Now</span>
                                             : `Last active: ${formatRelativeTime(member.last_seen_at)}`}
                                     </div>

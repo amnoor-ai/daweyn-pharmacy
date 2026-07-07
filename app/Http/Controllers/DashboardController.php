@@ -77,10 +77,21 @@ class DashboardController extends Controller
             ->groupBy('payment_method')
             ->selectRaw('payment_method, sum(total) as total')
             ->get()
-            ->map(fn ($item) => [
-                'payment_method' => $item->payment_method,
-                'total' => (float) $item->total,
-            ]);
+            ->map(function ($item) {
+                $method = strtolower($item->payment_method);
+                $label = match ($method) {
+                    'zaad' => 'ZAAD',
+                    'evc' => 'EVC',
+                    'jeeb' => 'Jeeb',
+                    default => ucfirst($method),
+                };
+
+                return [
+                    'payment_method' => $item->payment_method,
+                    'payment_method_label' => $label,
+                    'total' => (float) $item->total,
+                ];
+            });
 
         // 6. Expiring soon products (expiry_date between today and today + 30 days)
         $expiringProducts = $current_team->products()

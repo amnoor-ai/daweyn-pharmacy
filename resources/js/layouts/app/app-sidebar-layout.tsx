@@ -1,6 +1,6 @@
 import { usePage } from '@inertiajs/react';
 import { Menu, Moon, PillBottle, Search, Sun } from 'lucide-react';
-import { useState, useSyncExternalStore } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 import { AppHeader } from '@/components/app-header';
 import Appsidebar from '@/components/app-sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -26,6 +26,22 @@ export default function AppSidebarLayout({
     const getInitials = useInitials();
     const { resolvedAppearance, updateAppearance } = useAppearance();
     const [mobileOpen, setMobileOpen] = useState(false);
+    const [collapsed, setCollapsed] = useState(false);
+    const [isSidebarMounted, setIsSidebarMounted] = useState(false);
+
+    // Load initial state from localStorage
+    if (typeof window !== 'undefined' && !isSidebarMounted) {
+        const stored = window.localStorage.getItem('sidebar:collapsed') === '1';
+        setCollapsed(stored);
+        setIsSidebarMounted(true);
+    }
+
+    useEffect(() => {
+        if (isSidebarMounted) {
+            window.localStorage.setItem('sidebar:collapsed', collapsed ? '1' : '0');
+        }
+    }, [collapsed, isSidebarMounted]);
+
     const emptySubscribe = () => () => { };
     const mounted = useSyncExternalStore(
         emptySubscribe,
@@ -41,14 +57,14 @@ export default function AppSidebarLayout({
         <div className="flex min-h-screen bg-canvas">
             {/* Desktop sidebar — hidden on mobile, collapsible */}
             <div className="hidden lg:flex sticky top-0 h-screen">
-                <Appsidebar />
+                <Appsidebar collapsed={collapsed} setCollapsed={setCollapsed} />
             </div>
 
             {/* Mobile sidebar — Sheet drawer, always full width/labels */}
             <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
                 <SheetContent
                     side="left"
-                    className="w-64 border-r border-border-soft p-0"
+                    className="w-64 border-r border-border-soft p-0 bg-canvas"
                 >
                     <SheetTitle className="sr-only">Navigation menu</SheetTitle>
                     <Appsidebar collapsible={false} />
@@ -143,11 +159,13 @@ export default function AppSidebarLayout({
 
                 {/* Desktop header bar — sticky, hidden on mobile */}
                 <div className="sticky top-0 z-50 hidden lg:block">
-                    <AppHeader breadcrumbs={breadcrumbs} />
+                    <AppHeader breadcrumbs={breadcrumbs} collapsed={collapsed} setCollapsed={setCollapsed} />
                 </div>
 
                 <main className={`flex-1 flex flex-col ${isPos ? 'p-0' : 'p-4 lg:p-6'}`}>
-                    {children}
+                    <div className="flex-1 w-full">
+                        {children}
+                    </div>
                 </main>
             </div>
         </div>

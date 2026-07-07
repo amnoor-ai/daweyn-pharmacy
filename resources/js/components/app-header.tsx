@@ -1,5 +1,5 @@
 import { router, usePage } from '@inertiajs/react';
-import { Moon, Search, Sun } from 'lucide-react';
+import { Moon, Search, Sun, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { useRef, useState, useSyncExternalStore } from 'react';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { TeamSwitcher } from '@/components/team-switcher';
@@ -18,9 +18,11 @@ import type { BreadcrumbItem } from '@/types';
 
 type Props = {
     breadcrumbs?: BreadcrumbItem[];
+    collapsed?: boolean;
+    setCollapsed?: (collapsed: boolean) => void;
 };
 
-export function AppHeader({ breadcrumbs = [] }: Props) {
+export function AppHeader({ breadcrumbs = [], collapsed, setCollapsed }: Props) {
     const page = usePage();
     const { auth, currentTeam } = page.props;
     const getInitials = useInitials();
@@ -75,11 +77,27 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
         <>
             <div className="border-b border-border-soft bg-white dark:bg-surface">
                 <div className="flex h-16 items-center gap-4 px-4 lg:px-6">
-                    {/* Page title — shows current page name */}
-                    {pageTitle && (
-                        <h1 className="text-base font-semibold text-text-primary shrink-0">
-                            {pageTitle}
-                        </h1>
+                    {/* Sidebar toggle */}
+                    {setCollapsed && (
+                        <button
+                            type="button"
+                            onClick={() => setCollapsed(!collapsed)}
+                            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+                            className="flex shrink-0 items-center justify-center rounded-md text-text-secondary hover:bg-primary-50 hover:text-brand transition-colors size-8"
+                        >
+                            {collapsed ? (
+                                <PanelLeftOpen size={18} strokeWidth={1.8} />
+                            ) : (
+                                <PanelLeftClose size={18} strokeWidth={1.8} />
+                            )}
+                        </button>
+                    )}
+
+                    {/* Breadcrumbs inside navbar */}
+                    {breadcrumbs.length > 0 && (
+                        <div className="hidden md:flex items-center text-sm">
+                            <Breadcrumbs breadcrumbs={breadcrumbs} />
+                        </div>
                     )}
 
                     {/* Right section */}
@@ -145,13 +163,6 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                 </div>
             </div>
 
-            {breadcrumbs.length > 1 && (
-                <div className="flex w-full border-b border-sidebar-border/70">
-                    <div className="flex h-12 w-full items-center justify-start px-4 lg:px-6 text-neutral-500">
-                        <Breadcrumbs breadcrumbs={breadcrumbs} />
-                    </div>
-                </div>
-            )}
         </>
     );
 }

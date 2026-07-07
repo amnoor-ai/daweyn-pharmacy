@@ -36,7 +36,9 @@ const CustomTooltip = ({
     payload?: { value: number }[];
     label?: string;
 }) => {
-    if (!active || !payload?.length) return null;
+    if (!active || !payload?.length) {
+return null;
+}
 
     const formattedDate = label
         ? new Date(label + 'T00:00:00').toLocaleDateString('en-GB', {

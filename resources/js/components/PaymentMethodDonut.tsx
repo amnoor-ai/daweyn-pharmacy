@@ -4,6 +4,7 @@ import { useAppearance } from '@/hooks/use-appearance';
 
 type DataPoint = {
     payment_method: string;
+    payment_method_label?: string;
     total: number;
 };
 
@@ -18,13 +19,7 @@ function cssVar(name: string): string {
         .trim();
 }
 
-const METHOD_LABELS: Record<string, string> = {
-    cash: 'Cash',
-    zaad: 'ZAAD',
-    evc:  'EVC',
-    jeeb: 'Jeeb',
-    card: 'Card',
-};
+
 
 const CustomTooltip = ({
     active,
@@ -33,11 +28,14 @@ const CustomTooltip = ({
     active?: boolean;
     payload?: { name: string; value: number }[];
 }) => {
-    if (!active || !payload?.length) return null;
+    if (!active || !payload?.length) {
+return null;
+}
+
     return (
         <div className="rounded-lg border border-border-soft bg-surface px-3 py-2 shadow-md text-xs">
             <p className="font-medium text-text-secondary">
-                {METHOD_LABELS[payload[0].name] ?? payload[0].name}
+                {payload[0].payload?.label ?? payload[0].name}
             </p>
             <p className="font-bold text-text-primary">
                 ${payload[0].value.toFixed(2)}
@@ -84,6 +82,7 @@ export default function PaymentMethodDonut({ data }: Props) {
 
     const chartData = data.map((d) => ({
         name:  d.payment_method,
+        label: d.payment_method_label ?? d.payment_method,
         value: d.total,
     }));
 
@@ -121,6 +120,7 @@ export default function PaymentMethodDonut({ data }: Props) {
                     const pct = grandTotal > 0
                         ? ((d.total / grandTotal) * 100).toFixed(1)
                         : '0';
+
                     return (
                         <div key={d.payment_method} className="flex items-center justify-between gap-2">
                             <div className="flex items-center gap-2 min-w-0">
@@ -129,7 +129,7 @@ export default function PaymentMethodDonut({ data }: Props) {
                                     style={{ backgroundColor: getColor(d.payment_method) }}
                                 />
                                 <span className="truncate text-sm text-text-primary">
-                                    {METHOD_LABELS[d.payment_method] ?? d.payment_method}
+                                    {d.payment_method_label ?? d.payment_method}
                                 </span>
                             </div>
                             <div className="flex items-center gap-2 shrink-0">

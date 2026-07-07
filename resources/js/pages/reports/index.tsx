@@ -1,19 +1,17 @@
 import { Head, usePage, router } from '@inertiajs/react';
-import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
-import { Breadcrumbs } from '@/components/breadcrumbs';
+import { TrendingUp, DollarSign, Activity } from 'lucide-react';
+import { useState } from 'react';
 import Heading from '@/components/heading';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { TrendingUp, DollarSign, Activity } from 'lucide-react';
-import { useState } from 'react';
 
 // For this implementation, we will build a basic UI. 
 // You can later add Recharts or another charting library for the `sales_trend` and `payment_methods` data.
 
 export default function ReportsIndex() {
-    const { metrics, sales_trend, top_products, payment_methods, filters, currentTeam } = usePage<any>().props;
+    const { metrics, top_products, payment_methods, filters, currentTeam } = usePage<any>().props;
 
     const [start, setStart] = useState(filters.start.split(' ')[0]);
     const [end, setEnd] = useState(filters.end.split(' ')[0]);
@@ -25,12 +23,6 @@ export default function ReportsIndex() {
         }, { preserveState: true });
     };
 
-    const breadcrumbs = [
-        {
-            title: 'Reports & Analytics',
-            href: `/${currentTeam.slug}/reports`,
-        },
-    ];
 
     return (
         <>

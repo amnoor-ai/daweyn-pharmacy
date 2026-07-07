@@ -4,7 +4,9 @@ import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
 import type { BreadcrumbItem } from '@/types';
 
 function getPageLayoutConfig(element: React.ReactNode): any {
-    if (!element || typeof element !== 'object') return null;
+    if (!element || typeof element !== 'object') {
+return null;
+}
 
     const elementObject = element as any;
     const type = elementObject.type;
@@ -17,6 +19,7 @@ function getPageLayoutConfig(element: React.ReactNode): any {
     }
 
     const props = elementObject.props;
+
     if (props && props.children) {
         return getPageLayoutConfig(props.children);
     }
@@ -36,6 +39,7 @@ export default function AppLayout({
     if (layoutInfo) {
         const { config, props } = layoutInfo;
         const mergedProps = { ...pageProps, ...props };
+
         if (typeof config === 'function') {
             const layoutResult = config(mergedProps);
             resolvedBreadcrumbs = layoutResult?.breadcrumbs || [];

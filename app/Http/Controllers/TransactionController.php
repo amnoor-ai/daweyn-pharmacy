@@ -92,7 +92,7 @@ class TransactionController extends Controller
             $itemsData = [];
 
             foreach ($validated['items'] as $item) {
-                $product = $currentTeam->products()->findOrFail($item['product_id']);
+                $product = $currentTeam->products()->lockForUpdate()->findOrFail($item['product_id']);
 
                 // Check stock
                 abort_if($product->stock_quantity < $item['quantity'], 422, "Insufficient stock for {$product->name}");

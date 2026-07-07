@@ -65,8 +65,8 @@ return;
                             <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Image</TableHead>
                             <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Category</TableHead>
                             <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">SKU</TableHead>
-                            <TableHead className="px-6 py-3.5 text-right text-[13px] font-medium text-text-secondary uppercase">Cost</TableHead>
-                            <TableHead className="px-6 py-3.5 text-right text-[13px] font-medium text-text-secondary uppercase">Price</TableHead>
+                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Cost</TableHead>
+                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Price</TableHead>
                             <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Stock</TableHead>
                             <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Expiry</TableHead>
                             <TableHead className="px-6 py-3.5 text-right text-[13px] font-medium text-text-secondary uppercase">Actions</TableHead>
@@ -90,10 +90,10 @@ return;
                                 <TableCell className="px-6 py-4 font-mono text-xs text-text-secondary text-left">
                                     {product.sku}
                                 </TableCell>
-                                <TableCell className="px-6 py-4 text-text-secondary text-right">
+                                <TableCell className="px-6 py-4 text-text-secondary text-left">
                                     ${product.cost_price}
                                 </TableCell>
-                                <TableCell className="px-6 py-4 text-text-primary text-right font-medium">
+                                <TableCell className="px-6 py-4 text-text-primary text-left font-medium">
                                     ${product.selling_price}
                                 </TableCell>
                                 <TableCell className="px-6 py-4">

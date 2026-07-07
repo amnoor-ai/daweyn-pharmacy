@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property int $id
@@ -44,8 +45,9 @@ use Illuminate\Support\Facades\Storage;
     'expiry_date',
 ])]
 
+
 class Product extends Model {
-    use HasFactory;    
+    use HasFactory, SoftDeletes;    
 
     protected $appends = [
         'image_url',

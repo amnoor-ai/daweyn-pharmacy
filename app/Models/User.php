@@ -41,7 +41,22 @@ class User extends Authenticatable implements PasskeyUser
     /** @use HasFactory<UserFactory> */
     use HasFactory, HasTeams, Notifiable, PasskeyAuthenticatable, TwoFactorAuthenticatable;
 
-    protected $appends = ['avatar_url'];
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array<int, string>
+     */
+    protected $appends = ['avatar'];
+
+    /**
+     * Get the user's avatar URL.
+     */
+    protected function avatar(): \Illuminate\Database\Eloquent\Casts\Attribute
+    {
+        return \Illuminate\Database\Eloquent\Casts\Attribute::make(
+            get: fn () => $this->avatar_path ? \Illuminate\Support\Facades\Storage::url($this->avatar_path) : null,
+        );
+    }
 
     /**
      * Get the attributes that should be cast.

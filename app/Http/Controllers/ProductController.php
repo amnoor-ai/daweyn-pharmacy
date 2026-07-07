@@ -48,6 +48,40 @@ class ProductController extends Controller
 }
 
 
+    public function search(Request $request, Team $currentTeam)
+    {
+        $q = $request->query('q', '');
+        $today = \Illuminate\Support\Carbon::today();
+
+        $products = $currentTeam->products()
+            ->when($q, fn ($query) => $query->where(function ($q2) use ($q) {
+                $q2->where('name', 'like', "%{$q}%")
+                   ->orWhere('sku', 'like', "%{$q}%");
+            }))
+            ->where('stock_quantity', '>', 0)
+            ->where(function ($query) use ($today) {
+                $query->whereNull('expiry_date')
+                      ->orWhere('expiry_date', '>=', $today);
+            })
+            ->limit(50)
+            ->get()
+            ->map(function ($product) use ($today) {
+                $status = 'valid';
+                if ($product->expiry_date) {
+                    $expiry = \Illuminate\Support\Carbon::parse($product->expiry_date)->startOfDay();
+                    if ($expiry->lessThan($today)) {
+                        $status = 'expired';
+                    } elseif ($expiry->lessThanOrEqualTo($today->copy()->addDays(30))) {
+                        $status = 'expiring_soon';
+                    }
+                }
+                $product->stock_status = $status;
+                return $product;
+            });
+
+        return response()->json($products);
+    }
+
     public function store(Request $request, Team $currentTeam)
     {
         $validated = $request->validate([

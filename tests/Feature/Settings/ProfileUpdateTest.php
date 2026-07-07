@@ -83,3 +83,27 @@ test('correct password must be provided to delete account', function () {
 
     expect($user->fresh())->not->toBeNull();
 });
+
+test('profile avatar can be uploaded', function () {
+    \Illuminate\Support\Facades\Storage::fake('public');
+
+    $user = User::factory()->create();
+    $file = \Illuminate\Http\UploadedFile::fake()->image('avatar.jpg');
+
+    $response = $this
+        ->actingAs($user)
+        ->patch(route('profile.update'), [
+            'name' => 'Test User',
+            'email' => $user->email,
+            'avatar' => $file,
+        ]);
+
+    $response
+        ->assertSessionHasNoErrors()
+        ->assertRedirect(route('profile.edit'));
+
+    $user->refresh();
+
+    expect($user->avatar_path)->not->toBeNull();
+    \Illuminate\Support\Facades\Storage::disk('public')->assertExists($user->avatar_path);
+});

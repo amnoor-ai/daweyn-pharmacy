@@ -1,6 +1,6 @@
 import { Head, usePage, router } from '@inertiajs/react';
 import { Trash2, ShoppingCart } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ProductAvatar from '@/components/ProductAvatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,20 +19,17 @@ import {
 } from '@/components/ui/sheet';
 import type { Customer, Product } from '@/types';
 
-type Props = {
-    products: Product[];
-    customers: Customer[];
-};
-
 type CartItem = {
     product: Product;
     quantity: number;
 };
 
-export default function PosIndex({ products, customers }: Props) {
+export default function PosIndex() {
     const { props } = usePage();
     const teamSlug = (props.currentTeam as { slug: string } | null)?.slug ?? '';
 
+    const [products, setProducts] = useState<Product[]>([]);
+    const [customers, setCustomers] = useState<Customer[]>([]);
     const [cart, setCart] = useState<CartItem[]>([]);
     const [search, setSearch] = useState('');
     const [customerId, setCustomerId] = useState('');
@@ -40,11 +37,37 @@ export default function PosIndex({ products, customers }: Props) {
     const [discount, setDiscount] = useState('0');
     const [tax, setTax] = useState('0');
     const [mobileCartOpen, setMobileCartOpen] = useState(false);
+    const [isLoadingProducts, setIsLoadingProducts] = useState(false);
 
-    const filteredProducts = products.filter(p =>
-        p.name.toLowerCase().includes(search.toLowerCase()) ||
-        p.sku.toLowerCase().includes(search.toLowerCase())
-    );
+    // Fetch initial customers (they don't change often)
+    useEffect(() => {
+        if (!teamSlug) return;
+        fetch(`/${teamSlug}/api/customers/search`)
+            .then(res => res.json())
+            .then(data => setCustomers(data))
+            .catch(err => console.error("Failed to fetch customers", err));
+    }, [teamSlug]);
+
+    // Fetch products based on search (debounced)
+    useEffect(() => {
+        if (!teamSlug) return;
+        
+        setIsLoadingProducts(true);
+        const timer = setTimeout(() => {
+            fetch(`/${teamSlug}/api/products/search?q=${encodeURIComponent(search)}`)
+                .then(res => res.json())
+                .then(data => {
+                    setProducts(data);
+                    setIsLoadingProducts(false);
+                })
+                .catch(err => {
+                    console.error("Failed to fetch products", err);
+                    setIsLoadingProducts(false);
+                });
+        }, 300); // 300ms debounce
+
+        return () => clearTimeout(timer);
+    }, [search, teamSlug]);
 
     function addToCart(product: Product) {
         setCart(prev => {
@@ -65,7 +88,6 @@ export default function PosIndex({ products, customers }: Props) {
     function updateQuantity(productId: number, quantity: number) {
         if (quantity <= 0) {
             removeFromCart(productId);
-
             return;
         }
 
@@ -87,11 +109,11 @@ export default function PosIndex({ products, customers }: Props) {
 
     function handleSubmit() {
         if (cart.length === 0) {
-return;
-}
+            return;
+        }
 
         router.post(`/${teamSlug}/transactions`, {
-            customer_id: customerId,
+            customer_id: customerId || null,
             payment_method: paymentMethod,
             discount: discount,
             tax: tax,
@@ -126,27 +148,35 @@ return;
                         className="border-border-soft"
                     />
                     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 lg:overflow-y-auto pb-24 lg:pb-4 pr-1 lg:pr-3">
-                        {filteredProducts.map(product => (
-                            <button
-                                key={product.id}
-                                onClick={() => addToCart(product)}
-                                className="flex flex-row items-center gap-3 rounded-lg border border-border-soft bg-surface p-3 text-left hover:border-brand hover:shadow-sm transition-all"
-                            >
-                                <ProductAvatar src={product.image_url} alt={product.name} className="h-12 w-12 shrink-0" />
-                                <div className="flex flex-col min-w-0 flex-1">
-                                    <span className="font-medium text-text-primary text-sm truncate">{product.name}</span>
-                                    <span className="text-xs text-text-secondary truncate">{product.sku}</span>
-                                    <div className="mt-1 flex items-center justify-between">
-                                        <span className="text-sm font-semibold text-brand">${Number(product.selling_price).toFixed(2)}</span>
-                                        <span className="text-xs text-text-secondary">Stock: {product.stock_quantity}</span>
-                                    </div>
-                                </div>
-                            </button>
-                        ))}
-                        {filteredProducts.length === 0 && (
+                        {isLoadingProducts ? (
                             <p className="col-span-2 text-center text-sm text-text-secondary py-8">
-                                No products found.
+                                Loading products...
                             </p>
+                        ) : (
+                            <>
+                                {products.map(product => (
+                                    <button
+                                        key={product.id}
+                                        onClick={() => addToCart(product)}
+                                        className="flex flex-row items-center gap-3 rounded-lg border border-border-soft bg-surface p-3 text-left hover:border-brand hover:shadow-sm transition-all"
+                                    >
+                                        <ProductAvatar src={product.image_url} alt={product.name} className="h-12 w-12 shrink-0" />
+                                        <div className="flex flex-col min-w-0 flex-1">
+                                            <span className="font-medium text-text-primary text-sm truncate">{product.name}</span>
+                                            <span className="text-xs text-text-secondary truncate">{product.sku}</span>
+                                            <div className="mt-1 flex items-center justify-between">
+                                                <span className="text-sm font-semibold text-brand">${Number(product.selling_price).toFixed(2)}</span>
+                                                <span className="text-xs text-text-secondary">Stock: {product.stock_quantity}</span>
+                                            </div>
+                                        </div>
+                                    </button>
+                                ))}
+                                {products.length === 0 && (
+                                    <p className="col-span-2 text-center text-sm text-text-secondary py-8">
+                                        No products found.
+                                    </p>
+                                )}
+                            </>
                         )}
                     </div>
                 </div>

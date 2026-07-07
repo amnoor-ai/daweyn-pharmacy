@@ -30,6 +30,22 @@ class CustomerController extends Controller
         ]);
     }
 
+    public function search(Request $request, Team $currentTeam)
+    {
+        $q = $request->query('q', '');
+
+        $customers = $currentTeam->customers()
+            ->when($q, fn ($query) => $query->where(function ($q2) use ($q) {
+                $q2->where('name', 'like', "%{$q}%")
+                   ->orWhere('phone', 'like', "%{$q}%")
+                   ->orWhere('email', 'like', "%{$q}%");
+            }))
+            ->limit(50)
+            ->get();
+
+        return response()->json($customers);
+    }
+
     public function show(Team $currentTeam, Customer $customer)
     {
         abort_unless($customer->team_id === $currentTeam->id, 403);

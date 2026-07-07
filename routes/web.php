@@ -21,6 +21,10 @@ Route::prefix('{current_team}')
         // Global Search
         Route::get('search', [GlobalSearchController::class, 'search'])->name('search');
 
+        // POS API Routes
+        Route::get('api/products/search', [ProductController::class, 'search'])->name('api.products.search');
+        Route::get('api/customers/search', [CustomerController::class, 'search'])->name('api.customers.search');
+
         // Categories
         Route::get('categories', [CategoryController::class, 'index'])->name('categories.index');
         Route::post('categories', [CategoryController::class, 'store'])->name('categories.store');

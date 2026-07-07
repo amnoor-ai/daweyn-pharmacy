@@ -1,5 +1,4 @@
-import { Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import * as React from 'react';
 import {
     Dialog,
     DialogContent,
@@ -8,69 +7,60 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Trash2 } from 'lucide-react';
 
-type Props = {
+interface DeleteConfirmDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    /** Name of the item being deleted — shown in the dialog body */
-    itemName: string;
-    /** Called when the user clicks the red "Delete" button */
     onConfirm: () => void;
-    /** Optional override for the description line */
-    description?: string;
-};
+    title?: string;
+    itemName: string;
+    processing?: boolean;
+}
 
-/**
- * Reusable delete-confirmation dialog.
- *
- * Usage:
- *   const [target, setTarget] = useState<Item | null>(null);
- *   <DeleteConfirmDialog
- *     open={!!target}
- *     onOpenChange={(open) => !open && setTarget(null)}
- *     itemName={target?.name ?? ''}
- *     onConfirm={() => { router.delete(...); setTarget(null); }}
- *   />
- */
 export default function DeleteConfirmDialog({
     open,
     onOpenChange,
-    itemName,
     onConfirm,
-    description,
-}: Props) {
+    title = 'Confirm Deletion',
+    itemName,
+    processing = false,
+}: DeleteConfirmDialogProps) {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-[400px] bg-surface border-border-soft">
-                <DialogHeader>
-                    <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-danger-bg">
-                        <Trash2 className="h-5 w-5 text-danger-fg" />
+            <DialogContent className="sm:max-w-md">
+                <DialogHeader className="flex flex-col items-center gap-3 text-center sm:text-center">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-danger-bg text-danger-fg">
+                        <Trash2 className="h-6 w-6" />
                     </div>
-                    <DialogTitle className="text-center text-base text-text-primary">
-                        Delete &ldquo;{itemName}&rdquo;?
-                    </DialogTitle>
-                    <DialogDescription className="text-center text-text-secondary">
-                        {description ?? 'This action cannot be undone. The record will be permanently removed.'}
-                    </DialogDescription>
+                    <div className="space-y-1">
+                        <DialogTitle className="text-lg font-bold text-text-primary">
+                            {title}
+                        </DialogTitle>
+                        <DialogDescription className="text-sm text-text-secondary">
+                            Are you sure you want to delete <span className="font-semibold text-text-primary">"{itemName}"</span>? This action cannot be undone.
+                        </DialogDescription>
+                    </div>
                 </DialogHeader>
-
-                <DialogFooter className="mt-2 sm:flex-row sm:justify-center gap-2">
+                <DialogFooter className="mt-4 gap-2 sm:flex-row sm:justify-center">
                     <Button
+                        type="button"
                         variant="outline"
-                        className="border-border-soft text-text-primary hover:bg-canvas"
                         onClick={() => onOpenChange(false)}
+                        disabled={processing}
+                        className="w-full sm:w-auto"
                     >
                         Cancel
                     </Button>
                     <Button
-                        onClick={() => {
-                            onConfirm();
-                            onOpenChange(false);
-                        }}
-                        className="bg-danger-fg text-white hover:bg-danger-fg/90 transition-all duration-200 hover:-translate-y-0.5"
+                        type="button"
+                        variant="destructive"
+                        onClick={onConfirm}
+                        disabled={processing}
+                        className="w-full bg-danger-fg text-white hover:bg-danger-fg/90 sm:w-auto gap-2 transition-all duration-200 hover:-translate-y-0.5"
                     >
-                        <Trash2 className="mr-1.5 h-3.5 w-3.5" />
-                        Delete
+                        {processing ? 'Deleting...' : 'Delete'}
                     </Button>
                 </DialogFooter>
             </DialogContent>

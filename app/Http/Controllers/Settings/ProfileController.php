@@ -37,14 +37,15 @@ class ProfileController extends Controller
             if ($user->avatar_path) {
                 \Illuminate\Support\Facades\Storage::disk('public')->delete($user->avatar_path);
             }
-            $user->avatar_path = $request->file('avatar')->store('avatars', 'public');
+            $path = $request->file('avatar')->store('avatars', 'public');
+            $user->avatar_path = $path;
         }
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
         }
 
-        $request->user()->save();
+        $user->save();
 
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Profile updated.')]);
 

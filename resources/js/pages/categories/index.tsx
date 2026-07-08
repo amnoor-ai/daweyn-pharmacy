@@ -1,6 +1,7 @@
 import { Head, usePage } from '@inertiajs/react';
-import { Plus, Search } from 'lucide-react';
+import { Plus, Search, Filter, LayoutGrid, List, Download } from 'lucide-react';
 import { useState } from 'react';
+import Heading from '@/components/heading';
 import CategoryDialog from '@/components/CategoryDialog';
 import CategoryTable from '@/components/CategoryTable';
 import { Button } from '@/components/ui/button';
@@ -21,6 +22,7 @@ export default function CategoriesIndex({ categories }: Props) {
         Category | undefined
     >(undefined);
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
 
     function openCreate() {
         setEditingCategory(undefined);
@@ -47,10 +49,11 @@ setEditingCategory(undefined);
             <div className="flex flex-col gap-4">
                 {/* Page Header */}
                 <div className="flex items-center justify-between mt-2">
-                    <div>
-                        <h2 className="text-2xl font-bold tracking-tight text-text-primary">Categories</h2>
-                        <p className="text-sm text-text-muted mt-1">Manage your product categories and organization.</p>
-                    </div>
+                    <Heading 
+                        title="Categories" 
+                        description="Manage your product categories and organization." 
+                        variant="default"
+                    />
                 </div>
 
                 {/* Toolbar */}
@@ -69,6 +72,28 @@ setEditingCategory(undefined);
                     {/* Spacer */}
                     <div className="flex-1" />
 
+                    {/* Toolbar Actions */}
+                    <div className="flex items-center gap-2">
+                        <Button variant="outline" size="sm" className="hidden sm:flex text-text-secondary h-9 border-border-soft bg-surface">
+                            <Filter className="mr-2 h-4 w-4" /> Filter
+                        </Button>
+                        <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="text-text-secondary h-9 border-border-soft bg-surface"
+                            onClick={() => setViewMode(v => v === 'grid' ? 'table' : 'grid')}
+                        >
+                            {viewMode === 'grid' ? (
+                                <><List className="mr-2 h-4 w-4" /> Table View</>
+                            ) : (
+                                <><LayoutGrid className="mr-2 h-4 w-4" /> Grid View</>
+                            )}
+                        </Button>
+                        <Button variant="outline" size="sm" className="hidden sm:flex text-text-secondary h-9 border-border-soft bg-surface">
+                            <Download className="mr-2 h-4 w-4" /> Export
+                        </Button>
+                    </div>
+
                     {/* Primary action */}
                     <Button
                         onClick={openCreate}
@@ -84,6 +109,7 @@ setEditingCategory(undefined);
                     categories={categories}
                     teamSlug={teamSlug}
                     onEdit={openEdit}
+                    viewMode={viewMode}
                 />
             </div>
 

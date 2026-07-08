@@ -1,7 +1,8 @@
-import { Head, usePage, router } from '@inertiajs/react';
-import { TrendingUp, DollarSign, Activity } from 'lucide-react';
+import { Head, usePage, router, Link } from '@inertiajs/react';
+import { TrendingUp, DollarSign, Activity, Users, Package, Tags, ReceiptText, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
 import Heading from '@/components/heading';
+import CustomerTable from '@/components/CustomerTable';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -11,7 +12,7 @@ import { Label } from '@/components/ui/label';
 // You can later add Recharts or another charting library for the `sales_trend` and `payment_methods` data.
 
 export default function ReportsIndex() {
-    const { metrics, top_products, payment_methods, filters, currentTeam } = usePage<any>().props;
+    const { metrics, top_products, payment_methods, customers, filters, currentTeam } = usePage<any>().props;
 
     const [start, setStart] = useState(filters.start.split(' ')[0]);
     const [end, setEnd] = useState(filters.end.split(' ')[0]);
@@ -130,6 +131,59 @@ export default function ReportsIndex() {
                             )}
                         </CardContent>
                     </Card>
+                </div>
+
+                {/* Quick Links */}
+                <div>
+                    <h3 className="text-lg font-bold tracking-tight text-text-primary mb-4">Quick Navigation</h3>
+                    <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+                        <Link href={`/${currentTeam.slug}/customers`} className="flex items-center justify-between p-4 rounded-xl border border-border-soft bg-surface hover:shadow-md transition-all group">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 rounded-lg bg-primary-50 text-brand">
+                                    <Users className="h-5 w-5" />
+                                </div>
+                                <span className="font-medium text-text-primary group-hover:text-brand transition-colors">Customers</span>
+                            </div>
+                            <ArrowRight className="h-4 w-4 text-text-muted group-hover:text-brand transition-colors" />
+                        </Link>
+                        <Link href={`/${currentTeam.slug}/products`} className="flex items-center justify-between p-4 rounded-xl border border-border-soft bg-surface hover:shadow-md transition-all group">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 rounded-lg bg-primary-50 text-brand">
+                                    <Package className="h-5 w-5" />
+                                </div>
+                                <span className="font-medium text-text-primary group-hover:text-brand transition-colors">Products</span>
+                            </div>
+                            <ArrowRight className="h-4 w-4 text-text-muted group-hover:text-brand transition-colors" />
+                        </Link>
+                        <Link href={`/${currentTeam.slug}/categories`} className="flex items-center justify-between p-4 rounded-xl border border-border-soft bg-surface hover:shadow-md transition-all group">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 rounded-lg bg-primary-50 text-brand">
+                                    <Tags className="h-5 w-5" />
+                                </div>
+                                <span className="font-medium text-text-primary group-hover:text-brand transition-colors">Categories</span>
+                            </div>
+                            <ArrowRight className="h-4 w-4 text-text-muted group-hover:text-brand transition-colors" />
+                        </Link>
+                        <Link href={`/${currentTeam.slug}/transactions`} className="flex items-center justify-between p-4 rounded-xl border border-border-soft bg-surface hover:shadow-md transition-all group">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 rounded-lg bg-primary-50 text-brand">
+                                    <ReceiptText className="h-5 w-5" />
+                                </div>
+                                <span className="font-medium text-text-primary group-hover:text-brand transition-colors">Transactions</span>
+                            </div>
+                            <ArrowRight className="h-4 w-4 text-text-muted group-hover:text-brand transition-colors" />
+                        </Link>
+                    </div>
+                </div>
+
+                {/* Top Customers Table */}
+                <div>
+                    <h3 className="text-lg font-bold tracking-tight text-text-primary mb-4">Top Customers</h3>
+                    <CustomerTable 
+                        customers={customers} 
+                        teamSlug={currentTeam.slug} 
+                        onEdit={(customer) => router.visit(`/${currentTeam.slug}/customers/${customer.id}`)}
+                    />
                 </div>
             </div>
         </>

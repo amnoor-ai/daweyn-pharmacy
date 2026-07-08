@@ -29,8 +29,8 @@ import type { DashboardInvitation } from '@/types';
 type DashboardStats = {
     totalRevenue: number;
     totalTransactions: number;
-    totalCustomers: number;
-    totalProducts: number;
+    activeCustomers: number;
+    lowStockCount: number;
 };
 
 type LowStockProduct = {
@@ -128,22 +128,22 @@ export default function Dashboard({
                         iconColorClass="text-success-fg"
                     />
                     <StatCard
-                        title="Transactions"
+                        title="Orders"
                         value={stats.totalTransactions.toLocaleString()}
                         icon={Receipt}
                         iconBgClass="bg-chip-pink"
                         iconColorClass="text-danger-fg"
                     />
                     <StatCard
-                        title="Customers"
-                        value={stats.totalCustomers.toLocaleString()}
+                        title="Active Customers"
+                        value={stats.activeCustomers.toLocaleString()}
                         icon={Users}
                         iconBgClass="bg-chip-blue"
                         iconColorClass="text-accent-indigo"
                     />
                     <StatCard
-                        title="Products"
-                        value={stats.totalProducts.toLocaleString()}
+                        title="Low Stock"
+                        value={stats.lowStockCount.toLocaleString()}
                         icon={Pill}
                         iconBgClass="bg-chip-orange"
                         iconColorClass="text-warning-fg"

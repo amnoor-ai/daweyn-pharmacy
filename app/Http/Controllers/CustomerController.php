@@ -12,8 +12,13 @@ class CustomerController extends Controller
     public function index(Request $request, Team $currentTeam)
     {
         $q = $request->query('q', '');
+        $status = $request->query('status', 'all');
+        $minSpend = $request->query('min_spend');
+        $maxSpend = $request->query('max_spend');
+        $startDate = $request->query('start_date');
+        $endDate = $request->query('end_date');
 
-        $customers = $currentTeam->customers()
+        $customersQuery = $currentTeam->customers()
             ->withSum('transactions', 'total')
             ->withMax('transactions', 'created_at')
             ->when($q, fn ($query) => $query->where(function ($q2) use ($q) {
@@ -21,12 +26,32 @@ class CustomerController extends Controller
                    ->orWhere('phone', 'like', "%{$q}%")
                    ->orWhere('email', 'like', "%{$q}%");
             }))
-            ->orderBy('name')
-            ->get();
+            ->when($status === 'active', fn ($query) => $query->whereHas('transactions', fn ($q) => $q->where('created_at', '>=', now()->subDays(30))))
+            ->when($status === 'inactive', fn ($query) => $query->whereDoesntHave('transactions', fn ($q) => $q->where('created_at', '>=', now()->subDays(30))))
+            ->when($startDate, fn ($query) => $query->whereHas('transactions', fn ($q) => $q->where('created_at', '>=', $startDate . ' 00:00:00')))
+            ->when($endDate, fn ($query) => $query->whereHas('transactions', fn ($q) => $q->where('created_at', '<=', $endDate . ' 23:59:59')));
+
+        $customers = $customersQuery->orderBy('name')->get();
+
+        if ($minSpend !== null || $maxSpend !== null) {
+            $customers = $customers->filter(function ($customer) use ($minSpend, $maxSpend) {
+                $spent = $customer->transactions_sum_total ?? 0;
+                if ($minSpend !== null && $spent < $minSpend) return false;
+                if ($maxSpend !== null && $spent > $maxSpend) return false;
+                return true;
+            })->values();
+        }
 
         return Inertia::render('customers/index', [
             'customers' => $customers,
-            'search' => $q,
+            'filters' => [
+                'q' => $q,
+                'status' => $status,
+                'min_spend' => $minSpend,
+                'max_spend' => $maxSpend,
+                'start_date' => $startDate,
+                'end_date' => $endDate,
+            ],
         ]);
     }
 

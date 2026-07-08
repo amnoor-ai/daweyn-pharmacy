@@ -3,5 +3,6 @@ export type Category = {
     name: string;
     slug: string;
     description: string | null;
+    total_products?: number;
     created_at: string | null;
 };

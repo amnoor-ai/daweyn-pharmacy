@@ -1,6 +1,7 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import { Plus, Search, Users } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import Heading from '@/components/heading';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -71,6 +72,14 @@ export default function UsersIndex({ members }: Props) {
         <>
             <Head title="Staff & Users" />
             <div className="flex flex-col flex-1 gap-4">
+                {/* Page Header */}
+                <div className="flex items-center justify-between mt-2">
+                    <Heading 
+                        title="Staff & Users" 
+                        description="Manage your team members and their roles." 
+                    />
+                </div>
+
                 {/* Toolbar */}
                 <div className="flex flex-wrap items-center gap-3">
                     {/* Search */}
@@ -128,14 +137,14 @@ export default function UsersIndex({ members }: Props) {
                         </p>
                     </div>
                 ) : (
-                    <div className="flex-1 overflow-hidden rounded-lg border border-border-soft bg-surface shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
+                    <div className="flex-1 overflow-x-auto rounded-lg border border-border-soft bg-surface shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
                         <Table className="min-w-[800px]">
                             <TableHeader>
                                 <TableRow className="border-b border-divider hover:bg-transparent">
-                                    <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Staff Member</TableHead>
-                                    <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Email Address</TableHead>
-                                    <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Role</TableHead>
-                                    <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Joined Date</TableHead>
+                                    <TableHead className="px-4 py-3.5 text-left text-sm font-medium text-text-secondary uppercase">Staff Member</TableHead>
+                                    <TableHead className="px-4 py-3.5 text-left text-sm font-medium text-text-secondary uppercase">Email Address</TableHead>
+                                    <TableHead className="px-4 py-3.5 text-left text-sm font-medium text-text-secondary uppercase">Role</TableHead>
+                                    <TableHead className="px-4 py-3.5 text-left text-sm font-medium text-text-secondary uppercase">Joined Date</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -144,7 +153,7 @@ export default function UsersIndex({ members }: Props) {
                                         key={member.id}
                                         className="border-b border-divider hover:bg-primary-50 transition-colors"
                                     >
-                                        <TableCell className="px-6 py-4">
+                                        <TableCell className="px-4 py-4">
                                             <div className="flex items-center gap-3">
                                                 <Avatar className="h-9 w-9">
                                                     {member.avatar ? (
@@ -157,15 +166,15 @@ export default function UsersIndex({ members }: Props) {
                                                         {getInitials(member.name)}
                                                     </AvatarFallback>
                                                 </Avatar>
-                                                <span className="font-medium text-text-primary">
+                                                <span className="font-medium text-sm text-text-primary">
                                                     {member.name}
                                                 </span>
                                             </div>
                                         </TableCell>
-                                        <TableCell className="px-6 py-4 text-text-secondary">
+                                        <TableCell className="px-4 py-4 text-sm text-text-secondary">
                                             {member.email}
                                         </TableCell>
-                                        <TableCell className="px-6 py-4">
+                                        <TableCell className="px-4 py-4">
                                             <Badge
                                                 className={
                                                     roleBadgeStyles[member.role] ||
@@ -175,7 +184,7 @@ export default function UsersIndex({ members }: Props) {
                                                 {member.role_label}
                                             </Badge>
                                         </TableCell>
-                                        <TableCell className="px-6 py-4 text-text-secondary">
+                                        <TableCell className="px-4 py-4 text-sm text-text-secondary">
                                             {member.created_at
                                                 ? new Date(
                                                       member.created_at,

@@ -37,8 +37,9 @@ class DashboardController extends Controller
         // 2. Metrics calculation
         $totalRevenue = (float) $current_team->transactions()->sum('total');
         $totalTransactions = $current_team->transactions()->count();
-        $totalCustomers = $current_team->customers()->count();
-        $totalProducts = $current_team->products()->count();
+        $activeCustomers = $current_team->customers()
+            ->whereHas('transactions', fn ($q) => $q->where('created_at', '>=', now()->subDays(30)))
+            ->count();
 
         // 3. Low stock products (stock_quantity <= alert_threshold)
         $lowStockProducts = $current_team->products()
@@ -124,8 +125,8 @@ class DashboardController extends Controller
             'stats' => [
                 'totalRevenue' => $totalRevenue,
                 'totalTransactions' => $totalTransactions,
-                'totalCustomers' => $totalCustomers,
-                'totalProducts' => $totalProducts,
+                'activeCustomers' => $activeCustomers,
+                'lowStockCount' => $lowStockProducts->count(),
             ],
             'lowStockProducts' => $lowStockProducts,
             'recentTransactions' => $recentTransactions,

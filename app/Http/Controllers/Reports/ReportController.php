@@ -64,6 +64,18 @@ class ReportController extends Controller
             ->groupBy('payment_method')
             ->get();
 
+        // Top Customers
+        $customers = $currentTeam->customers()
+            ->withSum(['transactions' => function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('created_at', [$startDate, $endDate]);
+            }], 'total')
+            ->withMax(['transactions' => function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('created_at', [$startDate, $endDate]);
+            }], 'created_at')
+            ->orderByDesc('transactions_sum_total')
+            ->limit(10)
+            ->get();
+
         return Inertia::render('reports/index', [
             'metrics' => [
                 'total_revenue' => (float) $totalRevenue,
@@ -73,6 +85,7 @@ class ReportController extends Controller
             'sales_trend' => $salesTrend,
             'top_products' => $topProducts,
             'payment_methods' => $paymentMethods,
+            'customers' => $customers,
             'filters' => [
                 'start' => $startDate,
                 'end' => $endDate,

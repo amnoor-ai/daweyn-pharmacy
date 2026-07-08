@@ -21,6 +21,7 @@ class CategoryController extends Controller
         $q = $request->query('q', '');
 
         $categories = Category::where('team_id', $current_team->id)
+            ->withCount('products')
             ->when($q, fn ($query) => $query->where(function ($q2) use ($q) {
                 $q2->where('name', 'like', "%{$q}%")
                    ->orWhere('description', 'like', "%{$q}%");
@@ -32,6 +33,7 @@ class CategoryController extends Controller
                 'name' => $category->name,
                 'slug' => $category->slug,
                 'description' => $category->description,
+                'total_products' => $category->products_count ?? 0,
                 'created_at' => $category->created_at?->toISOString(),
             ]);
 

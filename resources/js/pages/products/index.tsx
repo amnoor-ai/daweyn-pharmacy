@@ -1,6 +1,7 @@
 import { Head, usePage } from '@inertiajs/react';
 import { Plus, Search } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import Heading from '@/components/heading';
 import ProductSheet from '@/components/ProductSheet';
 import ProductTable from '@/components/ProductTable';
 import { Button } from '@/components/ui/button';
@@ -78,11 +79,11 @@ setEditingProduct(undefined);
             <Head title="Products" />
             <div className="flex flex-col flex-1 gap-4">
                 {/* Page Header */}
-                <div className="flex items-center justify-between mt-2">
-                    <div>
-                        <h2 className="text-2xl font-bold tracking-tight text-text-primary">Products</h2>
-                        <p className="text-sm text-text-muted mt-1">Manage your pharmacy products and monitor inventory.</p>
-                    </div>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <Heading 
+                        title="Products" 
+                        description="Manage your pharmacy products and monitor inventory." 
+                    />
                     <div className="flex items-center gap-2">
                         <Button
                             onClick={handleAdd}

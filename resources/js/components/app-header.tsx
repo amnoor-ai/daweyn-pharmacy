@@ -1,5 +1,5 @@
 import { Link, router, usePage } from '@inertiajs/react';
-import { Loader2, Moon, Search, Sun, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { Loader2, Moon, Search, Sun, PanelLeftClose, PanelLeftOpen, LayoutDashboard, Calculator, Package, Tags, ReceiptText, Users, BarChart3, Settings, UserCog } from 'lucide-react';
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { TeamSwitcher } from '@/components/team-switcher';
@@ -35,7 +35,7 @@ export function AppHeader({ breadcrumbs = [], collapsed, setCollapsed }: Props) 
         () => false,
     );
     const [searchQuery, setSearchQuery] = useState('');
-    const [searchResults, setSearchResults] = useState<{ products: any[], customers: any[], transactions: any[] } | null>(null);
+    const [searchResults, setSearchResults] = useState<{ pages: any[], products: any[], customers: any[], transactions: any[] } | null>(null);
     const [isSearching, setIsSearching] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const searchContainerRef = useRef<HTMLDivElement>(null);
@@ -139,10 +139,37 @@ export function AppHeader({ breadcrumbs = [], collapsed, setCollapsed }: Props) 
                             {/* Search Dropdown */}
                             {isDropdownOpen && searchResults && (
                                 <div className="absolute top-[120%] mt-2 w-[400px] right-0 rounded-xl border border-border-soft bg-white p-2 shadow-lg dark:bg-surface z-50 max-h-[400px] overflow-y-auto">
-                                    {searchResults.products.length === 0 && searchResults.customers.length === 0 && searchResults.transactions.length === 0 && !isSearching ? (
+                                    {searchResults.pages?.length === 0 && searchResults.products.length === 0 && searchResults.customers.length === 0 && searchResults.transactions.length === 0 && !isSearching ? (
                                         <div className="p-4 text-center text-sm text-text-muted">No results found for &quot;{searchQuery}&quot;</div>
                                     ) : (
                                         <div className="space-y-4">
+                                            {searchResults.pages?.length > 0 && (
+                                                <div>
+                                                    <div className="px-2 py-1.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Pages</div>
+                                                    {searchResults.pages.map(p => {
+                                                        const IconMap: any = {
+                                                            LayoutDashboard, Calculator, Package, Tags, ReceiptText, Users, BarChart3, Settings, UserCog
+                                                        };
+                                                        const Icon = IconMap[p.icon] || LayoutDashboard;
+                                                        return (
+                                                            <Link 
+                                                                key={p.name} 
+                                                                href={p.url}
+                                                                onClick={() => setIsDropdownOpen(false)}
+                                                                className="flex items-center gap-3 rounded-lg px-2 py-2 hover:bg-primary-50 transition-colors"
+                                                            >
+                                                                <div className="size-8 rounded-md bg-primary-100 flex items-center justify-center text-brand">
+                                                                    <Icon className="size-4" />
+                                                                </div>
+                                                                <div className="flex-1 overflow-hidden">
+                                                                    <div className="text-sm font-medium text-text-primary truncate">{p.name}</div>
+                                                                </div>
+                                                            </Link>
+                                                        );
+                                                    })}
+                                                </div>
+                                            )}
+
                                             {searchResults.products.length > 0 && (
                                                 <div>
                                                     <div className="px-2 py-1.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Products</div>

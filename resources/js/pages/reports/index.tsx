@@ -7,6 +7,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
 
 // For this implementation, we will build a basic UI. 
 // You can later add Recharts or another charting library for the `sales_trend` and `payment_methods` data.
@@ -87,18 +95,27 @@ export default function ReportsIndex() {
                         </CardHeader>
                         <CardContent>
                             {top_products.length > 0 ? (
-                                <div className="space-y-4">
-                                    {top_products.map((product: any, idx: number) => (
-                                        <div key={idx} className="flex items-center justify-between">
-                                            <div className="space-y-1">
-                                                <p className="text-sm font-medium leading-none">{product.name}</p>
-                                                <p className="text-sm text-muted-foreground">
-                                                    {product.quantity_sold} sold
-                                                </p>
-                                            </div>
-                                            <div className="font-medium">${Number(product.total_revenue).toFixed(2)}</div>
-                                        </div>
-                                    ))}
+                                <div className="overflow-x-auto">
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow className="border-b border-divider hover:bg-transparent">
+                                                <TableHead className="w-12 text-left">#</TableHead>
+                                                <TableHead className="text-left">Product</TableHead>
+                                                <TableHead className="text-right">Quantity Sold</TableHead>
+                                                <TableHead className="text-right">Total Revenue</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {top_products.map((product: any, idx: number) => (
+                                                <TableRow key={idx} className="border-b border-border-soft last:border-0 hover:bg-canvas/50">
+                                                    <TableCell className="font-medium text-text-secondary text-left">{idx + 1}</TableCell>
+                                                    <TableCell className="font-semibold text-text-primary text-left">{product.name}</TableCell>
+                                                    <TableCell className="text-right text-text-secondary">{product.quantity_sold} sold</TableCell>
+                                                    <TableCell className="font-bold text-text-primary text-right">${Number(product.total_revenue).toFixed(2)}</TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
                                 </div>
                             ) : (
                                 <div className="text-sm text-muted-foreground">No sales data for this period.</div>
@@ -113,18 +130,25 @@ export default function ReportsIndex() {
                         </CardHeader>
                         <CardContent>
                             {payment_methods.length > 0 ? (
-                                <div className="space-y-4">
-                                    {payment_methods.map((method: any, idx: number) => (
-                                        <div key={idx} className="flex items-center justify-between">
-                                            <div className="space-y-1">
-                                                <p className="text-sm font-medium leading-none capitalize">{method.payment_method}</p>
-                                                <p className="text-sm text-muted-foreground">
-                                                    {method.count} transactions
-                                                </p>
-                                            </div>
-                                            <div className="font-medium">${Number(method.total).toFixed(2)}</div>
-                                        </div>
-                                    ))}
+                                <div className="overflow-x-auto">
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow className="border-b border-divider hover:bg-transparent">
+                                                <TableHead className="text-left">Method</TableHead>
+                                                <TableHead className="text-right">Transactions</TableHead>
+                                                <TableHead className="text-right">Total</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {payment_methods.map((method: any, idx: number) => (
+                                                <TableRow key={idx} className="border-b border-border-soft last:border-0 hover:bg-canvas/50">
+                                                    <TableCell className="font-semibold text-text-primary text-left capitalize">{method.payment_method}</TableCell>
+                                                    <TableCell className="text-right text-text-secondary">{method.count} transactions</TableCell>
+                                                    <TableCell className="font-bold text-text-primary text-right">${Number(method.total).toFixed(2)}</TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
                                 </div>
                             ) : (
                                 <div className="text-sm text-muted-foreground">No sales data for this period.</div>

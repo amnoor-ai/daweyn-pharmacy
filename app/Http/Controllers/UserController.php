@@ -33,8 +33,22 @@ class UserController extends Controller
                 ];
             });
 
+        $invitations = $currentTeam->invitations()
+            ->whereNull('accepted_at')
+            ->get()
+            ->map(fn ($invitation) => [
+                'code' => $invitation->code,
+                'email' => $invitation->email,
+                'role' => $invitation->role->value,
+                'role_label' => $invitation->role->label(),
+                'created_at' => $invitation->created_at->toISOString(),
+            ]);
+
         return Inertia::render('users/index', [
             'members' => $members,
+            'invitations' => $invitations,
+            'availableRoles' => \App\Enums\TeamRole::assignable(),
+            'permissions' => request()->user()->toTeamPermissions($currentTeam),
         ]);
     }
 }

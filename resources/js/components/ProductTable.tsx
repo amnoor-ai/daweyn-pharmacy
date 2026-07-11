@@ -3,7 +3,6 @@ import { Pencil, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 import ProductAvatar from '@/components/ProductAvatar';
-import StockAlertBadge from '@/components/StockAlertBadge';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -61,15 +60,15 @@ return;
                 <Table className="min-w-[800px]">
                     <TableHeader>
                         <TableRow className="border-b border-divider hover:bg-transparent">
-                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Product</TableHead>
-                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Image</TableHead>
-                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Category</TableHead>
-                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">SKU</TableHead>
-                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Cost</TableHead>
-                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Price</TableHead>
-                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Stock</TableHead>
-                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Expiry</TableHead>
-                            <TableHead className="px-6 py-3.5 text-right text-[13px] font-medium text-text-secondary uppercase">Actions</TableHead>
+                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase w-[200px] max-w-[200px]">Product</TableHead>
+                            <TableHead className="px-3 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase w-14">Image</TableHead>
+                            <TableHead className="px-4 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase w-[140px]">Category</TableHead>
+                            <TableHead className="px-4 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase w-[130px]">SKU</TableHead>
+                            <TableHead className="px-4 py-3.5 text-right text-[13px] font-medium text-text-secondary uppercase w-[90px]">Cost</TableHead>
+                            <TableHead className="px-4 py-3.5 text-right text-[13px] font-medium text-text-secondary uppercase w-[90px]">Price</TableHead>
+                            <TableHead className="px-4 py-3.5 text-right text-[13px] font-medium text-text-secondary uppercase w-[170px]">Stock / Status</TableHead>
+                            <TableHead className="px-4 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase w-[110px]">Expiry</TableHead>
+                            <TableHead className="px-4 py-3.5 text-right text-[13px] font-medium text-text-secondary uppercase w-[90px]">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -78,49 +77,50 @@ return;
                                 key={product.id}
                                 className="border-b border-divider hover:bg-primary-50 transition-colors"
                             >
-                                <TableCell className="px-6 py-4 font-medium text-text-primary">
-                                    {product.name}
+                                <TableCell className="px-6 py-4 font-medium text-text-primary max-w-[200px]">
+                                    <span className="line-clamp-2">{product.name}</span>
                                 </TableCell>
-                                <TableCell className="px-6 py-4">
+                                <TableCell className="px-3 py-4">
                                     <ProductAvatar src={product.image_url} alt={product.name} />
                                 </TableCell>
-                                <TableCell className="px-6 py-4 text-text-secondary">
+                                <TableCell className="px-4 py-4 text-text-secondary">
                                     {product.category?.name ?? '—'}
                                 </TableCell>
-                                <TableCell className="px-6 py-4 font-mono text-xs text-text-secondary text-left">
+                                <TableCell className="px-4 py-4 font-mono text-xs text-text-primary">
                                     {product.sku}
                                 </TableCell>
-                                <TableCell className="px-6 py-4 text-text-secondary text-left">
-                                    ${product.cost_price}
+                                <TableCell className="px-4 py-4 text-text-secondary text-right tabular-nums">
+                                    ${Number(product.cost_price).toFixed(2)}
                                 </TableCell>
-                                <TableCell className="px-6 py-4 text-text-primary text-left font-medium">
-                                    ${product.selling_price}
+                                <TableCell className="px-4 py-4 text-text-primary text-right font-medium tabular-nums">
+                                    ${Number(product.selling_price).toFixed(2)}
                                 </TableCell>
-                                <TableCell className="px-6 py-4">
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-text-primary">
+                                <TableCell className="px-4 py-4">
+                                    <div className="flex items-center justify-end gap-3">
+                                        <span className="text-text-primary tabular-nums font-medium shrink-0">
                                             {product.stock_quantity}
                                         </span>
-                                        <StockAlertBadge
-                                            quantity={product.stock_quantity}
-                                            threshold={product.alert_threshold}
-                                        />
-                                        {product.stock_status === 'expired' && (
-                                            <Badge variant="secondary" className="rounded-full bg-danger-bg text-danger-fg hover:bg-danger-bg/80 border-transparent shadow-none">
-                                                Expired
-                                            </Badge>
-                                        )}
-                                        {product.stock_status === 'expiring_soon' && (
-                                            <Badge variant="secondary" className="rounded-full bg-warning-bg text-warning-fg hover:bg-warning-bg/80 border-transparent shadow-none">
-                                                Exp. Soon
-                                            </Badge>
-                                        )}
+                                        {(() => {
+                                            if (product.stock_status === 'expired') {
+                                                return <Badge variant="secondary" className="rounded-full bg-danger-bg text-danger-fg border-none shadow-none">Expired</Badge>;
+                                            }
+                                            if (product.stock_status === 'expiring_soon') {
+                                                return <Badge variant="secondary" className="rounded-full bg-warning-bg text-warning-fg border-none shadow-none">Exp. Soon</Badge>;
+                                            }
+                                            if (product.stock_quantity === 0) {
+                                                return <Badge variant="secondary" className="rounded-full bg-danger-bg text-danger-fg border-none shadow-none">Out of Stock</Badge>;
+                                            }
+                                            if (product.stock_quantity <= (product.alert_threshold ?? 0)) {
+                                                return <Badge variant="secondary" className="rounded-full bg-warning-bg text-warning-fg border-none shadow-none">Low Stock</Badge>;
+                                            }
+                                            return <Badge variant="secondary" className="rounded-full bg-success-bg text-success-fg border-none shadow-none">In Stock</Badge>;
+                                        })()}
                                     </div>
                                 </TableCell>
-                                <TableCell className="px-6 py-4 text-text-secondary text-left">
+                                <TableCell className="px-4 py-4 text-text-secondary text-left">
                                     {product.expiry_date ? new Date(product.expiry_date).toLocaleDateString() : '—'}
                                 </TableCell>
-                                <TableCell className="px-6 py-4 text-right">
+                                <TableCell className="px-4 py-4 text-right">
                                     <div className="flex items-center justify-end gap-1">
                                         <Button
                                             variant="ghost"

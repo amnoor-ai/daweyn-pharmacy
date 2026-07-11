@@ -165,8 +165,8 @@ export default function PosIndex() {
                                             <span className="font-medium text-text-primary text-sm truncate">{product.name}</span>
                                             <span className="text-xs text-text-secondary truncate">{product.sku}</span>
                                             <div className="mt-1 flex items-center justify-between">
-                                                <span className="text-sm font-semibold text-brand">${Number(product.selling_price).toFixed(2)}</span>
-                                                <span className="text-xs text-text-secondary">Stock: {product.stock_quantity}</span>
+                                                <span className="text-sm font-bold text-success-fg">${Number(product.selling_price).toFixed(2)}</span>
+                                                <span className="text-xs text-text-muted">Stock: {product.stock_quantity}</span>
                                             </div>
                                         </div>
                                     </button>
@@ -182,7 +182,7 @@ export default function PosIndex() {
                 </div>
 
                 {/* Desktop Cart */}
-                <div className="hidden lg:flex w-80 flex-col gap-4 border-l border-border-soft bg-surface p-5 lg:overflow-y-auto">
+                <div className="hidden lg:flex w-80 flex-col border-l border-border-soft bg-surface">
                     {renderCart()}
                 </div>
             </div>
@@ -207,8 +207,9 @@ export default function PosIndex() {
 
     function renderCart(isMobile = false) {
         return (
-            <div className={`flex flex-col h-full gap-4 ${isMobile ? 'p-6 overflow-y-auto' : ''}`}>
-                <div className="flex items-center gap-2">
+            <div className={`flex flex-col h-full ${isMobile ? 'overflow-hidden' : ''}`}>
+                {/* Fixed header */}
+                <div className={`flex items-center gap-2 shrink-0 ${isMobile ? 'px-6 pt-6 pb-3' : 'px-5 pt-5 pb-3'}`}>
                     <ShoppingCart className="h-5 w-5 text-brand" />
                     <h2 className="text-lg font-semibold text-text-primary">Cart</h2>
                     {cart.length > 0 && (
@@ -216,8 +217,8 @@ export default function PosIndex() {
                     )}
                 </div>
 
-                {/* Cart items */}
-                <div className="flex flex-col gap-2 flex-1">
+                {/* Scrollable cart items */}
+                <div className={`flex flex-col gap-2 flex-1 overflow-y-auto min-h-0 ${isMobile ? 'px-6' : 'px-5'}`}>
                     {cart.length === 0 && (
                         <p className="text-center text-sm text-text-secondary py-8">
                             No items added yet.
@@ -248,8 +249,8 @@ export default function PosIndex() {
                     ))}
                 </div>
 
-                {/* Totals */}
-                <div className="flex flex-col gap-2 border-t border-border-soft pt-3 text-sm">
+                {/* Sticky bottom — totals + customer + payment + action */}
+                <div className={`shrink-0 flex flex-col gap-3 border-t border-border-soft ${isMobile ? 'px-6 pt-4 pb-8' : 'px-5 pt-4 pb-5'}`}>
                     <div className="flex justify-between text-text-secondary">
                         <span>Subtotal</span>
                         <span>${subtotal.toFixed(2)}</span>
@@ -278,10 +279,6 @@ export default function PosIndex() {
                         <span>Total</span>
                         <span>${total.toFixed(2)}</span>
                     </div>
-                </div>
-
-                {/* Customer & Payment */}
-                <div className="flex flex-col gap-4 border-t border-border-soft pt-3">
                     <div className="flex flex-col gap-2">
                         <Label className="text-xs text-text-secondary">Customer (optional)</Label>
                         <Select
@@ -320,15 +317,13 @@ export default function PosIndex() {
                     </div>
                 </div>
 
-                <div className={isMobile ? 'pt-4 pb-8' : 'pt-2'}>
-                    <Button
-                        onClick={handleSubmit}
-                        disabled={cart.length === 0}
-                        className="w-full bg-brand hover:bg-brand-dark transition-all duration-200 shadow-sm py-5 text-sm"
-                    >
-                        Complete Sale • ${total.toFixed(2)}
-                    </Button>
-                </div>
+                <Button
+                    onClick={handleSubmit}
+                    disabled={cart.length === 0}
+                    className="w-full bg-brand hover:bg-brand-dark transition-all duration-200 shadow-sm py-5 text-sm shrink-0"
+                >
+                    Complete Sale • ${total.toFixed(2)}
+                </Button>
             </div>
         );
     }

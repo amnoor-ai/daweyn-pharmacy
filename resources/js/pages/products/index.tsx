@@ -84,15 +84,6 @@ setEditingProduct(undefined);
                         title="Products" 
                         description="Manage your pharmacy products and monitor inventory." 
                     />
-                    <div className="flex items-center gap-2">
-                        <Button
-                            onClick={handleAdd}
-                            className="gap-1.5 bg-brand hover:bg-brand-dark transition-all duration-200 shadow-sm px-4"
-                        >
-                            <Plus className="h-4 w-4" />
-                            <span className="hidden sm:inline">Add Product</span>
-                        </Button>
-                    </div>
                 </div>
 
                 {/* Toolbar */}
@@ -144,6 +135,18 @@ setEditingProduct(undefined);
                             ))}
                         </SelectContent>
                     </Select>
+
+                    {/* Spacer */}
+                    <div className="flex-1" />
+
+                    {/* Add button — same row as filters */}
+                    <Button
+                        onClick={handleAdd}
+                        className="gap-1.5 bg-brand hover:bg-brand-dark transition-all duration-200 hover:-translate-y-0.5 shadow-sm px-4"
+                    >
+                        <Plus className="h-4 w-4" />
+                        Add Product
+                    </Button>
                 </div>
 
                 {/* Table */}

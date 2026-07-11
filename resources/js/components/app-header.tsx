@@ -2,7 +2,6 @@ import { Link, router, usePage } from '@inertiajs/react';
 import { Loader2, Moon, Search, Sun, PanelLeftClose, PanelLeftOpen, LayoutDashboard, Calculator, Package, Tags, ReceiptText, Users, BarChart3, Settings, UserCog } from 'lucide-react';
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { Breadcrumbs } from '@/components/breadcrumbs';
-import { TeamSwitcher } from '@/components/team-switcher';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -263,8 +262,11 @@ export function AppHeader({ breadcrumbs = [], collapsed, setCollapsed }: Props) 
                             <DropdownMenuTrigger asChild>
                                 <Button
                                     variant="ghost"
-                                    className="size-10 rounded-full p-1"
+                                    className="h-10 px-2 rounded-full flex items-center gap-2 hover:bg-primary-50"
                                 >
+                                    <span className="text-sm font-medium hidden sm:block text-text-primary pl-2">
+                                        {auth.user.name}
+                                    </span>
                                     <div className="relative">
                                         <Avatar className="size-8 overflow-hidden rounded-full">
                                             <AvatarImage
@@ -283,8 +285,6 @@ export function AppHeader({ breadcrumbs = [], collapsed, setCollapsed }: Props) 
                                 <UserMenuContent user={auth.user} />
                             </DropdownMenuContent>
                         </DropdownMenu>
-
-                        <TeamSwitcher inHeader />
                     </div>
                 </div>
             </div>

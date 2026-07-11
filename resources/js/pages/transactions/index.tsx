@@ -26,11 +26,11 @@ type Props = {
 };
 
 const paymentBadge: Record<string, string> = {
-    cash: 'bg-success-bg text-success-fg hover:bg-success-bg/80 border-transparent shadow-none',
-    zaad: 'bg-info-bg text-info-fg hover:bg-info-bg/80 border-transparent shadow-none',
-    evc: 'bg-info-bg text-info-fg hover:bg-info-bg/80 border-transparent shadow-none',
-    jeeb: 'bg-info-bg text-info-fg hover:bg-info-bg/80 border-transparent shadow-none',
-    card: 'bg-warning-bg text-warning-fg hover:bg-warning-bg/80 border-transparent shadow-none',
+    cash: 'bg-success-bg text-success-fg hover:bg-success-bg/80 border-none shadow-none',
+    zaad: 'bg-info-bg text-info-fg hover:bg-info-bg/80 border-none shadow-none',
+    evc: 'bg-info-bg text-info-fg hover:bg-info-bg/80 border-none shadow-none',
+    jeeb: 'bg-info-bg text-info-fg hover:bg-info-bg/80 border-none shadow-none',
+    card: 'bg-warning-bg text-warning-fg hover:bg-warning-bg/80 border-none shadow-none',
 };
 
 const PAYMENT_OPTIONS = [
@@ -124,7 +124,7 @@ export default function TransactionsIndex({ transactions }: Props) {
                                     <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Invoice</TableHead>
                                     <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Customer</TableHead>
                                     <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Cashier</TableHead>
-                                    <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Items</TableHead>
+                                    <TableHead className="px-6 py-3.5 text-right text-[13px] font-medium text-text-secondary uppercase">Items</TableHead>
                                     <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Payment</TableHead>
                                     <TableHead className="px-6 py-3.5 text-right text-[13px] font-medium text-text-secondary uppercase">Total</TableHead>
                                     <TableHead className="px-6 py-3.5 text-right text-[13px] font-medium text-text-secondary uppercase">Date</TableHead>
@@ -137,24 +137,24 @@ export default function TransactionsIndex({ transactions }: Props) {
                                         key={tx.id}
                                         className="border-b border-divider hover:bg-primary-50 transition-colors"
                                     >
-                                        <TableCell className="px-6 py-4 font-mono text-xs font-medium text-text-primary">
+                                        <TableCell className="px-6 py-4 font-mono text-xs font-bold text-text-primary">
                                             {tx.invoice_number}
                                         </TableCell>
-                                        <TableCell className="px-6 py-4 text-text-secondary">
+                                        <TableCell className="px-6 py-4 font-medium text-text-primary">
                                             {tx.customer ? tx.customer.name : (
-                                                <span className="italic">Walk-in Customer</span>
+                                                <span className="text-text-muted">Walk-in Customer</span>
                                             )}
                                         </TableCell>
                                         <TableCell className="px-6 py-4 text-text-secondary">
                                             {tx.cashier?.name ?? '—'}
                                         </TableCell>
-                                        <TableCell className="px-6 py-4 text-text-secondary text-left">
+                                        <TableCell className="px-6 py-4 text-text-secondary text-right">
                                             {tx.items?.reduce((sum: number, item: any) => sum + item.quantity, 0) ?? 0}
                                         </TableCell>
                                         <TableCell className="px-6 py-4">
                                             <Badge
                                                 variant="secondary"
-                                                className={`bg-transparent ${paymentBadge[tx.payment_method]} border-current shadow-none`}
+                                                className={`${paymentBadge[tx.payment_method]}`}
                                             >
                                                 {tx.payment_method.toUpperCase()}
                                             </Badge>
@@ -180,19 +180,17 @@ export default function TransactionsIndex({ transactions }: Props) {
                                         </TableCell>
                                         <TableCell className="px-6 py-4 text-right">
                                             <Button
-                                                variant="ghost"
+                                                variant="outline"
                                                 size="sm"
                                                 onClick={() =>
                                                     router.visit(
                                                         `/${teamSlug}/transactions/${tx.id}`,
                                                     )
                                                 }
-                                                className="h-8 w-8 p-0 text-text-secondary hover:text-brand"
+                                                className="h-8 gap-1.5 px-3 text-xs font-medium text-text-secondary hover:text-brand hover:border-brand transition-colors"
                                             >
-                                                <Eye className="h-4 w-4" />
-                                                <span className="sr-only">
-                                                    View {tx.invoice_number}
-                                                </span>
+                                                <Eye className="h-3.5 w-3.5" />
+                                                Details
                                             </Button>
                                         </TableCell>
                                     </TableRow>

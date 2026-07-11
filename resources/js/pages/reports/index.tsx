@@ -46,14 +46,14 @@ export default function ReportsIndex() {
                     <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
                         <div className="flex flex-1 sm:flex-none items-center gap-2">
                             <Label htmlFor="start" className="sr-only">Start Date</Label>
-                            <Input type="date" id="start" value={start} onChange={(e) => setStart(e.target.value)} className="w-full sm:w-auto h-9 text-sm" />
+                            <Input type="date" id="start" value={start} onChange={(e) => setStart(e.target.value)} className="min-w-[148px] h-9 text-sm" />
                         </div>
-                        <span className="text-muted-foreground hidden sm:inline">-</span>
+                        <span className="text-text-muted text-sm hidden sm:inline">→</span>
                         <div className="flex flex-1 sm:flex-none items-center gap-2">
                             <Label htmlFor="end" className="sr-only">End Date</Label>
-                            <Input type="date" id="end" value={end} onChange={(e) => setEnd(e.target.value)} className="w-full sm:w-auto h-9 text-sm" />
+                            <Input type="date" id="end" value={end} onChange={(e) => setEnd(e.target.value)} className="min-w-[148px] h-9 text-sm" />
                         </div>
-                        <Button size="sm" onClick={handleFilter} className="w-full sm:w-auto mt-2 sm:mt-0">Filter</Button>
+                        <Button size="sm" onClick={handleFilter} className="h-9 bg-brand hover:bg-brand-dark text-white sm:mt-0">Filter</Button>
                     </div>
                 </div>
 
@@ -108,10 +108,10 @@ export default function ReportsIndex() {
                                         <TableBody>
                                             {top_products.map((product: any, idx: number) => (
                                                 <TableRow key={idx} className="border-b border-border-soft last:border-0 hover:bg-canvas/50">
-                                                    <TableCell className="font-medium text-text-secondary text-left">{idx + 1}</TableCell>
+                                                    <TableCell className="font-medium text-text-secondary text-left w-8">{idx + 1}</TableCell>
                                                     <TableCell className="font-semibold text-text-primary text-left">{product.name}</TableCell>
-                                                    <TableCell className="text-right text-text-secondary">{product.quantity_sold} sold</TableCell>
-                                                    <TableCell className="font-bold text-text-primary text-right">${Number(product.total_revenue).toFixed(2)}</TableCell>
+                                                    <TableCell className="text-right text-text-secondary tabular-nums"><span className="font-medium text-text-primary">{product.quantity_sold}</span><span className="ml-1 text-text-muted text-xs">sold</span></TableCell>
+                                                    <TableCell className="font-bold text-text-primary text-right tabular-nums">${Number(product.total_revenue).toFixed(2)}</TableCell>
                                                 </TableRow>
                                             ))}
                                         </TableBody>
@@ -143,8 +143,8 @@ export default function ReportsIndex() {
                                             {payment_methods.map((method: any, idx: number) => (
                                                 <TableRow key={idx} className="border-b border-border-soft last:border-0 hover:bg-canvas/50">
                                                     <TableCell className="font-semibold text-text-primary text-left capitalize">{method.payment_method}</TableCell>
-                                                    <TableCell className="text-right text-text-secondary">{method.count} transactions</TableCell>
-                                                    <TableCell className="font-bold text-text-primary text-right">${Number(method.total).toFixed(2)}</TableCell>
+                                                    <TableCell className="text-right text-text-secondary tabular-nums"><span className="font-medium text-text-primary">{method.count}</span><span className="ml-1 text-text-muted text-xs">txn</span></TableCell>
+                                                    <TableCell className="font-bold text-text-primary text-right tabular-nums">${Number(method.total).toFixed(2)}</TableCell>
                                                 </TableRow>
                                             ))}
                                         </TableBody>

@@ -123,7 +123,7 @@ return;
                                     <TableCell className="px-4 py-4 font-medium text-sm text-text-primary">
                                         {category.name}
                                     </TableCell>
-                                    <TableCell className="px-4 py-4 text-sm font-mono text-text-muted">
+                                    <TableCell className="px-4 py-4 text-sm font-mono text-text-secondary">
                                         /{category.slug}
                                     </TableCell>
                                     <TableCell className="px-4 py-4 text-sm text-text-secondary">
@@ -162,7 +162,7 @@ return;
                     </Table>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {sortedCategories.map((category) => (
                         <div
                             key={category.id}
@@ -195,15 +195,15 @@ return;
                                     </div>
                                 </div>
                                 
-                                <span className="font-mono text-xs text-text-muted truncate">
-                                    /{category.slug}
-                                </span>
-                                
-                                <p className="text-sm text-text-secondary mt-3 line-clamp-2 min-h-[2.5rem]">
+                                <p className="text-sm text-text-secondary mt-1 line-clamp-2 min-h-[2.5rem]">
                                     {category.description ?? (
                                         <span className="text-text-muted/60 italic">No description provided.</span>
                                     )}
                                 </p>
+
+                                <span className="text-xs text-text-muted tabular-nums">
+                                    {category.total_products ?? 0} products
+                                </span>
                             </div>
                         </div>
                     ))}

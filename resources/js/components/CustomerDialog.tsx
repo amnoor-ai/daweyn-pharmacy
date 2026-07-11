@@ -79,7 +79,7 @@ export default function CustomerDialog({
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle className="text-text-primary">
+                    <DialogTitle className="text-foreground">
                         {isEditing ? 'Edit Customer' : 'Add Customer'}
                     </DialogTitle>
                 </DialogHeader>
@@ -89,9 +89,9 @@ export default function CustomerDialog({
                     <div className="flex flex-col gap-1.5">
                         <Label
                             htmlFor="customer-name"
-                            className="text-text-primary"
+                            className="text-foreground"
                         >
-                            Name <span className="text-danger-fg">*</span>
+                            Name <span className="text-destructive">*</span>
                         </Label>
                         <Input
                             id="customer-name"
@@ -99,7 +99,7 @@ export default function CustomerDialog({
                             onChange={(e) => setData('name', e.target.value)}
                             placeholder="e.g. Fatima Hassan"
                             autoFocus
-                            className="border-border-soft"
+                            className="border-border"
                         />
                         <InputError message={errors.name} />
                     </div>
@@ -108,16 +108,16 @@ export default function CustomerDialog({
                     <div className="flex flex-col gap-1.5">
                         <Label
                             htmlFor="customer-phone"
-                            className="text-text-primary"
+                            className="text-foreground"
                         >
-                            Phone <span className="text-danger-fg">*</span>
+                            Phone <span className="text-destructive">*</span>
                         </Label>
                         <Input
                             id="customer-phone"
                             value={data.phone}
                             onChange={(e) => setData('phone', e.target.value)}
                             placeholder="e.g. +252 61 234 5678"
-                            className="border-border-soft"
+                            className="border-border"
                         />
                         <InputError message={errors.phone} />
                     </div>
@@ -126,10 +126,10 @@ export default function CustomerDialog({
                     <div className="flex flex-col gap-1.5">
                         <Label
                             htmlFor="customer-email"
-                            className="text-text-primary"
+                            className="text-foreground"
                         >
                             Email{' '}
-                            <span className="text-xs font-normal text-text-secondary">
+                            <span className="text-xs font-normal text-muted-foreground">
                                 (optional)
                             </span>
                         </Label>
@@ -139,7 +139,7 @@ export default function CustomerDialog({
                             value={data.email}
                             onChange={(e) => setData('email', e.target.value)}
                             placeholder="e.g. fatima@example.com"
-                            className="border-border-soft"
+                            className="border-border"
                         />
                         <InputError message={errors.email} />
                     </div>
@@ -148,10 +148,10 @@ export default function CustomerDialog({
                     <div className="flex flex-col gap-1.5">
                         <Label
                             htmlFor="customer-address"
-                            className="text-text-primary"
+                            className="text-foreground"
                         >
                             Address{' '}
-                            <span className="text-xs font-normal text-text-secondary">
+                            <span className="text-xs font-normal text-muted-foreground">
                                 (optional)
                             </span>
                         </Label>
@@ -160,7 +160,7 @@ export default function CustomerDialog({
                             value={data.address}
                             onChange={(e) => setData('address', e.target.value)}
                             placeholder="e.g. Hodan District, Mogadishu"
-                            className="border-border-soft"
+                            className="border-border"
                         />
                         <InputError message={errors.address} />
                     </div>
@@ -169,7 +169,7 @@ export default function CustomerDialog({
                     <div className="flex flex-col gap-1.5">
                         <Label
                             htmlFor="customer-loyalty"
-                            className="text-text-primary"
+                            className="text-foreground"
                         >
                             Loyalty Points
                         </Label>
@@ -181,7 +181,7 @@ export default function CustomerDialog({
                             onChange={(e) =>
                                 setData('loyalty_points', e.target.value)
                             }
-                            className="border-border-soft"
+                            className="border-border"
                         />
                         <InputError message={errors.loyalty_points} />
                     </div>
@@ -192,14 +192,13 @@ export default function CustomerDialog({
                             variant="outline"
                             onClick={() => onOpenChange(false)}
                             disabled={processing}
-                            className="border-border-soft"
+                            className="border-border"
                         >
                             Cancel
                         </Button>
                         <Button
                             type="submit"
                             disabled={processing}
-                            className="bg-brand hover:bg-brand-dark transition-all duration-200 hover:-translate-y-0.5"
                         >
                             {processing
                                 ? 'Saving…'

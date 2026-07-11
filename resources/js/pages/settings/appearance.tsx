@@ -22,7 +22,7 @@ export default function Appearance() {
     );
 }
 
-Appearance.layout = () => ({
+Appearance.layoutConfig = () => ({
     breadcrumbs: [
         {
             title: 'Appearance settings',

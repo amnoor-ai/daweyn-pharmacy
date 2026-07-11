@@ -1,6 +1,7 @@
 import { Head, router, usePage } from '@inertiajs/react';
-import { Eye, Search, ShoppingCart } from 'lucide-react';
+import { Eye, Search, ShoppingCart, ArrowUp, ArrowDown, ChevronsUpDown, Download } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import TablePagination from '@/components/TablePagination';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -26,11 +27,11 @@ type Props = {
 };
 
 const paymentBadge: Record<string, string> = {
-    cash: 'bg-success-bg text-success-fg hover:bg-success-bg/80 border-none shadow-none',
-    zaad: 'bg-info-bg text-info-fg hover:bg-info-bg/80 border-none shadow-none',
-    evc: 'bg-info-bg text-info-fg hover:bg-info-bg/80 border-none shadow-none',
-    jeeb: 'bg-info-bg text-info-fg hover:bg-info-bg/80 border-none shadow-none',
-    card: 'bg-warning-bg text-warning-fg hover:bg-warning-bg/80 border-none shadow-none',
+    cash: 'bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/10/80 border-none shadow-none',
+    zaad: 'bg-blue-500/10 text-blue-500 hover:bg-blue-500/10/80 border-none shadow-none',
+    evc: 'bg-blue-500/10 text-blue-500 hover:bg-blue-500/10/80 border-none shadow-none',
+    jeeb: 'bg-blue-500/10 text-blue-500 hover:bg-blue-500/10/80 border-none shadow-none',
+    card: 'bg-amber-500/10 text-amber-500 hover:bg-amber-500/10/80 border-none shadow-none',
 };
 
 const PAYMENT_OPTIONS = [
@@ -61,6 +62,99 @@ export default function TransactionsIndex({ transactions }: Props) {
         });
     }, [transactions, query, paymentFilter]);
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
+    const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
+
+    const sortedTx = useMemo(() => {
+        const sortableItems = [...filteredTx];
+
+        if (sortConfig !== null) {
+            sortableItems.sort((a: any, b: any) => {
+                let aValue = a[sortConfig.key];
+                let bValue = b[sortConfig.key];
+                
+                // Nested sorts
+                if (sortConfig.key === 'customer') {
+                    aValue = a.customer?.name || '';
+                    bValue = b.customer?.name || '';
+                } else if (sortConfig.key === 'cashier') {
+                    aValue = a.cashier?.name || '';
+                    bValue = b.cashier?.name || '';
+                } else if (sortConfig.key === 'items') {
+                    aValue = a.items?.reduce((sum: number, item: any) => sum + item.quantity, 0) || 0;
+                    bValue = b.items?.reduce((sum: number, item: any) => sum + item.quantity, 0) || 0;
+                }
+                
+                if (aValue === null) {
+return 1;
+}
+
+                if (bValue === null) {
+return -1;
+}
+                
+                if (aValue < bValue) {
+                    return sortConfig.direction === 'asc' ? -1 : 1;
+                }
+
+                if (aValue > bValue) {
+                    return sortConfig.direction === 'asc' ? 1 : -1;
+                }
+
+                return 0;
+            });
+        }
+
+        return sortableItems;
+    }, [filteredTx, sortConfig]);
+
+    const totalPages = Math.ceil(sortedTx.length / itemsPerPage);
+    const paginatedTx = useMemo(() => {
+        return sortedTx.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    }, [sortedTx, currentPage]);
+
+    const requestSort = (key: string) => {
+        let direction: 'asc' | 'desc' = 'asc';
+
+        if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+
+        setSortConfig({ key, direction });
+    };
+
+    const SortIcon = ({ columnKey }: { columnKey: string }) => {
+        if (sortConfig?.key !== columnKey) {
+            return <ChevronsUpDown className="ml-2 h-4 w-4 inline-block text-gray-400" />;
+        }
+
+        return sortConfig.direction === 'asc' ? 
+            <ArrowUp className="ml-2 h-4 w-4 inline-block text-primary" /> : 
+            <ArrowDown className="ml-2 h-4 w-4 inline-block text-primary" />;
+    };
+
+    function exportTransactionsCSV() {
+        const headers = ['Invoice', 'Customer', 'Cashier', 'Items', 'Payment Method', 'Total', 'Date'];
+        const rows = sortedTx.map((tx: any) => [
+            `"${tx.invoice_number || ''}"`,
+            `"${tx.customer?.name || 'Walk-in'}"`,
+            `"${tx.cashier?.name || ''}"`,
+            tx.items?.reduce((sum: number, item: any) => sum + item.quantity, 0) ?? 0,
+            tx.payment_method?.toUpperCase() || '',
+            Number(tx.total).toFixed(2),
+            tx.created_at ? new Date(tx.created_at).toLocaleString('en-GB') : '',
+        ]);
+        const csv = [headers.join(','), ...rows.map((r: any[]) => r.join(','))].join('\n');
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'transactions.csv';
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
     return (
         <>
             <Head title="Transactions" />
@@ -69,7 +163,7 @@ export default function TransactionsIndex({ transactions }: Props) {
                 <div className="flex flex-wrap items-center gap-3">
                     {/* Search */}
                     <div className="relative flex-1 max-w-xs">
-                        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
+                        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                         <Input
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
@@ -95,13 +189,17 @@ export default function TransactionsIndex({ transactions }: Props) {
                         </SelectContent>
                     </Select>
 
-                    {/* Spacer */}
-                    <div className="flex-1" />
+                    {/* Removed Spacer so buttons align nicely */}
+
+                    {/* Export */}
+                    <Button variant="outline" size="sm" onClick={exportTransactionsCSV} className="h-9 gap-2 border-border bg-card text-muted-foreground">
+                        <Download className="h-4 w-4" /> Export
+                    </Button>
 
                     {/* Primary action */}
                     <Button
                         onClick={() => router.visit(`/${teamSlug}/pos`)}
-                        className="gap-2 bg-brand hover:bg-brand-dark transition-all duration-200 hover:-translate-y-0.5"
+                        className="gap-2"
                     >
                         <ShoppingCart className="h-4 w-4" />
                         Go to POS
@@ -110,45 +208,44 @@ export default function TransactionsIndex({ transactions }: Props) {
 
                 {/* Table */}
                 {filteredTx.length === 0 ? (
-                    <div className="flex-1 rounded-lg border border-border-soft bg-surface">
-                        <p className="p-8 text-center text-sm text-text-secondary">
+                    <div className="flex-1 rounded-lg border border-border bg-card">
+                        <p className="p-8 text-center text-sm text-muted-foreground">
                             No transactions yet. Click &quot;Go to POS&quot; to
                             record one.
                         </p>
                     </div>
                 ) : (
-                    <div className="flex-1 overflow-hidden rounded-lg border border-border-soft bg-surface shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
+                    <div className="flex-1 overflow-hidden rounded-lg border border-border bg-card shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
                         <Table className="min-w-[800px]">
                             <TableHeader>
-                                <TableRow className="border-b border-divider hover:bg-transparent">
-                                    <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Invoice</TableHead>
-                                    <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Customer</TableHead>
-                                    <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Cashier</TableHead>
-                                    <TableHead className="px-6 py-3.5 text-right text-[13px] font-medium text-text-secondary uppercase">Items</TableHead>
-                                    <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Payment</TableHead>
-                                    <TableHead className="px-6 py-3.5 text-right text-[13px] font-medium text-text-secondary uppercase">Total</TableHead>
-                                    <TableHead className="px-6 py-3.5 text-right text-[13px] font-medium text-text-secondary uppercase">Date</TableHead>
-                                    <TableHead className="px-6 py-3.5 text-right text-[13px] font-medium text-text-secondary uppercase">Actions</TableHead>
+                                <TableRow>
+                                    <TableHead className="cursor-pointer select-none" onClick={() => requestSort('invoice_number')}>Invoice <SortIcon columnKey="invoice_number" /></TableHead>
+                                    <TableHead className="cursor-pointer select-none" onClick={() => requestSort('customer')}>Customer <SortIcon columnKey="customer" /></TableHead>
+                                    <TableHead className="cursor-pointer select-none" onClick={() => requestSort('cashier')}>Cashier <SortIcon columnKey="cashier" /></TableHead>
+                                    <TableHead className="text-right cursor-pointer select-none" onClick={() => requestSort('items')}>Items <SortIcon columnKey="items" /></TableHead>
+                                    <TableHead className="cursor-pointer select-none" onClick={() => requestSort('payment_method')}>Payment <SortIcon columnKey="payment_method" /></TableHead>
+                                    <TableHead className="text-right cursor-pointer select-none" onClick={() => requestSort('total')}>Total <SortIcon columnKey="total" /></TableHead>
+                                    <TableHead className="text-right cursor-pointer select-none" onClick={() => requestSort('created_at')}>Date <SortIcon columnKey="created_at" /></TableHead>
+                                    <TableHead className="text-right">Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {filteredTx.map((tx) => (
+                                {paginatedTx.map((tx) => (
                                     <TableRow
                                         key={tx.id}
-                                        className="border-b border-divider hover:bg-primary-50 transition-colors"
                                     >
-                                        <TableCell className="px-6 py-4 font-mono text-xs font-bold text-text-primary">
+                                        <TableCell className="px-6 py-4 font-mono text-xs font-bold text-foreground">
                                             {tx.invoice_number}
                                         </TableCell>
-                                        <TableCell className="px-6 py-4 font-medium text-text-primary">
+                                        <TableCell className="px-6 py-4 font-medium text-foreground">
                                             {tx.customer ? tx.customer.name : (
-                                                <span className="text-text-muted">Walk-in Customer</span>
+                                                <span className="text-muted-foreground">Walk-in Customer</span>
                                             )}
                                         </TableCell>
-                                        <TableCell className="px-6 py-4 text-text-secondary">
+                                        <TableCell className="px-6 py-4 text-muted-foreground">
                                             {tx.cashier?.name ?? '—'}
                                         </TableCell>
-                                        <TableCell className="px-6 py-4 text-text-secondary text-right">
+                                        <TableCell className="px-6 py-4 text-muted-foreground text-right">
                                             {tx.items?.reduce((sum: number, item: any) => sum + item.quantity, 0) ?? 0}
                                         </TableCell>
                                         <TableCell className="px-6 py-4">
@@ -159,10 +256,10 @@ export default function TransactionsIndex({ transactions }: Props) {
                                                 {tx.payment_method.toUpperCase()}
                                             </Badge>
                                         </TableCell>
-                                        <TableCell className="px-6 py-4 font-medium text-text-primary text-right">
+                                        <TableCell className="px-6 py-4 font-medium text-foreground text-right">
                                             ${Number(tx.total).toFixed(2)}
                                         </TableCell>
-                                        <TableCell className="px-6 py-4 text-text-secondary text-right">
+                                        <TableCell className="px-6 py-4 text-muted-foreground text-right">
                                             {tx.created_at
                                                 ? new Date(
                                                       tx.created_at,
@@ -187,7 +284,7 @@ export default function TransactionsIndex({ transactions }: Props) {
                                                         `/${teamSlug}/transactions/${tx.id}`,
                                                     )
                                                 }
-                                                className="h-8 gap-1.5 px-3 text-xs font-medium text-text-secondary hover:text-brand hover:border-brand transition-colors"
+                                                className="h-8 gap-1.5 px-3 text-xs font-medium text-muted-foreground hover:text-primary hover:border-primary transition-colors"
                                             >
                                                 <Eye className="h-3.5 w-3.5" />
                                                 Details
@@ -197,6 +294,13 @@ export default function TransactionsIndex({ transactions }: Props) {
                                 ))}
                             </TableBody>
                         </Table>
+                        <TablePagination 
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={sortedTx.length}
+                            itemsPerPage={itemsPerPage}
+                            onPageChange={setCurrentPage}
+                        />
                     </div>
                 )}
             </div>
@@ -204,7 +308,7 @@ export default function TransactionsIndex({ transactions }: Props) {
     );
 }
 
-TransactionsIndex.layout = (props: {
+TransactionsIndex.layoutConfig = (props: {
     currentTeam?: { slug: string } | null;
 }) => ({
     breadcrumbs: [

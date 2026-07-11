@@ -1,4 +1,6 @@
+import { Trash2 } from 'lucide-react';
 import * as React from 'react';
+import { Button } from '@/components/ui/button';
 import {
     Dialog,
     DialogContent,
@@ -7,8 +9,6 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Trash2 } from 'lucide-react';
 
 interface DeleteConfirmDialogProps {
     open: boolean;
@@ -31,15 +31,15 @@ export default function DeleteConfirmDialog({
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader className="flex flex-col items-center gap-3 text-center sm:text-center">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-danger-bg text-danger-fg">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10 text-destructive">
                         <Trash2 className="h-6 w-6" />
                     </div>
                     <div className="space-y-1">
-                        <DialogTitle className="text-lg font-bold text-text-primary">
+                        <DialogTitle className="text-lg font-bold text-foreground">
                             {title}
                         </DialogTitle>
-                        <DialogDescription className="text-sm text-text-secondary">
-                            Are you sure you want to delete <span className="font-semibold text-text-primary">"{itemName}"</span>? This action cannot be undone.
+                        <DialogDescription className="text-sm text-muted-foreground">
+                            Are you sure you want to delete <span className="font-semibold text-foreground">"{itemName}"</span>? This action cannot be undone.
                         </DialogDescription>
                     </div>
                 </DialogHeader>

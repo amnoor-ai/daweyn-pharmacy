@@ -142,7 +142,7 @@ export default function Register({ passwordRules, teamInvitation }: Props) {
     );
 }
 
-Register.layout = {
+Register.layoutConfig = {
     title: 'Create an account',
     description: 'Enter your details below to create your account',
 };

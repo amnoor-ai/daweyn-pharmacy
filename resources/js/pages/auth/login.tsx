@@ -83,7 +83,7 @@ export default function Login({
 
                         {/* Logo */}
                         <Link href={home()} className="flex items-center justify-center gap-3">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary">
                                 <PillBottle size={22} className="text-white" />
                             </div>
                             <span className="text-2xl font-bold text-foreground">
@@ -173,7 +173,7 @@ export default function Login({
 
                                     <Button
                                         type="submit"
-                                        className="w-full bg-brand font-bold text-white hover:bg-brand-dark transition-all duration-200 hover:-translate-y-0.5"
+                                        className="w-full font-bold text-white"
                                         tabIndex={4}
                                         disabled={processing}
                                         data-test="login-button"

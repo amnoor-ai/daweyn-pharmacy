@@ -24,12 +24,12 @@ export default function StatCard({
                     >
                         <Icon className={`h-5 w-5 ${iconColorClass}`} />
                     </div>
-                    <span className="text-[13px] font-medium text-text-secondary">
+                    <span className="text-[13px] font-medium text-muted-foreground">
                         {title}
                     </span>
                 </div>
                 <div>
-                    <span className="text-[28px] font-bold tracking-tight text-text-primary">
+                    <span className="text-[28px] font-bold tracking-tight text-foreground">
                         {value}
                     </span>
                 </div>

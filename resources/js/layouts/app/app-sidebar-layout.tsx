@@ -54,7 +54,7 @@ export default function AppSidebarLayout({
     }
 
     return (
-        <div className="flex min-h-screen bg-canvas">
+        <div className="flex min-h-screen bg-muted/30">
             {/* Desktop sidebar — hidden on mobile, collapsible */}
             <div className="hidden lg:flex sticky top-0 h-screen">
                 <Appsidebar collapsed={collapsed} setCollapsed={setCollapsed} />
@@ -64,7 +64,7 @@ export default function AppSidebarLayout({
             <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
                 <SheetContent
                     side="left"
-                    className="w-64 border-r border-border-soft p-0 bg-canvas"
+                    className="w-64 border-r border-border p-0 bg-muted/30"
                 >
                     <SheetTitle className="sr-only">Navigation menu</SheetTitle>
                     <Appsidebar collapsible={false} />
@@ -74,25 +74,25 @@ export default function AppSidebarLayout({
             {/* Right side: top bar + main content */}
             <div className="flex min-w-0 flex-1 flex-col">
                 {/* Mobile top bar — hamburger + logo + actions, hidden on lg+ */}
-                <div className="sticky top-0 z-50 flex items-center justify-between border-b border-border-soft bg-white px-4 py-3 lg:hidden dark:bg-background">
+                <div className="sticky top-0 z-50 flex items-center justify-between border-b border-border bg-white px-4 py-3 lg:hidden dark:bg-background">
                     {/* Left: hamburger + logo */}
                     <div className="flex items-center gap-3">
                         <button
                             onClick={() => setMobileOpen(true)}
-                            className="flex h-9 w-9 items-center justify-center rounded-[10px] text-brand transition-colors hover:bg-primary-50"
+                            className="flex h-9 w-9 items-center justify-center rounded-[10px] text-primary transition-colors hover:bg-primary/10"
                             aria-label="Open navigation"
                         >
                             <Menu size={20} strokeWidth={1.8} />
                         </button>
                         <div className="flex items-center gap-2.5">
-                            <div className="flex h-7 w-7 items-center justify-center rounded-[8px] bg-brand">
+                            <div className="flex h-7 w-7 items-center justify-center rounded-[8px] bg-primary">
                                 <PillBottle
                                     size={16}
                                     stroke="#fff"
                                     strokeWidth={1.8}
                                 />
                             </div>
-                            <span className="text-base font-bold tracking-tight text-brand">
+                            <span className="text-base font-bold tracking-tight text-primary">
                                 Daaweyn
                             </span>
                         </div>
@@ -104,7 +104,7 @@ export default function AppSidebarLayout({
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="h-8 w-8 text-text-secondary"
+                            className="h-8 w-8 text-muted-foreground"
                             aria-label="Search"
                         >
                             <Search size={18} strokeWidth={1.8} />
@@ -115,7 +115,7 @@ export default function AppSidebarLayout({
                             variant="ghost"
                             size="icon"
                             onClick={toggleDarkMode}
-                            className="h-8 w-8 text-text-secondary"
+                            className="h-8 w-8 text-muted-foreground"
                             aria-label="Toggle dark mode"
                         >
                             {mounted ? (
@@ -142,7 +142,7 @@ export default function AppSidebarLayout({
                                                 src={auth.user.avatar_url ?? auth.user.avatar}
                                                 alt={auth.user.name}
                                             />
-                                            <AvatarFallback className="rounded-full bg-primary-50 text-xs font-semibold text-brand">
+                                            <AvatarFallback className="rounded-full bg-primary/10 text-xs font-semibold text-primary">
                                                 {getInitials(auth.user.name)}
                                             </AvatarFallback>
                                         </Avatar>

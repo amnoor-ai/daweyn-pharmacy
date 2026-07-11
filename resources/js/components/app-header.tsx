@@ -48,6 +48,7 @@ export function AppHeader({ breadcrumbs = [], collapsed, setCollapsed }: Props) 
             }
         }
         document.addEventListener('mousedown', handleClickOutside);
+
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
@@ -57,6 +58,7 @@ export function AppHeader({ breadcrumbs = [], collapsed, setCollapsed }: Props) 
         if (!value.trim()) {
             setSearchResults(null);
             setIsDropdownOpen(false);
+
             return;
         }
 
@@ -70,9 +72,13 @@ export function AppHeader({ breadcrumbs = [], collapsed, setCollapsed }: Props) 
         debounceRef.current = setTimeout(async () => {
             try {
                 const teamSlug = currentTeam?.slug ?? '';
-                if (!teamSlug) return;
+
+                if (!teamSlug) {
+return;
+}
                 
                 const response = await fetch(`/${teamSlug}/search?q=${encodeURIComponent(value)}`);
+
                 if (response.ok) {
                     const data = await response.json();
                     setSearchResults(data);
@@ -94,7 +100,7 @@ export function AppHeader({ breadcrumbs = [], collapsed, setCollapsed }: Props) 
 
     return (
         <>
-            <div className="border-b border-border-soft bg-white dark:bg-surface">
+            <div className="border-b border-border bg-white dark:bg-card">
                 <div className="flex h-16 items-center gap-4 px-4 lg:px-6">
                     {/* Sidebar toggle */}
                     {setCollapsed && (
@@ -102,7 +108,7 @@ export function AppHeader({ breadcrumbs = [], collapsed, setCollapsed }: Props) 
                             type="button"
                             onClick={() => setCollapsed(!collapsed)}
                             aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-                            className="flex shrink-0 items-center justify-center rounded-md text-text-secondary hover:bg-primary-50 hover:text-brand transition-colors size-8"
+                            className="flex shrink-0 items-center justify-center rounded-md text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors size-8"
                         >
                             {collapsed ? (
                                 <PanelLeftOpen size={18} strokeWidth={1.8} />
@@ -123,45 +129,46 @@ export function AppHeader({ breadcrumbs = [], collapsed, setCollapsed }: Props) 
                     <div className="ml-auto flex items-center space-x-2">
                         {/* Inline search */}
                         <div className="relative hidden items-center sm:flex" ref={searchContainerRef}>
-                            <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-text-muted" strokeWidth={2} />
+                            <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" strokeWidth={2} />
                             {isSearching && (
-                                <Loader2 className="absolute right-3.5 top-1/2 size-4 -translate-y-1/2 text-text-muted animate-spin" strokeWidth={2} />
+                                <Loader2 className="absolute right-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground animate-spin" strokeWidth={2} />
                             )}
                             <Input
                                 value={searchQuery}
                                 onChange={(e) => handleSearchChange(e.target.value)}
                                 onFocus={() => searchQuery.trim() && setIsDropdownOpen(true)}
                                 placeholder="Search anything..."
-                                className="h-10 w-[320px] rounded-full border border-border-soft bg-canvas pl-10 pr-10 text-sm text-text-primary placeholder:text-text-muted focus-visible:ring-1 focus-visible:ring-brand/30 dark:bg-surface"
+                                className="h-10 w-[320px] rounded-full border border-border bg-muted/30 pl-10 pr-10 text-sm text-foreground placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-primary/30 dark:bg-card"
                             />
                             
                             {/* Search Dropdown */}
                             {isDropdownOpen && searchResults && (
-                                <div className="absolute top-[120%] mt-2 w-[400px] right-0 rounded-xl border border-border-soft bg-white p-2 shadow-lg dark:bg-surface z-50 max-h-[400px] overflow-y-auto">
+                                <div className="absolute top-[120%] mt-2 w-[400px] right-0 rounded-xl border border-border bg-white p-2 shadow-lg dark:bg-card z-50 max-h-[400px] overflow-y-auto">
                                     {searchResults.pages?.length === 0 && searchResults.products.length === 0 && searchResults.customers.length === 0 && searchResults.transactions.length === 0 && !isSearching ? (
-                                        <div className="p-4 text-center text-sm text-text-muted">No results found for &quot;{searchQuery}&quot;</div>
+                                        <div className="p-4 text-center text-sm text-muted-foreground">No results found for &quot;{searchQuery}&quot;</div>
                                     ) : (
                                         <div className="space-y-4">
                                             {searchResults.pages?.length > 0 && (
                                                 <div>
-                                                    <div className="px-2 py-1.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Pages</div>
+                                                    <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Pages</div>
                                                     {searchResults.pages.map(p => {
                                                         const IconMap: any = {
                                                             LayoutDashboard, Calculator, Package, Tags, ReceiptText, Users, BarChart3, Settings, UserCog
                                                         };
                                                         const Icon = IconMap[p.icon] || LayoutDashboard;
+
                                                         return (
                                                             <Link 
                                                                 key={p.name} 
                                                                 href={p.url}
                                                                 onClick={() => setIsDropdownOpen(false)}
-                                                                className="flex items-center gap-3 rounded-lg px-2 py-2 hover:bg-primary-50 transition-colors"
+                                                                className="flex items-center gap-3 rounded-lg px-2 py-2 hover:bg-primary/10 transition-colors"
                                                             >
-                                                                <div className="size-8 rounded-md bg-primary-100 flex items-center justify-center text-brand">
+                                                                <div className="size-8 rounded-md bg-primary-100 flex items-center justify-center text-primary">
                                                                     <Icon className="size-4" />
                                                                 </div>
                                                                 <div className="flex-1 overflow-hidden">
-                                                                    <div className="text-sm font-medium text-text-primary truncate">{p.name}</div>
+                                                                    <div className="text-sm font-medium text-foreground truncate">{p.name}</div>
                                                                 </div>
                                                             </Link>
                                                         );
@@ -171,13 +178,13 @@ export function AppHeader({ breadcrumbs = [], collapsed, setCollapsed }: Props) 
 
                                             {searchResults.products.length > 0 && (
                                                 <div>
-                                                    <div className="px-2 py-1.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Products</div>
+                                                    <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Products</div>
                                                     {searchResults.products.map(p => (
                                                         <Link 
                                                             key={p.id} 
                                                             href={`/${currentTeam?.slug}/products?q=${p.sku}`}
                                                             onClick={() => setIsDropdownOpen(false)}
-                                                            className="flex items-center gap-3 rounded-lg px-2 py-2 hover:bg-primary-50 transition-colors"
+                                                            className="flex items-center gap-3 rounded-lg px-2 py-2 hover:bg-primary/10 transition-colors"
                                                         >
                                                             {p.image_url ? (
                                                                 <img src={p.image_url} alt={p.name} className="size-8 rounded-md object-cover" />
@@ -185,8 +192,8 @@ export function AppHeader({ breadcrumbs = [], collapsed, setCollapsed }: Props) 
                                                                 <div className="size-8 rounded-md bg-primary-100 flex items-center justify-center text-primary-700 text-xs font-bold">{p.name.charAt(0)}</div>
                                                             )}
                                                             <div className="flex-1 overflow-hidden">
-                                                                <div className="text-sm font-medium text-text-primary truncate">{p.name}</div>
-                                                                <div className="text-xs text-text-muted truncate">SKU: {p.sku}</div>
+                                                                <div className="text-sm font-medium text-foreground truncate">{p.name}</div>
+                                                                <div className="text-xs text-muted-foreground truncate">SKU: {p.sku}</div>
                                                             </div>
                                                             <div className="text-sm font-medium">${p.selling_price}</div>
                                                         </Link>
@@ -196,17 +203,17 @@ export function AppHeader({ breadcrumbs = [], collapsed, setCollapsed }: Props) 
 
                                             {searchResults.customers.length > 0 && (
                                                 <div>
-                                                    <div className="px-2 py-1.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Customers</div>
+                                                    <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Customers</div>
                                                     {searchResults.customers.map(c => (
                                                         <Link 
                                                             key={c.id} 
                                                             href={`/${currentTeam?.slug}/customers/${c.id}`}
                                                             onClick={() => setIsDropdownOpen(false)}
-                                                            className="flex items-center justify-between rounded-lg px-2 py-2 hover:bg-primary-50 transition-colors"
+                                                            className="flex items-center justify-between rounded-lg px-2 py-2 hover:bg-primary/10 transition-colors"
                                                         >
                                                             <div className="overflow-hidden">
-                                                                <div className="text-sm font-medium text-text-primary truncate">{c.name}</div>
-                                                                <div className="text-xs text-text-muted truncate">{c.phone}</div>
+                                                                <div className="text-sm font-medium text-foreground truncate">{c.name}</div>
+                                                                <div className="text-xs text-muted-foreground truncate">{c.phone}</div>
                                                             </div>
                                                         </Link>
                                                     ))}
@@ -215,17 +222,17 @@ export function AppHeader({ breadcrumbs = [], collapsed, setCollapsed }: Props) 
 
                                             {searchResults.transactions.length > 0 && (
                                                 <div>
-                                                    <div className="px-2 py-1.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Transactions</div>
+                                                    <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Transactions</div>
                                                     {searchResults.transactions.map(t => (
                                                         <Link 
                                                             key={t.id} 
                                                             href={`/${currentTeam?.slug}/transactions/${t.id}`}
                                                             onClick={() => setIsDropdownOpen(false)}
-                                                            className="flex items-center justify-between rounded-lg px-2 py-2 hover:bg-primary-50 transition-colors"
+                                                            className="flex items-center justify-between rounded-lg px-2 py-2 hover:bg-primary/10 transition-colors"
                                                         >
                                                             <div className="overflow-hidden">
-                                                                <div className="text-sm font-medium text-text-primary truncate">#{t.invoice_number}</div>
-                                                                <div className="text-xs text-text-muted truncate">{t.customer?.name ?? 'Walk-in'}</div>
+                                                                <div className="text-sm font-medium text-foreground truncate">#{t.invoice_number}</div>
+                                                                <div className="text-xs text-muted-foreground truncate">{t.customer?.name ?? 'Walk-in'}</div>
                                                             </div>
                                                             <div className="text-sm font-medium">${t.total}</div>
                                                         </Link>
@@ -262,9 +269,9 @@ export function AppHeader({ breadcrumbs = [], collapsed, setCollapsed }: Props) 
                             <DropdownMenuTrigger asChild>
                                 <Button
                                     variant="ghost"
-                                    className="h-10 px-2 rounded-full flex items-center gap-2 hover:bg-primary-50"
+                                    className="h-10 px-2 rounded-full flex items-center gap-2 hover:bg-primary/10"
                                 >
-                                    <span className="text-sm font-medium hidden sm:block text-text-primary pl-2">
+                                    <span className="text-sm font-medium hidden sm:block text-foreground pl-2">
                                         {auth.user.name}
                                     </span>
                                     <div className="relative">

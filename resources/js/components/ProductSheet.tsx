@@ -105,13 +105,13 @@ export default function ProductSheet({ open, onOpenChange, teamSlug, categories,
                     {/* Category */}
                     <div className="flex flex-col gap-1.5">
                         <Label htmlFor="category_id" className="text-foreground">
-                            Category <span className="text-danger-fg">*</span>
+                            Category <span className="text-destructive">*</span>
                         </Label>
                         <Select
                             value={data.category_id}
                             onValueChange={(val) => setData('category_id', val)}
                         >
-                            <SelectTrigger id="category_id" className="w-full border-border-soft">
+                            <SelectTrigger id="category_id" className="w-full border-border">
                                 <SelectValue placeholder="Select a category" />
                             </SelectTrigger>
                             <SelectContent>
@@ -127,15 +127,15 @@ export default function ProductSheet({ open, onOpenChange, teamSlug, categories,
 
                     {/* Image */}
                     <div className="flex flex-col gap-1.5">
-                        <Label htmlFor="image" className="text-text-primary">
-                            Product Image <span className="text-xs font-normal text-text-secondary">(optional)</span>
+                        <Label htmlFor="image" className="text-foreground">
+                            Product Image <span className="text-xs font-normal text-muted-foreground">(optional)</span>
                         </Label>
                         <div className="flex items-center gap-4">
                             {isEditing && product?.image_url && (
                                 <img 
                                     src={product.image_url} 
                                     alt={product.name} 
-                                    className="h-12 w-12 rounded-md object-cover border border-border-soft"
+                                    className="h-12 w-12 rounded-md object-cover border border-border"
                                 />
                             )}
                             <Input
@@ -143,7 +143,7 @@ export default function ProductSheet({ open, onOpenChange, teamSlug, categories,
                                 type="file"
                                 accept="image/*"
                                 onChange={(e) => setData('image', e.target.files?.[0] || null)}
-                                className="border-border-soft flex-1"
+                                className="border-border flex-1"
                             />
                         </div>
                         <InputError message={errors.image as string} />
@@ -151,30 +151,30 @@ export default function ProductSheet({ open, onOpenChange, teamSlug, categories,
 
                     {/* Name */}
                     <div className="flex flex-col gap-1.5">
-                        <Label htmlFor="name" className="text-text-primary">
-                            Name <span className="text-danger-fg">*</span>
+                        <Label htmlFor="name" className="text-foreground">
+                            Name <span className="text-destructive">*</span>
                         </Label>
                         <Input
                             id="name"
                             value={data.name}
                             onChange={(e) => setData('name', e.target.value)}
                             placeholder="e.g. Amoxicillin 500mg"
-                            className="border-border-soft"
+                            className="border-border"
                         />
                         <InputError message={errors.name} />
                     </div>
 
                     {/* SKU */}
                     <div className="flex flex-col gap-1.5">
-                        <Label htmlFor="sku" className="text-text-primary">
-                            SKU <span className="text-danger-fg">*</span>
+                        <Label htmlFor="sku" className="text-foreground">
+                            SKU <span className="text-destructive">*</span>
                         </Label>
                         <Input
                             id="sku"
                             value={data.sku}
                             onChange={(e) => setData('sku', e.target.value)}
                             placeholder="e.g. AMX-500"
-                            className="border-border-soft"
+                            className="border-border"
                         />
                         <InputError message={errors.sku} />
                     </div>
@@ -190,7 +190,7 @@ export default function ProductSheet({ open, onOpenChange, teamSlug, categories,
                             onChange={(e) => setData('description', e.target.value)}
                             placeholder="Short description..."
                             rows={3}
-                            className="border-border-soft"
+                            className="border-border"
                         />
                         <InputError message={errors.description} />
                     </div>
@@ -198,8 +198,8 @@ export default function ProductSheet({ open, onOpenChange, teamSlug, categories,
                     {/* Prices */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="flex flex-col gap-1.5">
-                            <Label htmlFor="cost_price" className="text-text-primary">
-                                Cost Price <span className="text-danger-fg">*</span>
+                            <Label htmlFor="cost_price" className="text-foreground">
+                                Cost Price <span className="text-destructive">*</span>
                             </Label>
                             <Input
                                 id="cost_price"
@@ -209,13 +209,13 @@ export default function ProductSheet({ open, onOpenChange, teamSlug, categories,
                                 value={data.cost_price}
                                 onChange={(e) => setData('cost_price', e.target.value)}
                                 placeholder="0.00"
-                                className="border-border-soft"
+                                className="border-border"
                             />
                             <InputError message={errors.cost_price} />
                         </div>
                         <div className="flex flex-col gap-1.5">
-                            <Label htmlFor="selling_price" className="text-text-primary">
-                                Selling Price <span className="text-danger-fg">*</span>
+                            <Label htmlFor="selling_price" className="text-foreground">
+                                Selling Price <span className="text-destructive">*</span>
                             </Label>
                             <Input
                                 id="selling_price"
@@ -225,7 +225,7 @@ export default function ProductSheet({ open, onOpenChange, teamSlug, categories,
                                 value={data.selling_price}
                                 onChange={(e) => setData('selling_price', e.target.value)}
                                 placeholder="0.00"
-                                className="border-border-soft"
+                                className="border-border"
                             />
                             <InputError message={errors.selling_price} />
                         </div>
@@ -233,16 +233,16 @@ export default function ProductSheet({ open, onOpenChange, teamSlug, categories,
 
                     {/* Calculations Display */}
                     {(parseFloat(data.cost_price) > 0 || parseFloat(data.selling_price) > 0) && (
-                        <div className="flex gap-4 p-3 rounded-lg bg-surface-muted border border-border-soft text-sm">
+                        <div className="flex gap-4 p-3 rounded-lg bg-card-muted border border-border text-sm">
                             <div className="flex-1">
-                                <span className="text-text-secondary">Profit:</span>{' '}
-                                <span className={parseFloat(data.selling_price || '0') - parseFloat(data.cost_price || '0') > 0 ? 'text-success-fg font-medium' : 'text-danger-fg font-medium'}>
+                                <span className="text-muted-foreground">Profit:</span>{' '}
+                                <span className={parseFloat(data.selling_price || '0') - parseFloat(data.cost_price || '0') > 0 ? 'text-emerald-500 font-medium' : 'text-destructive font-medium'}>
                                     ${(parseFloat(data.selling_price || '0') - parseFloat(data.cost_price || '0')).toFixed(2)}
                                 </span>
                             </div>
                             <div className="flex-1">
-                                <span className="text-text-secondary">Margin:</span>{' '}
-                                <span className="font-medium text-text-primary">
+                                <span className="text-muted-foreground">Margin:</span>{' '}
+                                <span className="font-medium text-foreground">
                                     {parseFloat(data.selling_price || '0') > 0 
                                         ? (((parseFloat(data.selling_price || '0') - parseFloat(data.cost_price || '0')) / parseFloat(data.selling_price || '0')) * 100).toFixed(1) 
                                         : '0.0'}%
@@ -254,8 +254,8 @@ export default function ProductSheet({ open, onOpenChange, teamSlug, categories,
                     {/* Stock */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="flex flex-col gap-1.5">
-                            <Label htmlFor="stock_quantity" className="text-text-primary">
-                                Stock Quantity <span className="text-danger-fg">*</span>
+                            <Label htmlFor="stock_quantity" className="text-foreground">
+                                Stock Quantity <span className="text-destructive">*</span>
                             </Label>
                             <Input
                                 id="stock_quantity"
@@ -264,13 +264,13 @@ export default function ProductSheet({ open, onOpenChange, teamSlug, categories,
                                 value={data.stock_quantity}
                                 onChange={(e) => setData('stock_quantity', e.target.value)}
                                 placeholder="0"
-                                className="border-border-soft"
+                                className="border-border"
                             />
                             <InputError message={errors.stock_quantity} />
                         </div>
                         <div className="flex flex-col gap-1.5">
-                            <Label htmlFor="alert_threshold" className="text-text-primary">
-                                Alert Threshold <span className="text-danger-fg">*</span>
+                            <Label htmlFor="alert_threshold" className="text-foreground">
+                                Alert Threshold <span className="text-destructive">*</span>
                             </Label>
                             <Input
                                 id="alert_threshold"
@@ -279,7 +279,7 @@ export default function ProductSheet({ open, onOpenChange, teamSlug, categories,
                                 value={data.alert_threshold}
                                 onChange={(e) => setData('alert_threshold', e.target.value)}
                                 placeholder="10"
-                                className="border-border-soft"
+                                className="border-border"
                             />
                             <InputError message={errors.alert_threshold} />
                         </div>
@@ -287,15 +287,15 @@ export default function ProductSheet({ open, onOpenChange, teamSlug, categories,
 
                     {/* Expiry Date */}
                     <div className="flex flex-col gap-1.5">
-                        <Label htmlFor="expiry_date" className="text-text-primary">
-                            Expiry Date <span className="text-xs font-normal text-text-secondary">(optional)</span>
+                        <Label htmlFor="expiry_date" className="text-foreground">
+                            Expiry Date <span className="text-xs font-normal text-muted-foreground">(optional)</span>
                         </Label>
                         <Input
                             id="expiry_date"
                             type="date"
                             value={data.expiry_date}
                             onChange={(e) => setData('expiry_date', e.target.value)}
-                            className="border-border-soft"
+                            className="border-border"
                         />
                         <InputError message={errors.expiry_date} />
                     </div>
@@ -307,14 +307,14 @@ export default function ProductSheet({ open, onOpenChange, teamSlug, categories,
                             variant="outline"
                             onClick={() => onOpenChange(false)}
                             disabled={processing}
-                            className="border-border-soft flex-1"
+                            className="border-border flex-1"
                         >
                             Cancel
                         </Button>
                         <Button
                             type="submit"
                             disabled={processing}
-                            className="bg-brand hover:bg-brand-dark transition-all duration-200 flex-1"
+                            className="flex-1"
                         >
                             {processing ? 'Saving...' : (isEditing ? 'Save Changes' : 'Create Product')}
                         </Button>

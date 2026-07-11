@@ -99,7 +99,7 @@ export default function CategoryDialog({
                     <div className="flex flex-col gap-1.5">
                         <Label
                             htmlFor="category-name"
-                            className="text-text-primary"
+                            className="text-foreground"
                         >
                             Name{' '}
                             <span className="text-red-500" aria-hidden>
@@ -112,11 +112,11 @@ export default function CategoryDialog({
                             onChange={(e) => setData('name', e.target.value)}
                             placeholder="e.g. Antibiotics"
                             autoFocus
-                            className="border-border-soft"
+                            className="border-border"
                         />
                         {/* Live slug preview */}
                         {data.name && (
-                            <p className="text-xs text-text-secondary">
+                            <p className="text-xs text-muted-foreground">
                                 Slug:{' '}
                                 <span className="font-mono text-accent-indigo">
                                     {slugPreview}
@@ -131,10 +131,10 @@ export default function CategoryDialog({
                     <div className="flex flex-col gap-1.5">
                         <Label
                             htmlFor="category-description"
-                            className="text-text-primary"
+                            className="text-foreground"
                         >
                             Description{' '}
-                            <span className="text-xs font-normal text-text-muted">
+                            <span className="text-xs font-normal text-muted-foreground">
                                 (optional)
                             </span>
                         </Label>
@@ -146,7 +146,7 @@ export default function CategoryDialog({
                             }
                             placeholder="Short description of this category…"
                             rows={3}
-                            className="border-border-soft"
+                            className="border-border"
                         />
                         <InputError message={errors.description} />
                     </div>
@@ -157,14 +157,13 @@ export default function CategoryDialog({
                             variant="outline"
                             onClick={() => onOpenChange(false)}
                             disabled={processing}
-                            className="border-border-soft"
+                            className="border-border"
                         >
                             Cancel
                         </Button>
                         <Button
                             type="submit"
                             disabled={processing}
-                            className="bg-brand hover:bg-brand-dark transition-all duration-200 hover:-translate-y-0.5"
                         >
                             {processing
                                 ? 'Saving…'

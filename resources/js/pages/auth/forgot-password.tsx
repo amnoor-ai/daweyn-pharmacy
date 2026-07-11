@@ -63,7 +63,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
     );
 }
 
-ForgotPassword.layout = {
+ForgotPassword.layoutConfig = {
     title: 'Forgot password',
     description: 'Enter your email to receive a password reset link',
 };

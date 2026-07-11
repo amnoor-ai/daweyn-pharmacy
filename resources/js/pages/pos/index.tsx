@@ -41,7 +41,10 @@ export default function PosIndex() {
 
     // Fetch initial customers (they don't change often)
     useEffect(() => {
-        if (!teamSlug) return;
+        if (!teamSlug) {
+return;
+}
+
         fetch(`/${teamSlug}/api/customers/search`)
             .then(res => res.json())
             .then(data => setCustomers(data))
@@ -50,7 +53,9 @@ export default function PosIndex() {
 
     // Fetch products based on search (debounced)
     useEffect(() => {
-        if (!teamSlug) return;
+        if (!teamSlug) {
+return;
+}
         
         setIsLoadingProducts(true);
         const timer = setTimeout(() => {
@@ -88,6 +93,7 @@ export default function PosIndex() {
     function updateQuantity(productId: number, quantity: number) {
         if (quantity <= 0) {
             removeFromCart(productId);
+
             return;
         }
 
@@ -145,11 +151,11 @@ export default function PosIndex() {
                         placeholder="Search by name or SKU..."
                         value={search}
                         onChange={e => setSearch(e.target.value)}
-                        className="border-border-soft"
+                        className="border-border"
                     />
                     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 lg:overflow-y-auto pb-24 lg:pb-4 pr-1 lg:pr-3">
                         {isLoadingProducts ? (
-                            <p className="col-span-2 text-center text-sm text-text-secondary py-8">
+                            <p className="col-span-2 text-center text-sm text-muted-foreground py-8">
                                 Loading products...
                             </p>
                         ) : (
@@ -158,21 +164,21 @@ export default function PosIndex() {
                                     <button
                                         key={product.id}
                                         onClick={() => addToCart(product)}
-                                        className="flex flex-row items-center gap-3 rounded-lg border border-border-soft bg-surface p-3 text-left hover:border-brand hover:shadow-sm transition-all"
+                                        className="flex flex-row items-center gap-3 rounded-lg border border-border bg-card p-3 text-left hover:border-primary hover:shadow-sm transition-all"
                                     >
                                         <ProductAvatar src={product.image_url} alt={product.name} className="h-12 w-12 shrink-0" />
                                         <div className="flex flex-col min-w-0 flex-1">
-                                            <span className="font-medium text-text-primary text-sm truncate">{product.name}</span>
-                                            <span className="text-xs text-text-secondary truncate">{product.sku}</span>
+                                            <span className="font-medium text-foreground text-sm truncate">{product.name}</span>
+                                            <span className="text-xs text-muted-foreground truncate">{product.sku}</span>
                                             <div className="mt-1 flex items-center justify-between">
-                                                <span className="text-sm font-bold text-success-fg">${Number(product.selling_price).toFixed(2)}</span>
-                                                <span className="text-xs text-text-muted">Stock: {product.stock_quantity}</span>
+                                                <span className="text-sm font-bold text-emerald-500">${Number(product.selling_price).toFixed(2)}</span>
+                                                <span className="text-xs text-muted-foreground">Stock: {product.stock_quantity}</span>
                                             </div>
                                         </div>
                                     </button>
                                 ))}
                                 {products.length === 0 && (
-                                    <p className="col-span-2 text-center text-sm text-text-secondary py-8">
+                                    <p className="col-span-2 text-center text-sm text-muted-foreground py-8">
                                         No products found.
                                     </p>
                                 )}
@@ -182,20 +188,20 @@ export default function PosIndex() {
                 </div>
 
                 {/* Desktop Cart */}
-                <div className="hidden lg:flex w-80 flex-col border-l border-border-soft bg-surface">
+                <div className="hidden lg:flex w-80 flex-col border-l border-border bg-card">
                     {renderCart()}
                 </div>
             </div>
 
             {/* Mobile Cart Trigger & Sheet */}
-            <div className="lg:hidden fixed bottom-0 left-0 right-0 p-4 bg-surface border-t border-border-soft flex items-center justify-between z-40">
+            <div className="lg:hidden fixed bottom-0 left-0 right-0 p-4 bg-card border-t border-border flex items-center justify-between z-40">
                 <div className="flex flex-col">
-                    <span className="font-semibold text-text-primary text-sm">{cart.length} Item(s)</span>
-                    <span className="font-bold text-brand text-lg">${total.toFixed(2)}</span>
+                    <span className="font-semibold text-foreground text-sm">{cart.length} Item(s)</span>
+                    <span className="font-bold text-primary text-lg">${total.toFixed(2)}</span>
                 </div>
                 <Sheet open={mobileCartOpen} onOpenChange={setMobileCartOpen}>
                     <SheetTrigger asChild>
-                        <Button className="bg-brand text-white shadow-sm">View Cart</Button>
+                        <Button className="shadow-sm">View Cart</Button>
                     </SheetTrigger>
                     <SheetContent side="bottom" className="h-[85vh] flex flex-col p-0">
                         {renderCart(true)}
@@ -210,26 +216,26 @@ export default function PosIndex() {
             <div className={`flex flex-col h-full ${isMobile ? 'overflow-hidden' : ''}`}>
                 {/* Fixed header */}
                 <div className={`flex items-center gap-2 shrink-0 ${isMobile ? 'px-6 pt-6 pb-3' : 'px-5 pt-5 pb-3'}`}>
-                    <ShoppingCart className="h-5 w-5 text-brand" />
-                    <h2 className="text-lg font-semibold text-text-primary">Cart</h2>
+                    <ShoppingCart className="h-5 w-5 text-primary" />
+                    <h2 className="text-lg font-semibold text-foreground">Cart</h2>
                     {cart.length > 0 && (
-                        <span className="ml-auto text-xs text-text-secondary">{cart.length} item(s)</span>
+                        <span className="ml-auto text-xs text-muted-foreground">{cart.length} item(s)</span>
                     )}
                 </div>
 
                 {/* Scrollable cart items */}
                 <div className={`flex flex-col gap-2 flex-1 overflow-y-auto min-h-0 ${isMobile ? 'px-6' : 'px-5'}`}>
                     {cart.length === 0 && (
-                        <p className="text-center text-sm text-text-secondary py-8">
+                        <p className="text-center text-sm text-muted-foreground py-8">
                             No items added yet.
                         </p>
                     )}
                     {cart.map(item => (
-                        <div key={item.product.id} className="flex items-center gap-2 rounded-lg border border-border-soft p-2">
+                        <div key={item.product.id} className="flex items-center gap-2 rounded-lg border border-border p-2">
                             <ProductAvatar src={item.product.image_url} alt={item.product.name} className="h-8 w-8 shrink-0" />
                             <div className="flex-1 min-w-0">
-                                <p className="text-xs font-medium text-text-primary truncate">{item.product.name}</p>
-                                <p className="text-xs text-text-secondary">${Number(item.product.selling_price).toFixed(2)} each</p>
+                                <p className="text-xs font-medium text-foreground truncate">{item.product.name}</p>
+                                <p className="text-xs text-muted-foreground">${Number(item.product.selling_price).toFixed(2)} each</p>
                             </div>
                             <Input
                                 type="number"
@@ -237,11 +243,11 @@ export default function PosIndex() {
                                 max={item.product.stock_quantity}
                                 value={item.quantity}
                                 onChange={e => updateQuantity(item.product.id, parseInt(e.target.value))}
-                                className="w-16 border-border-soft text-center text-xs"
+                                className="w-16 border-border text-center text-xs"
                             />
                             <button
                                 onClick={() => removeFromCart(item.product.id)}
-                                className="text-text-secondary hover:text-danger-fg"
+                                className="text-muted-foreground hover:text-destructive"
                             >
                                 <Trash2 className="h-4 w-4" />
                             </button>
@@ -250,37 +256,37 @@ export default function PosIndex() {
                 </div>
 
                 {/* Sticky bottom — totals + customer + payment + action */}
-                <div className={`shrink-0 flex flex-col gap-3 border-t border-border-soft ${isMobile ? 'px-6 pt-4 pb-8' : 'px-5 pt-4 pb-5'}`}>
-                    <div className="flex justify-between text-text-secondary">
+                <div className={`shrink-0 flex flex-col gap-3 border-t border-border ${isMobile ? 'px-6 pt-4 pb-8' : 'px-5 pt-4 pb-5'}`}>
+                    <div className="flex justify-between text-muted-foreground">
                         <span>Subtotal</span>
                         <span>${subtotal.toFixed(2)}</span>
                     </div>
-                    <div className="flex items-center justify-between text-text-secondary">
+                    <div className="flex items-center justify-between text-muted-foreground">
                         <span>Discount</span>
                         <Input
                             type="number"
                             min="0"
                             value={discount}
                             onChange={e => setDiscount(e.target.value)}
-                            className="w-20 border-border-soft text-right text-xs"
+                            className="w-20 border-border text-right text-xs"
                         />
                     </div>
-                    <div className="flex items-center justify-between text-text-secondary">
+                    <div className="flex items-center justify-between text-muted-foreground">
                         <span>Tax</span>
                         <Input
                             type="number"
                             min="0"
                             value={tax}
                             onChange={e => setTax(e.target.value)}
-                            className="w-20 border-border-soft text-right text-xs"
+                            className="w-20 border-border text-right text-xs"
                         />
                     </div>
-                    <div className="flex justify-between font-semibold text-text-primary border-t border-border-soft pt-2">
+                    <div className="flex justify-between font-semibold text-foreground border-t border-border pt-2">
                         <span>Total</span>
                         <span>${total.toFixed(2)}</span>
                     </div>
                     <div className="flex flex-col gap-2">
-                        <Label className="text-xs text-text-secondary">Customer (optional)</Label>
+                        <Label className="text-xs text-muted-foreground">Customer (optional)</Label>
                         <Select
                             value={customerId}
                             onValueChange={setCustomerId}
@@ -297,7 +303,7 @@ export default function PosIndex() {
                         </Select>
                     </div>
                     <div className="flex flex-col gap-2">
-                        <Label className="text-xs text-text-secondary">Payment Method</Label>
+                        <Label className="text-xs text-muted-foreground">Payment Method</Label>
                         <div className="grid grid-cols-3 gap-2">
                             {['cash', 'zaad', 'evc', 'jeeb', 'card'].map((method) => (
                                 <button
@@ -306,8 +312,8 @@ export default function PosIndex() {
                                     onClick={() => setPaymentMethod(method)}
                                     className={`py-2 px-1 text-xs font-medium rounded-md border transition-all ${
                                         paymentMethod === method
-                                            ? 'bg-brand/10 border-brand text-brand'
-                                            : 'bg-surface border-border-soft text-text-secondary hover:border-brand/50'
+                                            ? 'bg-primary/10 border-primary text-primary'
+                                            : 'bg-card border-border text-muted-foreground hover:border-primary/50'
                                     }`}
                                 >
                                     {method.charAt(0).toUpperCase() + method.slice(1)}
@@ -320,7 +326,7 @@ export default function PosIndex() {
                 <Button
                     onClick={handleSubmit}
                     disabled={cart.length === 0}
-                    className="w-full bg-brand hover:bg-brand-dark transition-all duration-200 shadow-sm py-5 text-sm shrink-0"
+                    className="w-full shadow-sm py-5 text-sm shrink-0"
                 >
                     Complete Sale • ${total.toFixed(2)}
                 </Button>
@@ -329,7 +335,7 @@ export default function PosIndex() {
     }
 }
 
-PosIndex.layout = (props: { currentTeam?: { slug: string } | null }) => ({
+PosIndex.layoutConfig = (props: { currentTeam?: { slug: string } | null }) => ({
     breadcrumbs: [
         {
             title: 'POS',

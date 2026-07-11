@@ -1,14 +1,14 @@
 import { Head, usePage, router } from '@inertiajs/react';
-import { Plus, Search, Filter as FilterIcon, X } from 'lucide-react';
+import { Plus, Search, Filter as FilterIcon, X, Download } from 'lucide-react';
 import { useState } from 'react';
 import CustomerDialog from '@/components/CustomerDialog';
 import CustomerTable from '@/components/CustomerTable';
+import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import Heading from '@/components/heading';
 import type { Customer } from '@/types';
 
 type Props = {
@@ -51,6 +51,25 @@ export default function CustomersIndex({ customers, filters }: Props) {
 
     const filteredCustomers = customers;
 
+    function exportCustomersCSV() {
+        const headers = ['Name', 'Phone', 'Email', 'Address', 'Total Spent'];
+        const rows = filteredCustomers.map((c: any) => [
+            `"${c.name || ''}"`,
+            c.phone || '',
+            c.email || '',
+            `"${c.address || ''}"`,
+            Number(c.transactions_sum_total ?? 0).toFixed(2),
+        ]);
+        const csv = [headers.join(','), ...rows.map((r: any[]) => r.join(','))].join('\n');
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'customers.csv';
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
     const [dialogOpen, setDialogOpen] = useState(false);
     const [editingCustomer, setEditingCustomer] = useState<
         Customer | undefined
@@ -91,7 +110,7 @@ setEditingCustomer(undefined);
                     {/* Search */}
                     <div className="relative flex-1 max-w-xs flex gap-2">
                         <div className="relative flex-1">
-                            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
+                            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                             <Input
                                 value={query}
                                 onChange={(e) => setQuery(e.target.value)}
@@ -106,10 +125,10 @@ setEditingCustomer(undefined);
                     {/* Filter Popover */}
                     <Popover>
                         <PopoverTrigger asChild>
-                            <Button variant="outline" size="sm" className="h-9 border-border-soft bg-surface text-text-secondary gap-2">
+                            <Button variant="outline" size="sm" className="h-9 border-border bg-card text-muted-foreground gap-2">
                                 <FilterIcon className="h-4 w-4" /> Filters
                                 {(status !== 'all' || minSpend || maxSpend || startDate || endDate) && (
-                                    <span className="flex h-2 w-2 rounded-full bg-brand"></span>
+                                    <span className="flex h-2 w-2 rounded-full bg-primary"></span>
                                 )}
                             </Button>
                         </PopoverTrigger>
@@ -154,20 +173,24 @@ setEditingCustomer(undefined);
                                 </div>
 
                                 <div className="flex justify-between pt-2">
-                                    <Button variant="ghost" size="sm" onClick={clearFilters} className="text-text-muted h-8">Clear</Button>
+                                    <Button variant="ghost" size="sm" onClick={clearFilters} className="text-muted-foreground h-8">Clear</Button>
                                     <Button size="sm" onClick={applyFilters} className="h-8">Apply Filters</Button>
                                 </div>
                             </div>
                         </PopoverContent>
                     </Popover>
 
-                    {/* Spacer */}
-                    <div className="flex-1" />
+                    {/* Removed Spacer so buttons align nicely */}
+
+                    {/* Export */}
+                    <Button variant="outline" size="sm" onClick={exportCustomersCSV} className="h-9 gap-2 border-border bg-card text-muted-foreground">
+                        <Download className="h-4 w-4" /> Export
+                    </Button>
 
                     {/* Primary action */}
                     <Button
                         onClick={handleAdd}
-                        className="gap-2 bg-brand hover:bg-brand-dark transition-all duration-200 hover:-translate-y-0.5"
+                        className="gap-2"
                     >
                         <Plus className="h-4 w-4" />
                         Add Customer
@@ -194,7 +217,7 @@ setEditingCustomer(undefined);
     );
 }
 
-CustomersIndex.layout = (props: { currentTeam?: { slug: string } | null }) => ({
+CustomersIndex.layoutConfig = (props: { currentTeam?: { slug: string } | null }) => ({
     breadcrumbs: [
         {
             title: 'Customers',

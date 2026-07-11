@@ -1,5 +1,5 @@
 import { Head, usePage } from '@inertiajs/react';
-import { Plus, Search } from 'lucide-react';
+import { Plus, Search, Download } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import Heading from '@/components/heading';
 import ProductSheet from '@/components/ProductSheet';
@@ -74,6 +74,28 @@ setEditingProduct(undefined);
         });
     }, [products, categoryFilter, statusFilter]);
 
+    function exportProductsCSV() {
+        const headers = ['Name', 'SKU', 'Category', 'Cost Price', 'Selling Price', 'Stock', 'Status', 'Expiry Date'];
+        const rows = filteredProducts.map((p: any) => [
+            `"${p.name}"`,
+            p.sku || '',
+            `"${p.category?.name || ''}"`,
+            Number(p.cost_price).toFixed(2),
+            Number(p.selling_price).toFixed(2),
+            p.stock_quantity ?? 0,
+            p.stock_status || '',
+            p.expiry_date || '',
+        ]);
+        const csv = [headers.join(','), ...rows.map((r: any[]) => r.join(','))].join('\n');
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'products.csv';
+        a.click();
+        URL.revokeObjectURL(url);
+ }
+
     return (
         <>
             <Head title="Products" />
@@ -90,12 +112,12 @@ setEditingProduct(undefined);
                 <div className="flex flex-wrap items-center gap-3 p-1">
                     {/* Search */}
                     <div className="relative min-w-[200px] flex-1 max-w-xs">
-                        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
+                        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                         <Input
                             value={query}
                             onChange={(e) => handleSearch(e.target.value)}
                             placeholder="Search products…"
-                            className="h-9 pl-9 text-sm bg-surface shadow-sm"
+                            className="h-9 pl-9 text-sm bg-card shadow-sm"
                         />
                     </div>
 
@@ -105,7 +127,7 @@ setEditingProduct(undefined);
                             value={categoryFilter}
                             onValueChange={setCategoryFilter}
                         >
-                            <SelectTrigger className="h-9 min-w-[140px] bg-surface shadow-sm">
+                            <SelectTrigger className="h-9 min-w-[140px] bg-card shadow-sm">
                                 <SelectValue placeholder="All Categories" />
                             </SelectTrigger>
                             <SelectContent>
@@ -124,7 +146,7 @@ setEditingProduct(undefined);
                         value={statusFilter}
                         onValueChange={setStatusFilter}
                     >
-                        <SelectTrigger className="h-9 min-w-[130px] bg-surface shadow-sm">
+                        <SelectTrigger className="h-9 min-w-[130px] bg-card shadow-sm">
                             <SelectValue placeholder="All Status" />
                         </SelectTrigger>
                         <SelectContent>
@@ -136,13 +158,17 @@ setEditingProduct(undefined);
                         </SelectContent>
                     </Select>
 
-                    {/* Spacer */}
-                    <div className="flex-1" />
+                    {/* Removed Spacer so buttons align nicely */}
+
+                    {/* Export */}
+                    <Button variant="outline" size="sm" onClick={exportProductsCSV} className="h-9 gap-1.5 border-border bg-card text-muted-foreground">
+                        <Download className="h-4 w-4" /> Export
+                    </Button>
 
                     {/* Add button — same row as filters */}
                     <Button
                         onClick={handleAdd}
-                        className="gap-1.5 bg-brand hover:bg-brand-dark transition-all duration-200 hover:-translate-y-0.5 shadow-sm px-4"
+                        className="gap-1.5 px-4"
                     >
                         <Plus className="h-4 w-4" />
                         Add Product
@@ -170,7 +196,7 @@ setEditingProduct(undefined);
     );
 }
 
-ProductsIndex.layout = (props: { currentTeam?: { slug: string } | null }) => ({
+ProductsIndex.layoutConfig = (props: { currentTeam?: { slug: string } | null }) => ({
     breadcrumbs: [
         {
             title: 'Products',

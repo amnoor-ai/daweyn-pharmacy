@@ -11,9 +11,9 @@ return null;
     const elementObject = element as any;
     const type = elementObject.type;
 
-    if (type && type.layout) {
+    if (type && type.layoutConfig) {
         return {
-            config: type.layout,
+            config: type.layoutConfig,
             props: elementObject.props,
         };
     }

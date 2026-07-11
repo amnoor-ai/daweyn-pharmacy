@@ -1,10 +1,11 @@
 import { Head, usePage } from '@inertiajs/react';
-import { Plus, Search, Trash2, Users, Mail, X } from 'lucide-react';
+import { Plus, Search, Trash2, Users, Mail, X, ArrowUp, ArrowDown, ChevronsUpDown } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import Heading from '@/components/heading';
-import RemoveMemberModal from '@/components/remove-member-modal';
-import InviteMemberModal from '@/components/invite-member-modal';
 import CancelInvitationModal from '@/components/cancel-invitation-modal';
+import Heading from '@/components/heading';
+import InviteMemberModal from '@/components/invite-member-modal';
+import RemoveMemberModal from '@/components/remove-member-modal';
+import TablePagination from '@/components/TablePagination';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -55,8 +56,8 @@ export default function UsersIndex({ members, invitations, availableRoles, permi
     const [invitationToCancel, setInvitationToCancel] = useState<TeamInvitation | null>(null);
 
     const roleBadgeStyles: Record<string, string> = {
-        owner: 'bg-success-bg text-success-fg border-transparent hover:bg-success-bg/80',
-        admin: 'bg-info-bg text-info-fg border-transparent hover:bg-info-bg/80',
+        owner: 'bg-emerald-500/10 text-emerald-500 border-transparent hover:bg-emerald-500/10/80',
+        admin: 'bg-blue-500/10 text-blue-500 border-transparent hover:bg-blue-500/10/80',
         member: 'bg-secondary text-secondary-foreground border-transparent hover:bg-secondary/80',
     };
 
@@ -75,12 +76,72 @@ export default function UsersIndex({ members, invitations, availableRoles, permi
         });
     }, [members, searchQuery, roleFilter]);
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
+    const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
+
+    const sortedMembers = useMemo(() => {
+        const sortableItems = [...filteredMembers];
+
+        if (sortConfig !== null) {
+            sortableItems.sort((a: any, b: any) => {
+                const aValue = a[sortConfig.key];
+                const bValue = b[sortConfig.key];
+                
+                if (aValue === null) {
+return 1;
+}
+
+                if (bValue === null) {
+return -1;
+}
+                
+                if (aValue < bValue) {
+                    return sortConfig.direction === 'asc' ? -1 : 1;
+                }
+
+                if (aValue > bValue) {
+                    return sortConfig.direction === 'asc' ? 1 : -1;
+                }
+
+                return 0;
+            });
+        }
+
+        return sortableItems;
+    }, [filteredMembers, sortConfig]);
+
+    const totalPages = Math.ceil(sortedMembers.length / itemsPerPage);
+    const paginatedMembers = useMemo(() => {
+        return sortedMembers.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    }, [sortedMembers, currentPage]);
+
+    const requestSort = (key: string) => {
+        let direction: 'asc' | 'desc' = 'asc';
+
+        if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+
+        setSortConfig({ key, direction });
+    };
+
+    const SortIcon = ({ columnKey }: { columnKey: string }) => {
+        if (sortConfig?.key !== columnKey) {
+            return <ChevronsUpDown className="ml-2 h-4 w-4 inline-block text-gray-400" />;
+        }
+
+        return sortConfig.direction === 'asc' ? 
+            <ArrowUp className="ml-2 h-4 w-4 inline-block text-primary" /> : 
+            <ArrowDown className="ml-2 h-4 w-4 inline-block text-primary" />;
+    };
+
     return (
         <>
             <Head title="Staff & Users" />
-            <div className="flex flex-col flex-1 gap-6 max-w-7xl w-full mx-auto px-4">
+            <div className="flex flex-col flex-1 space-y-6">
                 {/* Page Header */}
-                <div className="flex items-center justify-between mt-2">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <Heading 
                         title="Staff & Users" 
                         description="Manage your team members and their roles." 
@@ -90,11 +151,11 @@ export default function UsersIndex({ members, invitations, availableRoles, permi
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
                     {/* Left Column: Filters & Table (col-span-2) */}
                     <div className="lg:col-span-2 flex flex-col gap-4">
-                        {/* Toolbar (Search & Filter) */}
+                        {/* Toolbar (Search, Filter & Actions) */}
                         <div className="flex flex-wrap items-center gap-3">
                             {/* Search */}
                             <div className="relative flex-1 max-w-xs">
-                                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
+                                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                 <Input
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -119,36 +180,47 @@ export default function UsersIndex({ members, invitations, availableRoles, permi
                                     ))}
                                 </SelectContent>
                             </Select>
+
+                            {/* Invite Member - inline */}
+                            {permissions.canCreateInvitation && (
+                                <Button
+                                    onClick={() => setInviteDialogOpen(true)}
+                                    className="cursor-pointer gap-2 h-9"
+                                    size="sm"
+                                >
+                                    <Plus className="h-4 w-4" />
+                                    Invite Member
+                                </Button>
+                            )}
                         </div>
 
                         {/* Table / List */}
                 {filteredMembers.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center rounded-lg border border-border-soft bg-surface py-12 text-center">
-                        <Users className="mb-3 h-8 w-8 text-text-secondary opacity-60" />
-                        <p className="text-sm font-medium text-text-primary">
+                    <div className="flex flex-col items-center justify-center rounded-lg border border-border bg-card py-12 text-center">
+                        <Users className="mb-3 h-8 w-8 text-muted-foreground opacity-60" />
+                        <p className="text-sm font-medium text-foreground">
                             No staff members found
                         </p>
-                        <p className="mt-1 text-xs text-text-secondary">
+                        <p className="mt-1 text-xs text-muted-foreground">
                             Invite team members to collaborate in your pharmacy.
                         </p>
                     </div>
                 ) : (
-                    <div className="flex-1 overflow-x-auto rounded-lg border border-border-soft bg-surface shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
+                    <div className="flex-1 overflow-x-auto rounded-lg border border-border bg-card shadow-[0_2px_10px_rgba(20,28,64,0.05)]">
                         <Table className="min-w-[800px]">
                             <TableHeader>
-                                <TableRow className="border-b border-divider hover:bg-transparent">
-                                    <TableHead className="px-4 py-3.5 text-left text-sm font-medium text-text-secondary uppercase">Staff Member</TableHead>
-                                    <TableHead className="px-4 py-3.5 text-left text-sm font-medium text-text-secondary uppercase">Email Address</TableHead>
-                                    <TableHead className="px-4 py-3.5 text-left text-sm font-medium text-text-secondary uppercase">Role</TableHead>
-                                    <TableHead className="px-4 py-3.5 text-left text-sm font-medium text-text-secondary uppercase">Joined Date</TableHead>
-                                    <TableHead className="px-4 py-3.5 text-right text-sm font-medium text-text-secondary uppercase">Actions</TableHead>
+                                <TableRow>
+                                    <TableHead className="cursor-pointer select-none" onClick={() => requestSort('name')}>Staff Member <SortIcon columnKey="name" /></TableHead>
+                                    <TableHead className="cursor-pointer select-none" onClick={() => requestSort('email')}>Email Address <SortIcon columnKey="email" /></TableHead>
+                                    <TableHead className="cursor-pointer select-none" onClick={() => requestSort('role')}>Role <SortIcon columnKey="role" /></TableHead>
+                                    <TableHead className="cursor-pointer select-none" onClick={() => requestSort('created_at')}>Joined Date <SortIcon columnKey="created_at" /></TableHead>
+                                    <TableHead className="text-right">Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {filteredMembers.map((member) => (
+                                {paginatedMembers.map((member) => (
                                     <TableRow
                                         key={member.id}
-                                        className="border-b border-divider hover:bg-primary-50 transition-colors"
                                     >
                                         <TableCell className="px-4 py-4">
                                             <div className="flex items-center gap-3">
@@ -159,16 +231,16 @@ export default function UsersIndex({ members, invitations, availableRoles, permi
                                                             alt={member.name}
                                                         />
                                                     ) : null}
-                                                    <AvatarFallback className="bg-brand/10 text-xs font-semibold text-brand">
+                                                    <AvatarFallback className="bg-primary/10 text-xs font-semibold text-primary">
                                                         {getInitials(member.name)}
                                                     </AvatarFallback>
                                                 </Avatar>
-                                                <span className="font-medium text-sm text-text-primary">
+                                                <span className="font-medium text-sm text-foreground">
                                                     {member.name}
                                                 </span>
                                             </div>
                                         </TableCell>
-                                        <TableCell className="px-4 py-4 text-sm text-text-secondary">
+                                        <TableCell className="px-4 py-4 text-sm text-muted-foreground">
                                             {member.email}
                                         </TableCell>
                                         <TableCell className="px-4 py-4">
@@ -181,7 +253,7 @@ export default function UsersIndex({ members, invitations, availableRoles, permi
                                                 {member.role_label}
                                             </Badge>
                                         </TableCell>
-                                        <TableCell className="px-4 py-4 text-sm text-text-secondary">
+                                        <TableCell className="px-4 py-4 text-sm text-muted-foreground">
                                             {member.created_at
                                                 ? new Date(
                                                       member.created_at,
@@ -200,7 +272,7 @@ export default function UsersIndex({ members, invitations, availableRoles, permi
                                                 variant="ghost"
                                                 size="sm"
                                                 onClick={() => setRemoveTarget(member)}
-                                                className="h-8 w-8 p-0 text-text-secondary hover:text-danger-fg"
+                                                className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
                                             >
                                                 <Trash2 className="h-4 w-4" />
                                                 <span className="sr-only">Remove {member.name}</span>
@@ -210,58 +282,55 @@ export default function UsersIndex({ members, invitations, availableRoles, permi
                                 ))}
                             </TableBody>
                         </Table>
+                        <TablePagination 
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={sortedMembers.length}
+                            itemsPerPage={itemsPerPage}
+                            onPageChange={setCurrentPage}
+                        />
                     </div>
                 )}
                     </div>
 
-                    {/* Right Column: Sidebar Metrics & Actions (col-span-1) */}
+                    {/* Right Column: Sidebar Metrics (col-span-1) */}
                     <div className="lg:col-span-1 flex flex-col gap-6">
-                        {/* Primary action */}
-                        {permissions.canCreateInvitation && (
-                            <Button
-                                onClick={() => setInviteDialogOpen(true)}
-                                className="w-full cursor-pointer gap-2 bg-brand hover:bg-brand-dark transition-all duration-200 hover:-translate-y-0.5 shadow-sm"
-                            >
-                                <Plus className="h-4 w-4" />
-                                Invite Member
-                            </Button>
-                        )}
 
                         {/* Stats Cards */}
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="rounded-xl border border-border-soft bg-surface p-5 flex flex-col gap-1 shadow-sm">
-                                <span className="text-xs font-semibold text-text-secondary uppercase tracking-wider">Total Staff</span>
-                                <span className="text-3xl font-bold text-text-primary mt-1">{members.length}</span>
+                            <div className="rounded-xl border border-border bg-card p-5 flex flex-col gap-1 shadow-sm">
+                                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Total Staff</span>
+                                <span className="text-3xl font-bold text-foreground mt-1">{members.length}</span>
                             </div>
-                            <div className="rounded-xl border border-border-soft bg-surface p-5 flex flex-col gap-1 shadow-sm">
-                                <span className="text-xs font-semibold text-text-secondary uppercase tracking-wider">Invites</span>
-                                <span className="text-3xl font-bold text-text-primary mt-1">{invitations.length}</span>
+                            <div className="rounded-xl border border-border bg-card p-5 flex flex-col gap-1 shadow-sm">
+                                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Invites</span>
+                                <span className="text-3xl font-bold text-foreground mt-1">{invitations.length}</span>
                             </div>
                         </div>
 
                         {/* Pending Invites list */}
                         {invitations.length > 0 && (
-                            <div className="rounded-xl border border-border-soft bg-surface shadow-sm overflow-hidden flex flex-col">
-                                <div className="border-b border-border-soft px-5 py-4 bg-canvas/40 flex items-center justify-between">
-                                    <h3 className="font-semibold text-sm text-text-primary">Pending Invitations</h3>
+                            <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden flex flex-col">
+                                <div className="border-b border-border px-5 py-4 bg-muted/30/40 flex items-center justify-between">
+                                    <h3 className="font-semibold text-sm text-foreground">Pending Invitations</h3>
                                 </div>
                                 <div className="divide-y divide-border-soft max-h-[400px] overflow-y-auto">
                                     {invitations.map((invitation) => (
-                                        <div key={invitation.code} className="p-4 flex flex-col gap-3 hover:bg-primary-50/50 transition-colors">
+                                        <div key={invitation.code} className="p-4 flex flex-col gap-3 hover:bg-primary/10/50 transition-colors">
                                             <div className="flex items-center gap-3">
-                                                <div className="flex size-9 items-center justify-center rounded-full bg-brand/10 text-brand shrink-0">
+                                                <div className="flex size-9 items-center justify-center rounded-full bg-primary/10 text-primary shrink-0">
                                                     <Mail className="h-4 w-4" />
                                                 </div>
                                                 <div className="flex-1 overflow-hidden">
-                                                    <div className="text-sm font-medium text-text-primary truncate" title={invitation.email}>{invitation.email}</div>
-                                                    <div className="text-xs text-text-secondary mt-0.5">{invitation.role_label}</div>
+                                                    <div className="text-sm font-medium text-foreground truncate" title={invitation.email}>{invitation.email}</div>
+                                                    <div className="text-xs text-muted-foreground mt-0.5">{invitation.role_label}</div>
                                                 </div>
                                             </div>
                                             {permissions.canCancelInvitation && (
                                                 <Button
                                                     variant="outline"
                                                     size="sm"
-                                                    className="w-full text-xs h-8 text-danger-fg hover:text-danger-fg hover:bg-danger-bg border-border-soft bg-surface mt-1"
+                                                    className="w-full text-xs h-8 text-destructive hover:text-destructive hover:bg-destructive/10 border-border bg-card mt-1"
                                                     onClick={() => {
                                                         setInvitationToCancel(invitation);
                                                         setCancelInvitationDialogOpen(true);
@@ -306,7 +375,7 @@ export default function UsersIndex({ members, invitations, availableRoles, permi
     );
 }
 
-UsersIndex.layout = (props: { currentTeam?: { slug: string } | null }) => ({
+UsersIndex.layoutConfig = (props: { currentTeam?: { slug: string } | null }) => ({
     breadcrumbs: [
         {
             title: 'Staff',

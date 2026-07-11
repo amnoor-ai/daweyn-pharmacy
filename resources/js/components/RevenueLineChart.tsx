@@ -50,11 +50,11 @@ return null;
 
     return (
         <div
-            className="rounded-lg border border-border-soft bg-surface px-3 py-2 shadow-md"
+            className="rounded-lg border border-border bg-card px-3 py-2 shadow-md"
             style={{ fontSize: 12 }}
         >
-            <p className="mb-1 font-medium text-text-secondary">{formattedDate}</p>
-            <p className="font-bold text-text-primary">
+            <p className="mb-1 font-medium text-muted-foreground">{formattedDate}</p>
+            <p className="font-bold text-foreground">
                 ${payload[0].value.toFixed(2)}
             </p>
         </div>
@@ -67,20 +67,17 @@ export default function RevenueLineChart({ data }: Props) {
     const { resolvedAppearance } = useAppearance();
     void resolvedAppearance;
 
-    const strokeColor = cssVar('--indigo-600');
-    // Use the same color for both gradient stops — just fade by opacity.
-    // This avoids --indigo-200 (#c7cff7, a light pastel) bleeding through
-    // on a dark canvas in dark mode.
-    const gradientColor = cssVar('--indigo-600');
-    const tickColor     = cssVar('--text-secondary');
-    const gridColor     = cssVar('--border-soft');
+    const strokeColor = cssVar('--primary');
+    const gradientColor = cssVar('--primary');
+    const tickColor     = cssVar('--muted-foreground');
+    const gridColor     = cssVar('--border');
 
     if (data.length === 0) {
         return (
-            <div className="flex h-[220px] flex-col items-center justify-center rounded-xl border border-border-soft bg-surface text-center">
-                <TrendingUp className="mb-2 h-8 w-8 text-text-muted opacity-60" />
-                <p className="text-sm font-medium text-text-primary">No revenue data yet</p>
-                <p className="mt-0.5 text-xs text-text-secondary">
+            <div className="flex h-[220px] flex-col items-center justify-center rounded-xl border border-border bg-card text-center">
+                <TrendingUp className="mb-2 h-8 w-8 text-muted-foreground opacity-60" />
+                <p className="text-sm font-medium text-foreground">No revenue data yet</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">
                     Revenue will appear here once transactions are recorded.
                 </p>
             </div>

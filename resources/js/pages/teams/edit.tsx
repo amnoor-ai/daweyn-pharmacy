@@ -206,7 +206,7 @@ export default function TeamEdit({
                                 <div className="flex items-center gap-4">
                                     <div className="text-sm text-muted-foreground hidden sm:block">
                                         {member.last_seen_at && new Date(member.last_seen_at).getTime() > now - 5 * 60 * 1000
-                                            ? <span className="text-success-fg">Active Now</span>
+                                            ? <span className="text-emerald-500">Active Now</span>
                                             : `Last active: ${formatRelativeTime(member.last_seen_at)}`}
                                     </div>
                                     {member.role !== 'owner' &&
@@ -394,7 +394,7 @@ export default function TeamEdit({
     );
 }
 
-TeamEdit.layout = (props: { team: { name: string; slug: string } }) => ({
+TeamEdit.layoutConfig = (props: { team: { name: string; slug: string } }) => ({
     breadcrumbs: [
         {
             title: 'Teams',

@@ -19,7 +19,7 @@ export default function CustomerShow({ customer }: Props) {
                 <Button
                     variant="ghost"
                     onClick={() => router.visit(`/${teamSlug}/customers`)}
-                    className="w-fit gap-2 text-text-secondary hover:text-brand"
+                    className="w-fit gap-2 text-muted-foreground hover:text-primary"
                 >
                     <ArrowLeft className="h-4 w-4" />
                     Back to Customers
@@ -27,54 +27,54 @@ export default function CustomerShow({ customer }: Props) {
 
                 {/* Header */}
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight text-text-primary">
+                    <h1 className="text-2xl font-bold tracking-tight text-foreground">
                         {customer.name}
                     </h1>
-                    <p className="mt-1 text-sm text-text-secondary">
+                    <p className="mt-1 text-sm text-muted-foreground">
                         Customer profile
                     </p>
                 </div>
 
                 {/* Details */}
-                <div className="rounded-xl border border-border-soft bg-surface p-6">
+                <div className="rounded-xl border border-border bg-card p-6">
                     <dl className="flex flex-col gap-4">
                         <div className="flex flex-col gap-1">
-                            <dt className="text-xs font-medium tracking-wide text-text-secondary uppercase">
+                            <dt className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
                                 Phone
                             </dt>
-                            <dd className="text-sm text-text-primary">
+                            <dd className="text-sm text-foreground">
                                 {customer.phone}
                             </dd>
                         </div>
                         <div className="flex flex-col gap-1">
-                            <dt className="text-xs font-medium tracking-wide text-text-secondary uppercase">
+                            <dt className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
                                 Email
                             </dt>
-                            <dd className="text-sm text-text-primary">
+                            <dd className="text-sm text-foreground">
                                 {customer.email ?? '—'}
                             </dd>
                         </div>
                         <div className="flex flex-col gap-1">
-                            <dt className="text-xs font-medium tracking-wide text-text-secondary uppercase">
+                            <dt className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
                                 Address
                             </dt>
-                            <dd className="text-sm text-text-primary">
+                            <dd className="text-sm text-foreground">
                                 {customer.address ?? '—'}
                             </dd>
                         </div>
                         <div className="flex flex-col gap-1">
-                            <dt className="text-xs font-medium tracking-wide text-text-secondary uppercase">
+                            <dt className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
                                 Loyalty Points
                             </dt>
-                            <dd className="text-sm font-medium text-brand">
+                            <dd className="text-sm font-medium text-primary">
                                 {customer.loyalty_points}
                             </dd>
                         </div>
                         <div className="flex flex-col gap-1">
-                            <dt className="text-xs font-medium tracking-wide text-text-secondary uppercase">
+                            <dt className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
                                 Customer Since
                             </dt>
-                            <dd className="text-sm text-text-primary">
+                            <dd className="text-sm text-foreground">
                                 {customer.created_at
                                     ? new Date(
                                           customer.created_at,
@@ -93,7 +93,7 @@ export default function CustomerShow({ customer }: Props) {
     );
 }
 
-CustomerShow.layout = (props: { currentTeam?: { slug: string } | null }) => ({
+CustomerShow.layoutConfig = (props: { currentTeam?: { slug: string } | null }) => ({
     breadcrumbs: [
         {
             title: 'Customers',

@@ -1,8 +1,7 @@
 import { Head, usePage, router, Link } from '@inertiajs/react';
-import { TrendingUp, DollarSign, Activity, Users, Package, Tags, ReceiptText, ArrowRight } from 'lucide-react';
+import { TrendingUp, DollarSign, Activity, Users, Package, Tags, ReceiptText, Download } from 'lucide-react';
 import { useState } from 'react';
 import Heading from '@/components/heading';
-import CustomerTable from '@/components/CustomerTable';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -16,14 +15,37 @@ import {
     TableRow,
 } from '@/components/ui/table';
 
-// For this implementation, we will build a basic UI. 
-// You can later add Recharts or another charting library for the `sales_trend` and `payment_methods` data.
-
 export default function ReportsIndex() {
     const { metrics, top_products, payment_methods, customers, filters, currentTeam } = usePage<any>().props;
 
     const [start, setStart] = useState(filters.start.split(' ')[0]);
     const [end, setEnd] = useState(filters.end.split(' ')[0]);
+
+    // Show only top 10 — no pagination needed in the report summary view
+    const topProducts = top_products?.slice(0, 10) || [];
+    const topCustomers = customers?.slice(0, 10) || [];
+
+    function exportReportsCSV() {
+        const lines: string[] = [`Reports Export: ${start} to ${end}`, ''];
+        lines.push('TOP SELLING PRODUCTS');
+        lines.push('Rank,Product,Quantity Sold,Total Revenue');
+        topProducts.forEach((p: any, i: number) => {
+            lines.push(`${i + 1},"${p.name}",${p.quantity_sold},${Number(p.total_revenue).toFixed(2)}`);
+        });
+        lines.push('');
+        lines.push('TOP CUSTOMERS');
+        lines.push('Rank,Customer,Phone,Total Spent');
+        topCustomers.forEach((c: any, i: number) => {
+            lines.push(`${i + 1},"${c.name}",${c.phone || ''},${Number(c.transactions_sum_total).toFixed(2)}`);
+        });
+        const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `reports-${start}-to-${end}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
 
     const handleFilter = () => {
         router.get(`/${currentTeam.slug}/reports`, {
@@ -31,7 +53,6 @@ export default function ReportsIndex() {
             end: end ? `${end} 23:59:59` : '',
         }, { preserveState: true });
     };
-
 
     return (
         <>
@@ -48,12 +69,15 @@ export default function ReportsIndex() {
                             <Label htmlFor="start" className="sr-only">Start Date</Label>
                             <Input type="date" id="start" value={start} onChange={(e) => setStart(e.target.value)} className="min-w-[148px] h-9 text-sm" />
                         </div>
-                        <span className="text-text-muted text-sm hidden sm:inline">→</span>
+                        <span className="text-muted-foreground text-sm hidden sm:inline">→</span>
                         <div className="flex flex-1 sm:flex-none items-center gap-2">
                             <Label htmlFor="end" className="sr-only">End Date</Label>
                             <Input type="date" id="end" value={end} onChange={(e) => setEnd(e.target.value)} className="min-w-[148px] h-9 text-sm" />
                         </div>
-                        <Button size="sm" onClick={handleFilter} className="h-9 bg-brand hover:bg-brand-dark text-white sm:mt-0">Filter</Button>
+                        <Button size="sm" onClick={handleFilter} className="h-9 sm:mt-0">Filter</Button>
+                        <Button variant="outline" size="sm" onClick={exportReportsCSV} className="h-9 gap-2 border-border bg-card text-muted-foreground">
+                            <Download className="h-4 w-4" /> Export
+                        </Button>
                     </div>
                 </div>
 
@@ -73,7 +97,7 @@ export default function ReportsIndex() {
                             <TrendingUp className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-success-fg">${metrics.total_profit.toFixed(2)}</div>
+                            <div className="text-2xl font-bold text-emerald-500">${metrics.total_profit.toFixed(2)}</div>
                         </CardContent>
                     </Card>
                     <Card>
@@ -87,134 +111,159 @@ export default function ReportsIndex() {
                     </Card>
                 </div>
 
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    {/* Top Products */}
-                    <Card className="col-span-1 lg:col-span-2">
+                <div className="grid gap-4 lg:grid-cols-3">
+                    {/* Top Products (Left Side) */}
+                    <Card className="col-span-1 lg:col-span-2 flex flex-col">
                         <CardHeader>
                             <CardTitle>Top Selling Products</CardTitle>
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="flex-1 flex flex-col justify-between p-0 sm:p-6 sm:pt-0">
                             {top_products.length > 0 ? (
                                 <div className="overflow-x-auto">
                                     <Table>
                                         <TableHeader>
-                                            <TableRow className="border-b border-divider hover:bg-transparent">
-                                                <TableHead className="w-12 text-left">#</TableHead>
-                                                <TableHead className="text-left">Product</TableHead>
+                                            <TableRow>
+                                                <TableHead className="w-12">#</TableHead>
+                                                <TableHead>Product</TableHead>
                                                 <TableHead className="text-right">Quantity Sold</TableHead>
                                                 <TableHead className="text-right">Total Revenue</TableHead>
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
-                                            {top_products.map((product: any, idx: number) => (
-                                                <TableRow key={idx} className="border-b border-border-soft last:border-0 hover:bg-canvas/50">
-                                                    <TableCell className="font-medium text-text-secondary text-left w-8">{idx + 1}</TableCell>
-                                                    <TableCell className="font-semibold text-text-primary text-left">{product.name}</TableCell>
-                                                    <TableCell className="text-right text-text-secondary tabular-nums"><span className="font-medium text-text-primary">{product.quantity_sold}</span><span className="ml-1 text-text-muted text-xs">sold</span></TableCell>
-                                                    <TableCell className="font-bold text-text-primary text-right tabular-nums">${Number(product.total_revenue).toFixed(2)}</TableCell>
+                                            {topProducts.map((product: any, idx: number) => (
+                                                <TableRow key={idx}>
+                                                    <TableCell className="font-medium text-muted-foreground text-left w-8">{idx + 1}</TableCell>
+                                                    <TableCell className="font-semibold text-foreground text-left">{product.name}</TableCell>
+                                                    <TableCell className="text-right text-muted-foreground tabular-nums"><span className="font-medium text-foreground">{product.quantity_sold}</span><span className="ml-1 text-muted-foreground text-xs">sold</span></TableCell>
+                                                    <TableCell className="font-bold text-foreground text-right tabular-nums">${Number(product.total_revenue).toFixed(2)}</TableCell>
                                                 </TableRow>
                                             ))}
                                         </TableBody>
                                     </Table>
                                 </div>
                             ) : (
-                                <div className="text-sm text-muted-foreground">No sales data for this period.</div>
+                                <div className="text-sm text-muted-foreground p-6 pt-0">No sales data for this period.</div>
                             )}
                         </CardContent>
                     </Card>
 
-                    {/* Payment Methods */}
-                    <Card className="col-span-1">
-                        <CardHeader>
-                            <CardTitle>Payment Methods</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            {payment_methods.length > 0 ? (
-                                <div className="overflow-x-auto">
-                                    <Table>
-                                        <TableHeader>
-                                            <TableRow className="border-b border-divider hover:bg-transparent">
-                                                <TableHead className="text-left">Method</TableHead>
-                                                <TableHead className="text-right">Transactions</TableHead>
-                                                <TableHead className="text-right">Total</TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {payment_methods.map((method: any, idx: number) => (
-                                                <TableRow key={idx} className="border-b border-border-soft last:border-0 hover:bg-canvas/50">
-                                                    <TableCell className="font-semibold text-text-primary text-left capitalize">{method.payment_method}</TableCell>
-                                                    <TableCell className="text-right text-text-secondary tabular-nums"><span className="font-medium text-text-primary">{method.count}</span><span className="ml-1 text-text-muted text-xs">txn</span></TableCell>
-                                                    <TableCell className="font-bold text-text-primary text-right tabular-nums">${Number(method.total).toFixed(2)}</TableCell>
+                    {/* Right Column: Payment Methods + Quick Links */}
+                    <div className="col-span-1 flex flex-col gap-4">
+                        {/* Payment Methods */}
+                        <Card>
+                            <CardHeader className="pb-3">
+                                <CardTitle>Payment Methods</CardTitle>
+                            </CardHeader>
+                            <CardContent className="p-0 sm:px-6 sm:pb-6">
+                                {payment_methods.length > 0 ? (
+                                    <div className="overflow-x-auto">
+                                        <Table>
+                                            <TableHeader>
+                                                <TableRow>
+                                                    <TableHead>Method</TableHead>
+                                                    <TableHead className="text-right">Transactions</TableHead>
+                                                    <TableHead className="text-right">Total</TableHead>
                                                 </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </div>
-                            ) : (
-                                <div className="text-sm text-muted-foreground">No sales data for this period.</div>
-                            )}
-                        </CardContent>
-                    </Card>
-                </div>
+                                            </TableHeader>
+                                            <TableBody>
+                                                {payment_methods.map((method: any, idx: number) => (
+                                                    <TableRow key={idx}>
+                                                        <TableCell className="font-semibold text-foreground text-left capitalize py-2.5">{method.payment_method}</TableCell>
+                                                        <TableCell className="text-right text-muted-foreground tabular-nums py-2.5"><span className="font-medium text-foreground">{method.count}</span><span className="ml-1 text-muted-foreground text-xs">txn</span></TableCell>
+                                                        <TableCell className="font-bold text-foreground text-right tabular-nums py-2.5">${Number(method.total).toFixed(2)}</TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    </div>
+                                ) : (
+                                    <div className="text-sm text-muted-foreground px-6 pb-6">No sales data for this period.</div>
+                                )}
+                            </CardContent>
+                        </Card>
 
-                {/* Quick Links */}
-                <div>
-                    <h3 className="text-lg font-bold tracking-tight text-text-primary mb-4">Quick Navigation</h3>
-                    <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
-                        <Link href={`/${currentTeam.slug}/customers`} className="flex items-center justify-between p-4 rounded-xl border border-border-soft bg-surface hover:shadow-md transition-all group">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 rounded-lg bg-primary-50 text-brand">
-                                    <Users className="h-5 w-5" />
-                                </div>
-                                <span className="font-medium text-text-primary group-hover:text-brand transition-colors">Customers</span>
+                        {/* Quick Navigation Cards pushed up under Payment Methods */}
+                        <div className="mt-2">
+                            <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-3 px-1">Quick Navigation</h3>
+                            <div className="grid gap-3 grid-cols-2">
+                                <Link href={`/${currentTeam.slug}/customers`} className="flex flex-col items-center justify-center p-3 rounded-xl border border-border bg-card hover:shadow-md transition-all group gap-2 text-center">
+                                    <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                                        <Users className="h-5 w-5" />
+                                    </div>
+                                    <span className="font-medium text-foreground group-hover:text-primary transition-colors text-sm">Customers</span>
+                                </Link>
+                                <Link href={`/${currentTeam.slug}/products`} className="flex flex-col items-center justify-center p-3 rounded-xl border border-border bg-card hover:shadow-md transition-all group gap-2 text-center">
+                                    <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                                        <Package className="h-5 w-5" />
+                                    </div>
+                                    <span className="font-medium text-foreground group-hover:text-primary transition-colors text-sm">Products</span>
+                                </Link>
+                                <Link href={`/${currentTeam.slug}/categories`} className="flex flex-col items-center justify-center p-3 rounded-xl border border-border bg-card hover:shadow-md transition-all group gap-2 text-center">
+                                    <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                                        <Tags className="h-5 w-5" />
+                                    </div>
+                                    <span className="font-medium text-foreground group-hover:text-primary transition-colors text-sm">Categories</span>
+                                </Link>
+                                <Link href={`/${currentTeam.slug}/transactions`} className="flex flex-col items-center justify-center p-3 rounded-xl border border-border bg-card hover:shadow-md transition-all group gap-2 text-center">
+                                    <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                                        <ReceiptText className="h-5 w-5" />
+                                    </div>
+                                    <span className="font-medium text-foreground group-hover:text-primary transition-colors text-sm">Transactions</span>
+                                </Link>
                             </div>
-                            <ArrowRight className="h-4 w-4 text-text-muted group-hover:text-brand transition-colors" />
-                        </Link>
-                        <Link href={`/${currentTeam.slug}/products`} className="flex items-center justify-between p-4 rounded-xl border border-border-soft bg-surface hover:shadow-md transition-all group">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 rounded-lg bg-primary-50 text-brand">
-                                    <Package className="h-5 w-5" />
-                                </div>
-                                <span className="font-medium text-text-primary group-hover:text-brand transition-colors">Products</span>
-                            </div>
-                            <ArrowRight className="h-4 w-4 text-text-muted group-hover:text-brand transition-colors" />
-                        </Link>
-                        <Link href={`/${currentTeam.slug}/categories`} className="flex items-center justify-between p-4 rounded-xl border border-border-soft bg-surface hover:shadow-md transition-all group">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 rounded-lg bg-primary-50 text-brand">
-                                    <Tags className="h-5 w-5" />
-                                </div>
-                                <span className="font-medium text-text-primary group-hover:text-brand transition-colors">Categories</span>
-                            </div>
-                            <ArrowRight className="h-4 w-4 text-text-muted group-hover:text-brand transition-colors" />
-                        </Link>
-                        <Link href={`/${currentTeam.slug}/transactions`} className="flex items-center justify-between p-4 rounded-xl border border-border-soft bg-surface hover:shadow-md transition-all group">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 rounded-lg bg-primary-50 text-brand">
-                                    <ReceiptText className="h-5 w-5" />
-                                </div>
-                                <span className="font-medium text-text-primary group-hover:text-brand transition-colors">Transactions</span>
-                            </div>
-                            <ArrowRight className="h-4 w-4 text-text-muted group-hover:text-brand transition-colors" />
-                        </Link>
+                        </div>
                     </div>
                 </div>
 
-                {/* Top Customers Table */}
-                <div>
-                    <h3 className="text-lg font-bold tracking-tight text-text-primary mb-4">Top Customers</h3>
-                    <CustomerTable 
-                        customers={customers} 
-                        teamSlug={currentTeam.slug} 
-                        onEdit={(customer) => router.visit(`/${currentTeam.slug}/customers/${customer.id}`)}
-                    />
-                </div>
+                {/* Top Customers (Consistent with Top Products) */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Top Customers</CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-0 sm:px-6 sm:pb-6 pt-0">
+                        {customers.length > 0 ? (
+                            <div className="overflow-x-auto">
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead className="w-12">#</TableHead>
+                                            <TableHead>Customer Name</TableHead>
+                                            <TableHead>Contact</TableHead>
+                                            <TableHead className="text-right">Last Visit</TableHead>
+                                            <TableHead className="text-right">Total Spent</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {topCustomers.map((customer: any, idx: number) => (
+                                            <TableRow key={idx}>
+                                                <TableCell className="font-medium text-muted-foreground text-left w-8">{idx + 1}</TableCell>
+                                                <TableCell className="font-semibold text-foreground text-left">{customer.name}</TableCell>
+                                                <TableCell className="text-muted-foreground text-left">
+                                                    <div className="flex flex-col">
+                                                        <span>{customer.phone || '—'}</span>
+                                                        {customer.email && <span className="text-xs text-muted-foreground">{customer.email}</span>}
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="text-right text-muted-foreground">
+                                                    {customer.transactions_max_created_at ? new Date(customer.transactions_max_created_at).toLocaleDateString() : '—'}
+                                                </TableCell>
+                                                <TableCell className="font-bold text-foreground text-right tabular-nums">${Number(customer.transactions_sum_total).toFixed(2)}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </div>
+                        ) : (
+                            <div className="text-sm text-muted-foreground pt-0 p-6">No customers found for this period.</div>
+                        )}
+                    </CardContent>
+                </Card>
             </div>
         </>
     );
 }
 
-ReportsIndex.layout = (props: { currentTeam?: { slug: string } | null }) => ({
+ReportsIndex.layoutConfig = (props: { currentTeam?: { slug: string } | null }) => ({
     breadcrumbs: [
         {
             title: 'Reports & Analytics',

@@ -170,7 +170,7 @@ export default function TeamsIndex({ teams }: Props) {
     );
 }
 
-TeamsIndex.layout = () => ({
+TeamsIndex.layoutConfig = () => ({
     breadcrumbs: [
         {
             title: 'Teams',

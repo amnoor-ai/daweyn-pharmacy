@@ -101,8 +101,8 @@ return false;
                     collapsed ? 'justify-center px-2.5' : ''
                 } ${
                     active
-                        ? 'bg-brand text-text-on-primary'
-                        : 'text-text-secondary hover:bg-primary-50 hover:text-brand'
+                        ? 'bg-primary text-text-on-primary'
+                        : 'text-muted-foreground hover:bg-primary/10 hover:text-primary'
                 }`}
             >
                 <Icon size={18} strokeWidth={1.8} />
@@ -114,7 +114,7 @@ return false;
             return (
                 <Tooltip key={label}>
                     <TooltipTrigger asChild>{link}</TooltipTrigger>
-                    <TooltipContent side="right" className="bg-surface text-text-primary shadow-md border border-border-soft">
+                    <TooltipContent side="right" className="bg-card text-foreground shadow-md border border-border">
                         {label}
                     </TooltipContent>
                 </Tooltip>
@@ -126,7 +126,7 @@ return false;
 
     return (
         <aside
-            className={`sticky top-0 flex h-screen flex-col border-r border-border-soft bg-surface transition-[width] duration-200 ease-in-out ${
+            className={`sticky top-0 flex h-screen flex-col border-r border-border bg-card transition-[width] duration-200 ease-in-out ${
                 collapsed ? 'w-[72px]' : 'w-64'
             }`}
         >
@@ -139,11 +139,11 @@ return false;
                     onClick={collapsed && externalSetCollapsed ? () => externalSetCollapsed(false) : undefined}
                     className={`flex items-center gap-2 ${collapsed ? 'cursor-pointer' : ''}`}
                 >
-                    <div className={`flex shrink-0 items-center justify-center rounded-[10px] bg-brand transition-all duration-200 ${collapsed ? 'h-7 w-7' : 'h-9 w-9'}`}>
+                    <div className={`flex shrink-0 items-center justify-center rounded-[10px] bg-primary transition-all duration-200 ${collapsed ? 'h-7 w-7' : 'h-9 w-9'}`}>
                         <PillBottle size={collapsed ? 14 : 18} stroke="#fff" strokeWidth={1} />
                     </div>
                     {!collapsed && (
-                        <span className="text-lg font-bold tracking-tight text-brand">
+                        <span className="text-lg font-bold tracking-tight text-primary">
                             Daaweyn
                         </span>
                     )}
@@ -155,7 +155,7 @@ return false;
                 {navItems.map(({ section, links }) => (
                     <div key={section}>
                         {!collapsed && (
-                            <p className="mb-1.5 px-2 text-[11px] font-medium tracking-[0.05em] text-text-muted uppercase">
+                            <p className="mb-1.5 px-2 text-[11px] font-medium tracking-[0.05em] text-muted-foreground uppercase">
                                 {section}
                             </p>
                         )}
@@ -167,9 +167,9 @@ return false;
             </div>
 
             {/* Preferences */}
-            <div className="border-t border-border-soft px-3 pt-3 pb-4">
+            <div className="border-t border-border px-3 pt-3 pb-4">
                 {!collapsed && (
-                    <p className="mb-1.5 px-2 text-[11px] font-medium tracking-[0.05em] text-text-muted uppercase">
+                    <p className="mb-1.5 px-2 text-[11px] font-medium tracking-[0.05em] text-muted-foreground uppercase">
                         Preferences
                     </p>
                 )}

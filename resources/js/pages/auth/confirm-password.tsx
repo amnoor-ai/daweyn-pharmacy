@@ -42,9 +42,17 @@ export default function ConfirmPassword() {
                             <InputError message={errors.password} />
                         </div>
 
-                        <div className="flex items-center">
+                        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:gap-4">
                             <Button
-                                className="w-full"
+                                type="button"
+                                variant="secondary"
+                                className="w-full sm:w-1/2"
+                                onClick={() => window.history.back()}
+                            >
+                                Go back
+                            </Button>
+                            <Button
+                                className="w-full sm:w-1/2"
                                 disabled={processing}
                                 data-test="confirm-password-button"
                             >
@@ -59,7 +67,7 @@ export default function ConfirmPassword() {
     );
 }
 
-ConfirmPassword.layout = {
+ConfirmPassword.layoutConfig = {
     title: 'Confirm password',
     description:
         'This is a secure area of the application. Please confirm your password before continuing.',

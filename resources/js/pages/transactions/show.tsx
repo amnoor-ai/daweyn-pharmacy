@@ -25,11 +25,11 @@ const paymentLabel: Record<string, string> = {
 };
 
 const paymentBadge: Record<string, string> = {
-    cash: 'bg-success-bg text-success-fg hover:bg-success-bg/80 border-transparent shadow-none',
-    zaad: 'bg-info-bg text-info-fg hover:bg-info-bg/80 border-transparent shadow-none',
-    evc: 'bg-info-bg text-info-fg hover:bg-info-bg/80 border-transparent shadow-none',
-    jeeb: 'bg-info-bg text-info-fg hover:bg-info-bg/80 border-transparent shadow-none',
-    card: 'bg-warning-bg text-warning-fg hover:bg-warning-bg/80 border-transparent shadow-none',
+    cash: 'bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/10/80 border-transparent shadow-none',
+    zaad: 'bg-blue-500/10 text-blue-500 hover:bg-blue-500/10/80 border-transparent shadow-none',
+    evc: 'bg-blue-500/10 text-blue-500 hover:bg-blue-500/10/80 border-transparent shadow-none',
+    jeeb: 'bg-blue-500/10 text-blue-500 hover:bg-blue-500/10/80 border-transparent shadow-none',
+    card: 'bg-amber-500/10 text-amber-500 hover:bg-amber-500/10/80 border-transparent shadow-none',
 };
 
 export default function TransactionShow({ transaction }: Props) {
@@ -44,7 +44,7 @@ export default function TransactionShow({ transaction }: Props) {
                 <Button
                     variant="ghost"
                     onClick={() => router.visit(`/${teamSlug}/transactions`)}
-                    className="w-fit gap-2 text-text-secondary hover:text-brand"
+                    className="w-fit gap-2 text-muted-foreground hover:text-primary"
                 >
                     <ArrowLeft className="h-4 w-4" />
                     Back to Transactions
@@ -53,10 +53,10 @@ export default function TransactionShow({ transaction }: Props) {
                 {/* Header */}
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-2xl font-bold tracking-tight text-text-primary">
+                        <h1 className="text-2xl font-bold tracking-tight text-foreground">
                             {transaction.invoice_number}
                         </h1>
-                        <p className="mt-1 text-sm text-text-secondary">
+                        <p className="mt-1 text-sm text-muted-foreground">
                             {transaction.created_at
                                 ? new Date(
                                       transaction.created_at,
@@ -68,35 +68,35 @@ export default function TransactionShow({ transaction }: Props) {
                                 : '—'}
                         </p>
                     </div>
-                    <Badge variant="secondary" className="rounded-full bg-success-bg text-success-fg hover:bg-success-bg/80 border-transparent shadow-none">
+                    <Badge variant="secondary" className="rounded-full bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/10/80 border-transparent shadow-none">
                         Completed
                     </Badge>
                 </div>
 
                 {/* Details */}
-                <div className="flex flex-col gap-4 rounded-xl border border-border-soft bg-surface p-6">
+                <div className="flex flex-col gap-4 rounded-xl border border-border bg-card p-6">
                     <div className="grid grid-cols-2 gap-4 text-sm">
                         <div className="flex flex-col gap-1">
-                            <span className="text-xs font-medium tracking-wide text-text-secondary uppercase">
+                            <span className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
                                 Customer
                             </span>
-                            <span className="text-text-primary">
+                            <span className="text-foreground">
                                 {transaction.customer?.name ?? 'Walk-in'}
                             </span>
                         </div>
                         <div className="flex flex-col gap-1">
-                            <span className="text-xs font-medium tracking-wide text-text-secondary uppercase">
+                            <span className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
                                 Cashier
                             </span>
-                            <span className="text-text-primary">
+                            <span className="text-foreground">
                                 {transaction.cashier?.name ?? '—'}
                             </span>
                         </div>
                         <div className="flex flex-col gap-1">
-                            <span className="text-xs font-medium tracking-wide text-text-secondary uppercase">
+                            <span className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
                                 Payment
                             </span>
-                            <span className="text-text-primary">
+                            <span className="text-foreground">
                                 <Badge variant="secondary" className={`rounded-full ${paymentBadge[transaction.payment_method]}`}>
                                     {paymentLabel[transaction.payment_method]}
                                 </Badge>
@@ -106,32 +106,32 @@ export default function TransactionShow({ transaction }: Props) {
                 </div>
 
                 {/* Items */}
-                <div className="overflow-hidden rounded-xl border border-border-soft bg-surface">
+                <div className="overflow-hidden rounded-xl border border-border bg-card">
                     <Table>
                         <TableHeader>
-                            <TableRow className="border-b border-border-soft hover:bg-transparent">
-                                <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Product</TableHead>
-                                <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Qty</TableHead>
-                                <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Unit Price</TableHead>
-                                <TableHead className="px-6 py-3.5 text-right text-[13px] font-medium text-text-secondary uppercase">Total</TableHead>
+                            <TableRow className="border-b border-border hover:bg-transparent">
+                                <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-muted-foreground uppercase">Product</TableHead>
+                                <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-muted-foreground uppercase">Qty</TableHead>
+                                <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-muted-foreground uppercase">Unit Price</TableHead>
+                                <TableHead className="px-6 py-3.5 text-right text-[13px] font-medium text-muted-foreground uppercase">Total</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {transaction.items?.map((item) => (
                                 <TableRow
                                     key={item.id}
-                                    className="border-b border-border-soft hover:bg-primary-50 transition-colors"
+                                    className="border-b border-border hover:bg-primary/10 transition-colors"
                                 >
-                                    <TableCell className="px-6 py-4 text-text-primary">
+                                    <TableCell className="px-6 py-4 text-foreground">
                                         {item.product?.name ?? '—'}
                                     </TableCell>
-                                    <TableCell className="px-6 py-4 text-text-secondary">
+                                    <TableCell className="px-6 py-4 text-muted-foreground">
                                         {item.quantity}
                                     </TableCell>
-                                    <TableCell className="px-6 py-4 text-text-secondary">
+                                    <TableCell className="px-6 py-4 text-muted-foreground">
                                         ${Number(item.unit_price).toFixed(2)}
                                     </TableCell>
-                                    <TableCell className="px-6 py-4 text-right font-medium text-text-primary">
+                                    <TableCell className="px-6 py-4 text-right font-medium text-foreground">
                                         ${Number(item.total).toFixed(2)}
                                     </TableCell>
                                 </TableRow>
@@ -141,25 +141,25 @@ export default function TransactionShow({ transaction }: Props) {
                 </div>
 
                 {/* Totals */}
-                <div className="rounded-xl border border-border-soft bg-surface p-6">
+                <div className="rounded-xl border border-border bg-card p-6">
                     <div className="flex flex-col gap-2 text-sm">
-                        <div className="flex justify-between text-text-secondary">
+                        <div className="flex justify-between text-muted-foreground">
                             <span>Subtotal</span>
                             <span>
                                 ${Number(transaction.subtotal).toFixed(2)}
                             </span>
                         </div>
-                        <div className="flex justify-between text-text-secondary">
+                        <div className="flex justify-between text-muted-foreground">
                             <span>Discount</span>
                             <span>
                                 -${Number(transaction.discount).toFixed(2)}
                             </span>
                         </div>
-                        <div className="flex justify-between text-text-secondary">
+                        <div className="flex justify-between text-muted-foreground">
                             <span>Tax</span>
                             <span>${Number(transaction.tax).toFixed(2)}</span>
                         </div>
-                        <div className="mt-1 flex justify-between border-t border-border-soft pt-2 font-semibold text-text-primary">
+                        <div className="mt-1 flex justify-between border-t border-border pt-2 font-semibold text-foreground">
                             <span>Total</span>
                             <span>${Number(transaction.total).toFixed(2)}</span>
                         </div>
@@ -167,8 +167,8 @@ export default function TransactionShow({ transaction }: Props) {
                 </div>
 
                 {transaction.customer && (
-                    <div className="rounded-xl border border-border-soft bg-surface p-6">
-                        <div className="flex justify-between items-center text-sm font-medium text-success-fg">
+                    <div className="rounded-xl border border-border bg-card p-6">
+                        <div className="flex justify-between items-center text-sm font-medium text-emerald-500">
                             <span>Points earned</span>
                             <span>+{Math.floor(Number(transaction.total))} pts</span>
                         </div>
@@ -179,7 +179,7 @@ export default function TransactionShow({ transaction }: Props) {
     );
 }
 
-TransactionShow.layout = (props: {
+TransactionShow.layoutConfig = (props: {
     currentTeam?: { slug: string } | null;
 }) => ({
     breadcrumbs: [

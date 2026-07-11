@@ -33,11 +33,11 @@ return null;
 }
 
     return (
-        <div className="rounded-lg border border-border-soft bg-surface px-3 py-2 shadow-md text-xs">
-            <p className="font-medium text-text-secondary">
+        <div className="rounded-lg border border-border bg-card px-3 py-2 shadow-md text-xs">
+            <p className="font-medium text-muted-foreground">
                 {payload[0].payload?.label ?? payload[0].name}
             </p>
-            <p className="font-bold text-text-primary">
+            <p className="font-bold text-foreground">
                 ${payload[0].value.toFixed(2)}
             </p>
         </div>
@@ -57,21 +57,21 @@ export default function PaymentMethodDonut({ data }: Props) {
     // mode (verified in app.css), so they're always high-contrast and
     // visually distinct regardless of theme.
     const METHOD_COLORS: Record<string, string> = {
-        cash: cssVar('--indigo-600'),  // #4C5FD5 — blue
-        zaad: cssVar('--teal-500'),    // #1FAE8E — teal
-        evc:  cssVar('--danger-fg'),   // #E5484D — red
-        jeeb: cssVar('--warning-fg'),  // #C68A0A — amber
-        card: cssVar('--indigo-400'),  // #8C9AEB — light indigo
+        cash: cssVar('--chart-1'),
+        zaad: cssVar('--chart-2'),
+        evc: cssVar('--chart-3'),
+        jeeb: cssVar('--chart-4'),
+        card: cssVar('--chart-5'),
     };
     const fallbackColor = cssVar('--text-muted');
     const getColor = (method: string) => METHOD_COLORS[method] ?? fallbackColor;
 
     if (data.length === 0) {
         return (
-            <div className="flex h-full flex-col items-center justify-center rounded-xl border border-border-soft bg-surface text-center px-4 py-8">
-                <PieIcon className="mb-2 h-8 w-8 text-text-muted opacity-60" />
-                <p className="text-sm font-medium text-text-primary">No payment data</p>
-                <p className="mt-0.5 text-xs text-text-secondary">
+            <div className="flex h-full flex-col items-center justify-center rounded-xl border border-border bg-card text-center px-4 py-8">
+                <PieIcon className="mb-2 h-8 w-8 text-muted-foreground opacity-60" />
+                <p className="text-sm font-medium text-foreground">No payment data</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">
                     Payment breakdown will appear here.
                 </p>
             </div>
@@ -128,15 +128,15 @@ export default function PaymentMethodDonut({ data }: Props) {
                                     className="h-3 w-3 shrink-0 rounded-full"
                                     style={{ backgroundColor: getColor(d.payment_method) }}
                                 />
-                                <span className="truncate text-sm text-text-primary">
+                                <span className="truncate text-sm text-foreground">
                                     {d.payment_method_label ?? d.payment_method}
                                 </span>
                             </div>
                             <div className="flex items-center gap-2 shrink-0">
-                                <span className="text-sm font-semibold text-text-primary">
+                                <span className="text-sm font-semibold text-foreground">
                                     ${d.total.toFixed(0)}
                                 </span>
-                                <span className="text-xs tabular-nums text-text-secondary">
+                                <span className="text-xs tabular-nums text-muted-foreground">
                                     {pct}%
                                 </span>
                             </div>

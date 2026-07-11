@@ -137,7 +137,7 @@ export default function Security(props: Props) {
     );
 }
 
-Security.layout = () => ({
+Security.layoutConfig = () => ({
     breadcrumbs: [
         {
             title: 'Security settings',

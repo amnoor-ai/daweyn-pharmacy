@@ -124,29 +124,29 @@ export default function Dashboard({
                             },
                         )}`}
                         icon={DollarSign}
-                        iconBgClass="bg-success-bg"
-                        iconColorClass="text-success-fg"
+                        iconBgClass="bg-emerald-500/10"
+                        iconColorClass="text-emerald-500"
                     />
                     <StatCard
                         title="Orders"
                         value={stats.totalTransactions.toLocaleString()}
                         icon={Receipt}
                         iconBgClass="bg-chip-pink"
-                        iconColorClass="text-danger-fg"
+                        iconColorClass="text-destructive"
                     />
                     <StatCard
                         title="Active Customers"
                         value={stats.activeCustomers.toLocaleString()}
                         icon={Users}
                         iconBgClass="bg-chip-blue"
-                        iconColorClass="text-accent-indigo"
+                        iconColorClass="text-primary"
                     />
                     <StatCard
                         title="Low Stock"
                         value={stats.lowStockCount.toLocaleString()}
                         icon={Pill}
                         iconBgClass="bg-chip-orange"
-                        iconColorClass="text-warning-fg"
+                        iconColorClass="text-amber-500"
                     />
                 </div>
 
@@ -156,15 +156,15 @@ export default function Dashboard({
                     <Card className="flex flex-col gap-3 p-5 lg:col-span-2">
                         <div className="flex items-center justify-between">
                             <div>
-                                <h2 className="text-base font-bold text-text-primary">
+                                <h2 className="text-base font-bold text-foreground">
                                     Daily Revenue
                                 </h2>
-                                <p className="mt-0.5 text-xs text-text-secondary">
+                                <p className="mt-0.5 text-xs text-muted-foreground">
                                     Last 30 days of sales totals.
                                 </p>
                             </div>
-                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-info-bg">
-                                <TrendingUp className="h-4 w-4 text-info-fg" />
+                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/10">
+                                <TrendingUp className="h-4 w-4 text-blue-500" />
                             </div>
                         </div>
                         <RevenueLineChart data={revenueByDay} />
@@ -173,10 +173,10 @@ export default function Dashboard({
                     {/* Payment Method Donut */}
                     <Card className="flex flex-col gap-3 p-5">
                         <div>
-                            <h2 className="text-base font-bold text-text-primary">
+                            <h2 className="text-base font-bold text-foreground">
                                 Payment Methods
                             </h2>
-                            <p className="mt-0.5 text-xs text-text-secondary">
+                            <p className="mt-0.5 text-xs text-muted-foreground">
                                 Revenue split by payment type.
                             </p>
                         </div>
@@ -190,16 +190,16 @@ export default function Dashboard({
                     <div className="flex flex-col gap-4 lg:col-span-2">
                         <div className="flex items-center justify-between">
                             <div>
-                                <h2 className="text-lg font-bold text-text-primary">
+                                <h2 className="text-lg font-bold text-foreground">
                                     Recent Transactions
                                 </h2>
-                                <p className="mt-0.5 text-xs text-text-secondary">
+                                <p className="mt-0.5 text-xs text-muted-foreground">
                                     Latest checkout sales at your pharmacy.
                                 </p>
                             </div>
                             <Link
                                 href={`/${teamSlug}/transactions`}
-                                className="flex items-center gap-1 text-xs font-semibold text-accent-indigo hover:underline"
+                                className="flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
                             >
                                 View all
                                 <ArrowRight className="h-3 w-3" />
@@ -207,12 +207,12 @@ export default function Dashboard({
                         </div>
 
                         {recentTransactions.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center rounded-xl border border-border-soft bg-surface py-12 text-center">
-                                <Receipt className="mb-3 h-8 w-8 text-text-secondary opacity-60" />
-                                <p className="text-sm font-medium text-text-primary">
+                            <div className="flex flex-col items-center justify-center rounded-xl border border-border bg-card py-12 text-center">
+                                <Receipt className="mb-3 h-8 w-8 text-muted-foreground opacity-60" />
+                                <p className="text-sm font-medium text-foreground">
                                     No transactions yet
                                 </p>
-                                <p className="mt-1 text-xs text-text-secondary">
+                                <p className="mt-1 text-xs text-muted-foreground">
                                     Start scanning products to generate checkout
                                     sales.
                                 </p>
@@ -221,34 +221,33 @@ export default function Dashboard({
                             <Card className="overflow-hidden p-0">
                                 <Table>
                                     <TableHeader>
-                                        <TableRow className="border-b border-border-soft hover:bg-transparent">
-                                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Invoice #</TableHead>
-                                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Customer</TableHead>
-                                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Total</TableHead>
-                                            <TableHead className="px-6 py-3.5 text-left text-[13px] font-medium text-text-secondary uppercase">Date</TableHead>
+                                        <TableRow>
+                                            <TableHead>Invoice #</TableHead>
+                                            <TableHead>Customer</TableHead>
+                                            <TableHead>Total</TableHead>
+                                            <TableHead>Date</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
                                         {recentTransactions.map((tx) => (
                                             <TableRow
                                                 key={tx.id}
-                                                className="border-b border-border-soft hover:bg-primary-50 transition-colors"
                                             >
-                                                <TableCell className="px-6 py-4 font-mono text-xs font-semibold text-text-primary">
+                                                <TableCell className="px-6 py-4 font-mono text-xs font-semibold text-foreground">
                                                     {tx.invoice_number}
                                                 </TableCell>
                                                 <TableCell className="px-6 py-4">
-                                                    <div className="text-sm font-medium text-text-primary">
+                                                    <div className="text-sm font-medium text-foreground">
                                                         {tx.customer_name}
                                                     </div>
-                                                    <div className="text-xs text-text-secondary">
+                                                    <div className="text-xs text-muted-foreground">
                                                         by {tx.cashier_name}
                                                     </div>
                                                 </TableCell>
-                                                <TableCell className="px-6 py-4 font-medium text-text-primary">
+                                                <TableCell className="px-6 py-4 font-medium text-foreground">
                                                     ${tx.total.toFixed(2)}
                                                 </TableCell>
-                                                <TableCell className="px-6 py-4 text-text-secondary">
+                                                <TableCell className="px-6 py-4 text-muted-foreground">
                                                     {tx.created_at
                                                         ? new Date(
                                                               tx.created_at,
@@ -275,17 +274,17 @@ export default function Dashboard({
                         <div className="flex flex-col gap-4">
                             <div className="flex flex-col gap-2">
                                 <div className="flex items-center justify-between">
-                                    <h2 className="text-lg font-bold text-text-primary">
+                                    <h2 className="text-lg font-bold text-foreground">
                                         Inventory Alerts
                                     </h2>
 
-                                    <div className="flex rounded-lg bg-canvas p-0.5 border border-border-soft shrink-0">
+                                    <div className="flex rounded-lg bg-muted/30 p-0.5 border border-border shrink-0">
                                         <button
                                             type="button"
                                             onClick={() => setActiveAlertTab('stock')}
                                             className={`rounded-[6px] px-2.5 py-1 text-xs font-semibold transition-all ${activeAlertTab === 'stock'
-                                                    ? 'bg-surface text-brand shadow-[0_1px_3px_rgba(20,28,64,0.08)]'
-                                                    : 'text-text-secondary hover:text-text-primary'
+                                                    ? 'bg-card text-primary shadow-[0_1px_3px_rgba(20,28,64,0.08)]'
+                                                    : 'text-muted-foreground hover:text-foreground'
                                                 }`}
                                         >
                                             Low Stock ({lowStockProducts.length})
@@ -294,15 +293,15 @@ export default function Dashboard({
                                             type="button"
                                             onClick={() => setActiveAlertTab('expiry')}
                                             className={`rounded-[6px] px-2.5 py-1 text-xs font-semibold transition-all ${activeAlertTab === 'expiry'
-                                                    ? 'bg-surface text-brand shadow-[0_1px_3px_rgba(20,28,64,0.08)]'
-                                                    : 'text-text-secondary hover:text-text-primary'
+                                                    ? 'bg-card text-primary shadow-[0_1px_3px_rgba(20,28,64,0.08)]'
+                                                    : 'text-muted-foreground hover:text-foreground'
                                                 }`}
                                         >
                                             Expiring ({expiringProducts.length})
                                         </button>
                                     </div>
                                 </div>
-                                <p className="text-xs text-text-secondary">
+                                <p className="text-xs text-muted-foreground">
                                     {activeAlertTab === 'stock'
                                         ? 'Items at or below warning levels.'
                                         : 'Products expiring within 30 days.'}
@@ -311,12 +310,12 @@ export default function Dashboard({
 
                             {activeAlertTab === 'stock' ? (
                                 lowStockProducts.length === 0 ? (
-                                    <div className="flex h-[280px] flex-col items-center justify-center rounded-xl border border-border-soft bg-surface px-4 py-8 text-center">
-                                        <CheckCircle2 className="mb-3 h-10 w-10 text-success-fg" />
-                                        <p className="text-sm font-medium text-text-primary">
+                                    <div className="flex h-[280px] flex-col items-center justify-center rounded-xl border border-border bg-card px-4 py-8 text-center">
+                                        <CheckCircle2 className="mb-3 h-10 w-10 text-emerald-500" />
+                                        <p className="text-sm font-medium text-foreground">
                                             Inventory fully stocked
                                         </p>
-                                        <p className="mx-auto mt-1 max-w-[200px] text-xs text-text-secondary">
+                                        <p className="mx-auto mt-1 max-w-[200px] text-xs text-muted-foreground">
                                             All items are currently above their warning thresholds.
                                         </p>
                                     </div>
@@ -325,18 +324,18 @@ export default function Dashboard({
                                         {lowStockProducts.map((p) => (
                                             <div
                                                 key={p.id}
-                                                className="flex items-start justify-between gap-3 rounded-lg border border-border-soft p-3 transition-colors hover:bg-canvas/50"
+                                                className="flex items-start justify-between gap-3 rounded-lg border border-border p-3 transition-colors hover:bg-muted/30/50"
                                             >
                                                 <div className="flex flex-col gap-0.5">
-                                                    <span className="line-clamp-1 text-sm font-semibold text-text-primary">
+                                                    <span className="line-clamp-1 text-sm font-semibold text-foreground">
                                                         {p.name}
                                                     </span>
-                                                    <span className="text-[11px] text-text-secondary">
+                                                    <span className="text-[11px] text-muted-foreground">
                                                         {p.category_name}
                                                     </span>
-                                                    <span className="mt-1 text-xs text-text-secondary">
+                                                    <span className="mt-1 text-xs text-muted-foreground">
                                                         Stock:{' '}
-                                                        <span className="font-bold text-text-primary">
+                                                        <span className="font-bold text-foreground">
                                                             {p.stock_quantity}
                                                         </span>{' '}
                                                         (Alert: {p.alert_threshold})
@@ -352,12 +351,12 @@ export default function Dashboard({
                                 )
                             ) : (
                                 expiringProducts.length === 0 ? (
-                                    <div className="flex h-[280px] flex-col items-center justify-center rounded-xl border border-border-soft bg-surface px-4 py-8 text-center">
-                                        <CheckCircle2 className="mb-3 h-10 w-10 text-success-fg" />
-                                        <p className="text-sm font-medium text-text-primary">
+                                    <div className="flex h-[280px] flex-col items-center justify-center rounded-xl border border-border bg-card px-4 py-8 text-center">
+                                        <CheckCircle2 className="mb-3 h-10 w-10 text-emerald-500" />
+                                        <p className="text-sm font-medium text-foreground">
                                             No expiring products
                                         </p>
-                                        <p className="mx-auto mt-1 max-w-[200px] text-xs text-text-secondary">
+                                        <p className="mx-auto mt-1 max-w-[200px] text-xs text-muted-foreground">
                                             All products have a valid expiry status.
                                         </p>
                                     </div>
@@ -366,15 +365,15 @@ export default function Dashboard({
                                         {expiringProducts.map((p) => (
                                             <div
                                                 key={p.id}
-                                                className="flex items-start justify-between gap-3 rounded-lg border border-border-soft p-3 transition-colors hover:bg-canvas/50"
+                                                className="flex items-start justify-between gap-3 rounded-lg border border-border p-3 transition-colors hover:bg-muted/30/50"
                                             >
                                                 <div className="flex flex-col gap-0.5">
-                                                    <span className="line-clamp-1 text-sm font-semibold text-text-primary">
+                                                    <span className="line-clamp-1 text-sm font-semibold text-foreground">
                                                         {p.name}
                                                     </span>
-                                                    <span className="mt-1 text-xs text-text-secondary">
+                                                    <span className="mt-1 text-xs text-muted-foreground">
                                                         Expiry:{' '}
-                                                        <span className="font-bold text-text-primary">
+                                                        <span className="font-bold text-foreground">
                                                             {p.expiry_date
                                                                 ? new Date(
                                                                     p.expiry_date,
@@ -393,8 +392,8 @@ export default function Dashboard({
                                                 <Badge
                                                     variant="secondary"
                                                     className={`rounded-full ${p.days_remaining === 0
-                                                            ? 'bg-danger-bg text-danger-fg hover:bg-danger-bg/80 border-transparent shadow-none'
-                                                            : 'bg-warning-bg text-warning-fg hover:bg-warning-bg/80 border-transparent shadow-none'
+                                                            ? 'bg-destructive/10 text-destructive hover:bg-destructive/10/80 border-transparent shadow-none'
+                                                            : 'bg-amber-500/10 text-amber-500 hover:bg-amber-500/10/80 border-transparent shadow-none'
                                                         }`}
                                                 >
                                                     {p.days_remaining === 0
@@ -416,7 +415,7 @@ export default function Dashboard({
     );
 }
 
-Dashboard.layout = (props: { currentTeam?: { slug: string } | null }) => ({
+Dashboard.layoutConfig = (props: { currentTeam?: { slug: string } | null }) => ({
     breadcrumbs: [
         {
             title: 'Dashboard',

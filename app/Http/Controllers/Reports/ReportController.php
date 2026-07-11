@@ -53,7 +53,6 @@ class ReportController extends Controller
             ->selectRaw('products.name, SUM(transaction_items.quantity) as quantity_sold, SUM(transaction_items.total) as total_revenue')
             ->groupBy('products.id', 'products.name')
             ->orderByDesc('quantity_sold')
-            ->limit(10)
             ->get();
 
         // Payment Methods
@@ -73,7 +72,6 @@ class ReportController extends Controller
                 $query->whereBetween('created_at', [$startDate, $endDate]);
             }], 'created_at')
             ->orderByDesc('transactions_sum_total')
-            ->limit(10)
             ->get();
 
         return Inertia::render('reports/index', [

@@ -54,8 +54,8 @@ export default function ProductsIndex({ products, categories = [] }: Props) {
         setSheetOpen(open);
 
         if (!open) {
-setEditingProduct(undefined);
-}
+            setEditingProduct(undefined);
+        }
     }
 
     // Client-side category & status filter (applied on top of server-side search)
@@ -109,17 +109,19 @@ setEditingProduct(undefined);
                 </div>
 
                 {/* Toolbar */}
-                <div className="flex flex-wrap items-center gap-3 p-1">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 ">
                     {/* Search */}
-                    <div className="relative min-w-[200px] flex-1 max-w-xs">
+                    <div className="relative w-full sm:max-w-xs">
                         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                         <Input
                             value={query}
                             onChange={(e) => handleSearch(e.target.value)}
                             placeholder="Search products…"
-                            className="h-9 pl-9 text-sm bg-card shadow-sm"
+                            className="h-9 pl-9 text-sm shadow-sm"
                         />
                     </div>
+
+                    <div className="flex flex-wrap items-center gap-3 justify-end">
 
                     {/* Category filter */}
                     {categories.length > 0 && (
@@ -158,21 +160,20 @@ setEditingProduct(undefined);
                         </SelectContent>
                     </Select>
 
-                    {/* Removed Spacer so buttons align nicely */}
-
                     {/* Export */}
-                    <Button variant="outline" size="sm" onClick={exportProductsCSV} className="h-9 gap-1.5 border-border bg-card text-muted-foreground">
+                    <Button variant="outline" size="sm" onClick={exportProductsCSV} className="h-9 gap-2 bg-secondary hover:bg-secondary/80 text-white border-transparent">
                         <Download className="h-4 w-4" /> Export
                     </Button>
 
                     {/* Add button — same row as filters */}
                     <Button
                         onClick={handleAdd}
-                        className="gap-1.5 px-4"
+                        className="gap-2 px-4"
                     >
                         <Plus className="h-4 w-4" />
                         Add Product
                     </Button>
+                    </div>
                 </div>
 
                 {/* Table */}

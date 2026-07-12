@@ -27,7 +27,7 @@ export function AppHeader({ breadcrumbs = [], collapsed, setCollapsed }: Props) 
     const getInitials = useInitials();
     const { resolvedAppearance, updateAppearance } = useAppearance();
 
-    const emptySubscribe = () => () => {};
+    const emptySubscribe = () => () => { };
     const mounted = useSyncExternalStore(
         emptySubscribe,
         () => true,
@@ -74,9 +74,9 @@ export function AppHeader({ breadcrumbs = [], collapsed, setCollapsed }: Props) 
                 const teamSlug = currentTeam?.slug ?? '';
 
                 if (!teamSlug) {
-return;
-}
-                
+                    return;
+                }
+
                 const response = await fetch(`/${teamSlug}/search?q=${encodeURIComponent(value)}`);
 
                 if (response.ok) {
@@ -140,7 +140,7 @@ return;
                                 placeholder="Search anything..."
                                 className="h-10 w-[320px] rounded-full border border-border bg-muted/30 pl-10 pr-10 text-sm text-foreground placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-primary/30 dark:bg-card"
                             />
-                            
+
                             {/* Search Dropdown */}
                             {isDropdownOpen && searchResults && (
                                 <div className="absolute top-[120%] mt-2 w-[400px] right-0 rounded-xl border border-border bg-white p-2 shadow-lg dark:bg-card z-50 max-h-[400px] overflow-y-auto">
@@ -158,8 +158,8 @@ return;
                                                         const Icon = IconMap[p.icon] || LayoutDashboard;
 
                                                         return (
-                                                            <Link 
-                                                                key={p.name} 
+                                                            <Link
+                                                                key={p.name}
                                                                 href={p.url}
                                                                 onClick={() => setIsDropdownOpen(false)}
                                                                 className="flex items-center gap-3 rounded-lg px-2 py-2 hover:bg-primary/10 transition-colors"
@@ -180,8 +180,8 @@ return;
                                                 <div>
                                                     <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Products</div>
                                                     {searchResults.products.map(p => (
-                                                        <Link 
-                                                            key={p.id} 
+                                                        <Link
+                                                            key={p.id}
                                                             href={`/${currentTeam?.slug}/products?q=${p.sku}`}
                                                             onClick={() => setIsDropdownOpen(false)}
                                                             className="flex items-center gap-3 rounded-lg px-2 py-2 hover:bg-primary/10 transition-colors"
@@ -205,8 +205,8 @@ return;
                                                 <div>
                                                     <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Customers</div>
                                                     {searchResults.customers.map(c => (
-                                                        <Link 
-                                                            key={c.id} 
+                                                        <Link
+                                                            key={c.id}
                                                             href={`/${currentTeam?.slug}/customers/${c.id}`}
                                                             onClick={() => setIsDropdownOpen(false)}
                                                             className="flex items-center justify-between rounded-lg px-2 py-2 hover:bg-primary/10 transition-colors"
@@ -224,8 +224,8 @@ return;
                                                 <div>
                                                     <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Transactions</div>
                                                     {searchResults.transactions.map(t => (
-                                                        <Link 
-                                                            key={t.id} 
+                                                        <Link
+                                                            key={t.id}
                                                             href={`/${currentTeam?.slug}/transactions/${t.id}`}
                                                             onClick={() => setIsDropdownOpen(false)}
                                                             className="flex items-center justify-between rounded-lg px-2 py-2 hover:bg-primary/10 transition-colors"

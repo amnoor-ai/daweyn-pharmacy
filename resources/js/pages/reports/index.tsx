@@ -113,48 +113,46 @@ export default function ReportsIndex() {
 
                 <div className="grid gap-4 lg:grid-cols-3">
                     {/* Top Products (Left Side) */}
-                    <Card className="col-span-1 lg:col-span-2 flex flex-col">
-                        <CardHeader>
-                            <CardTitle>Top Selling Products</CardTitle>
-                        </CardHeader>
-                        <CardContent className="flex-1 flex flex-col justify-between p-0 sm:p-6 sm:pt-0">
-                            {top_products.length > 0 ? (
-                                <div className="overflow-x-auto">
-                                    <Table>
-                                        <TableHeader>
-                                            <TableRow>
-                                                <TableHead className="w-12">#</TableHead>
-                                                <TableHead>Product</TableHead>
-                                                <TableHead className="text-right">Quantity Sold</TableHead>
-                                                <TableHead className="text-right">Total Revenue</TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {topProducts.map((product: any, idx: number) => (
-                                                <TableRow key={idx}>
-                                                    <TableCell className="font-medium text-muted-foreground text-left w-8">{idx + 1}</TableCell>
-                                                    <TableCell className="font-semibold text-foreground text-left">{product.name}</TableCell>
-                                                    <TableCell className="text-right text-muted-foreground tabular-nums"><span className="font-medium text-foreground">{product.quantity_sold}</span><span className="ml-1 text-muted-foreground text-xs">sold</span></TableCell>
-                                                    <TableCell className="font-bold text-foreground text-right tabular-nums">${Number(product.total_revenue).toFixed(2)}</TableCell>
+                    <div className="col-span-1 lg:col-span-2 flex flex-col gap-4">
+                        <h2 className="text-lg font-bold text-foreground">Top Selling Products</h2>
+                        <Card className="flex flex-col overflow-hidden">
+                            <CardContent className="flex-1 flex flex-col justify-between p-0">
+                                {top_products.length > 0 ? (
+                                    <div className="overflow-x-auto">
+                                        <Table>
+                                            <TableHeader>
+                                                <TableRow>
+                                                    <TableHead className="w-12">#</TableHead>
+                                                    <TableHead>Product</TableHead>
+                                                    <TableHead className="text-right">Quantity Sold</TableHead>
+                                                    <TableHead className="text-right">Total Revenue</TableHead>
                                                 </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </div>
-                            ) : (
-                                <div className="text-sm text-muted-foreground p-6 pt-0">No sales data for this period.</div>
-                            )}
-                        </CardContent>
-                    </Card>
+                                            </TableHeader>
+                                            <TableBody>
+                                                {topProducts.map((product: any, idx: number) => (
+                                                    <TableRow key={idx}>
+                                                        <TableCell className="font-medium text-muted-foreground text-left w-8">{idx + 1}</TableCell>
+                                                        <TableCell className="font-semibold text-foreground text-left">{product.name}</TableCell>
+                                                        <TableCell className="text-right text-muted-foreground tabular-nums"><span className="font-medium text-foreground">{product.quantity_sold}</span><span className="ml-1 text-muted-foreground text-xs">sold</span></TableCell>
+                                                        <TableCell className="font-bold text-foreground text-right tabular-nums">${Number(product.total_revenue).toFixed(2)}</TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    </div>
+                                ) : (
+                                    <div className="text-sm text-muted-foreground p-6">No sales data for this period.</div>
+                                )}
+                            </CardContent>
+                        </Card>
+                    </div>
 
                     {/* Right Column: Payment Methods + Quick Links */}
                     <div className="col-span-1 flex flex-col gap-4">
                         {/* Payment Methods */}
-                        <Card>
-                            <CardHeader className="pb-3">
-                                <CardTitle>Payment Methods</CardTitle>
-                            </CardHeader>
-                            <CardContent className="p-0 sm:px-6 sm:pb-6">
+                        <h2 className="text-lg font-bold text-foreground">Payment Methods</h2>
+                        <Card className="overflow-hidden">
+                            <CardContent className="p-0">
                                 {payment_methods.length > 0 ? (
                                     <div className="overflow-x-auto">
                                         <Table>
@@ -177,7 +175,7 @@ export default function ReportsIndex() {
                                         </Table>
                                     </div>
                                 ) : (
-                                    <div className="text-sm text-muted-foreground px-6 pb-6">No sales data for this period.</div>
+                                    <div className="text-sm text-muted-foreground p-6">No sales data for this period.</div>
                                 )}
                             </CardContent>
                         </Card>
@@ -216,11 +214,10 @@ export default function ReportsIndex() {
                 </div>
 
                 {/* Top Customers (Consistent with Top Products) */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Top Customers</CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-0 sm:px-6 sm:pb-6 pt-0">
+                <div className="flex flex-col gap-4">
+                    <h2 className="text-lg font-bold text-foreground">Top Customers</h2>
+                    <Card className="overflow-hidden">
+                        <CardContent className="p-0">
                         {customers.length > 0 ? (
                             <div className="overflow-x-auto">
                                 <Table>
@@ -256,8 +253,9 @@ export default function ReportsIndex() {
                         ) : (
                             <div className="text-sm text-muted-foreground pt-0 p-6">No customers found for this period.</div>
                         )}
-                    </CardContent>
-                </Card>
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
         </>
     );

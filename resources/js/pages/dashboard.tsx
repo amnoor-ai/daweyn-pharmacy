@@ -153,10 +153,10 @@ export default function Dashboard({
                 {/* Charts Row: Revenue Line (2/3) + Payment Donut (1/3) */}
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                     {/* Revenue Line Chart */}
-                    <Card className="flex flex-col gap-3 p-5 lg:col-span-2">
+                    <div className="flex flex-col gap-4 lg:col-span-2">
                         <div className="flex items-center justify-between">
                             <div>
-                                <h2 className="text-base font-bold text-foreground">
+                                <h2 className="text-lg font-bold text-foreground">
                                     Daily Revenue
                                 </h2>
                                 <p className="mt-0.5 text-xs text-muted-foreground">
@@ -167,21 +167,25 @@ export default function Dashboard({
                                 <TrendingUp className="h-4 w-4 text-blue-500" />
                             </div>
                         </div>
-                        <RevenueLineChart data={revenueByDay} />
-                    </Card>
+                        <Card className="flex flex-col gap-3 p-5">
+                            <RevenueLineChart data={revenueByDay} />
+                        </Card>
+                    </div>
 
                     {/* Payment Method Donut */}
-                    <Card className="flex flex-col gap-3 p-5">
+                    <div className="flex flex-col gap-4">
                         <div>
-                            <h2 className="text-base font-bold text-foreground">
+                            <h2 className="text-lg font-bold text-foreground">
                                 Payment Methods
                             </h2>
                             <p className="mt-0.5 text-xs text-muted-foreground">
                                 Revenue split by payment type.
                             </p>
                         </div>
-                        <PaymentMethodDonut data={revenueByPaymentMethod} />
-                    </Card>
+                        <Card className="flex flex-col gap-3 p-5 h-full">
+                            <PaymentMethodDonut data={revenueByPaymentMethod} />
+                        </Card>
+                    </div>
                 </div>
 
                 {/* Main Content Grid: 2/3 Recent Transactions, 1/3 Low Stock Alerts */}

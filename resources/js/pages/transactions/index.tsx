@@ -1,6 +1,7 @@
 import { Head, router, usePage } from '@inertiajs/react';
 import { Eye, Search, ShoppingCart, ArrowUp, ArrowDown, ChevronsUpDown, Download } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import Heading from '@/components/heading';
 import TablePagination from '@/components/TablePagination';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -159,18 +160,27 @@ return -1;
         <>
             <Head title="Transactions" />
             <div className="flex flex-col flex-1 gap-4">
+                {/* Page Header */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between">
+                    <Heading
+                        title="Transactions"
+                        description="View and manage all sales transactions."
+                    />
+                </div>
                 {/* Toolbar */}
-                <div className="flex flex-wrap items-center gap-3">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-1">
                     {/* Search */}
-                    <div className="relative flex-1 max-w-xs">
+                    <div className="relative w-full sm:max-w-xs">
                         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                         <Input
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                             placeholder="Search transactions…"
-                            className="h-9 pl-9 text-sm"
+                            className="h-9 pl-9 text-sm shadow-sm"
                         />
                     </div>
+
+                    <div className="flex flex-wrap items-center gap-3 justify-end">
 
                     {/* Payment filter */}
                     <Select
@@ -189,10 +199,8 @@ return -1;
                         </SelectContent>
                     </Select>
 
-                    {/* Removed Spacer so buttons align nicely */}
-
                     {/* Export */}
-                    <Button variant="outline" size="sm" onClick={exportTransactionsCSV} className="h-9 gap-2 border-border bg-card text-muted-foreground">
+                    <Button variant="outline" size="sm" onClick={exportTransactionsCSV} className="h-9 gap-2 bg-secondary hover:bg-secondary/80 text-white border-transparent">
                         <Download className="h-4 w-4" /> Export
                     </Button>
 
@@ -204,6 +212,7 @@ return -1;
                         <ShoppingCart className="h-4 w-4" />
                         Go to POS
                     </Button>
+                    </div>
                 </div>
 
                 {/* Table */}

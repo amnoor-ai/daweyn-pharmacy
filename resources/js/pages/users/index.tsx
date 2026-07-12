@@ -152,18 +152,19 @@ return -1;
                     {/* Left Column: Filters & Table (col-span-2) */}
                     <div className="lg:col-span-2 flex flex-col gap-4">
                         {/* Toolbar (Search, Filter & Actions) */}
-                        <div className="flex flex-wrap items-center gap-3">
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-1">
                             {/* Search */}
-                            <div className="relative flex-1 max-w-xs">
+                            <div className="relative w-full sm:max-w-xs">
                                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                 <Input
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                     placeholder="Search staff…"
-                                    className="h-9 pl-9 text-sm"
+                                    className="h-9 pl-9 text-sm shadow-sm"
                                 />
                             </div>
 
+                            <div className="flex flex-wrap items-center gap-3 justify-end">
                             {/* Role filter */}
                             <Select
                                 value={roleFilter}
@@ -192,6 +193,7 @@ return -1;
                                     Invite Member
                                 </Button>
                             )}
+                            </div>
                         </div>
 
                         {/* Table / List */}

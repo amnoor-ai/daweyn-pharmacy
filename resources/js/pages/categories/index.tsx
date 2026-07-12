@@ -79,7 +79,7 @@ setEditingCategory(undefined);
 
             <div className="flex flex-col gap-4">
                 {/* Page Header */}
-                <div className="flex items-center justify-between mt-2">
+                <div className="flex items-center justify-between gap-4">
                     <Heading 
                         title="Categories" 
                         description="Manage your product categories and organization." 
@@ -88,19 +88,17 @@ setEditingCategory(undefined);
                 </div>
 
                 {/* Toolbar */}
-                <div className="flex flex-wrap sm:flex-nowrap items-center gap-3">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-1">
                     {/* Search */}
-                    <div className="relative flex-1 max-w-xs">
+                    <div className="relative w-full sm:max-w-xs">
                         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                         <Input
                             value={query}
                             onChange={(e) => handleSearch(e.target.value)}
                             placeholder="Search categories…"
-                            className="h-9 pl-9 text-sm"
+                            className="h-9 pl-9 text-sm shadow-sm"
                         />
                     </div>
-
-                    {/* Removed Spacer so buttons align nicely */}
 
                     {/* Toolbar Actions */}
                     <div className="flex items-center gap-2">

@@ -58,7 +58,7 @@ export default function DeleteConfirmDialog({
                         variant="destructive"
                         onClick={onConfirm}
                         disabled={processing}
-                        className="w-full bg-danger-fg text-white hover:bg-danger-fg/90 sm:w-auto gap-2 transition-all duration-200 hover:-translate-y-0.5"
+                        className="w-full sm:w-auto gap-2 transition-all duration-200 hover:-translate-y-0.5"
                     >
                         {processing ? 'Deleting...' : 'Delete'}
                     </Button>

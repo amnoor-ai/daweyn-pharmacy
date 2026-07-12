@@ -19,11 +19,17 @@ class CreatePosTransactionAction
                 $product = $currentTeam->products()->lockForUpdate()->findOrFail($item['product_id']);
 
                 // Check stock
-                abort_if($product->stock_quantity < $item['quantity'], 422, "Insufficient stock for {$product->name}");
+                if ($product->stock_quantity < $item['quantity']) {
+                    throw \Illuminate\Validation\ValidationException::withMessages([
+                        'quantity' => ["Insufficient stock for {$product->name}"],
+                    ]);
+                }
 
                 // Check expiry
                 if ($product->expiry_date && \Illuminate\Support\Carbon::parse($product->expiry_date)->startOfDay()->isPast()) {
-                    abort(422, "Product {$product->name} has expired and cannot be sold.");
+                    throw \Illuminate\Validation\ValidationException::withMessages([
+                        'expiry' => ["Product {$product->name} has expired and cannot be sold."],
+                    ]);
                 }
 
                 $lineTotal = $product->selling_price * $item['quantity'];

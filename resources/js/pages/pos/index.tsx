@@ -2,6 +2,7 @@ import { Head, usePage, router } from '@inertiajs/react';
 import { Trash2, ShoppingCart } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import ProductAvatar from '@/components/ProductAvatar';
+import PosErrorDialog from '@/components/PosErrorDialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -38,6 +39,7 @@ export default function PosIndex() {
     const [tax, setTax] = useState('0');
     const [mobileCartOpen, setMobileCartOpen] = useState(false);
     const [isLoadingProducts, setIsLoadingProducts] = useState(false);
+    const [posError, setPosError] = useState<{ type: 'stock' | 'expiry' | 'generic'; message: string } | null>(null);
 
     // Fetch initial customers (they don't change often)
     useEffect(() => {
@@ -136,13 +138,34 @@ return;
                 setTax('0');
                 setSearch('');
                 setMobileCartOpen(false);
-            }
+            },
+            // Cart is intentionally NOT cleared on error — user can correct the issue and retry
+            onError: (errors) => {
+                if (errors.quantity) {
+                    setPosError({ type: 'stock', message: errors.quantity as string });
+                } else if (errors.expiry) {
+                    setPosError({ type: 'expiry', message: errors.expiry as string });
+                } else {
+                    const firstMessage = Object.values(errors)[0] as string;
+                    setPosError({ type: 'generic', message: firstMessage ?? 'An unexpected error occurred. Please try again.' });
+                }
+            },
         });
     }
 
     return (
         <>
             <Head title="POS" />
+
+            {/* POS Error Modal — shown on stock/expiry backend validation failures */}
+            {posError && (
+                <PosErrorDialog
+                    open={!!posError}
+                    onOpenChange={(open) => !open && setPosError(null)}
+                    errorType={posError.type}
+                    message={posError.message}
+                />
+            )}
             <div className="flex flex-col lg:flex-row min-h-[calc(100vh-4rem)] lg:h-[calc(100vh-4rem)] gap-0">
 
                 {/* LEFT — Product search */}

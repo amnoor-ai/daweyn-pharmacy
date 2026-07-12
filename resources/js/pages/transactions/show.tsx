@@ -181,6 +181,7 @@ export default function TransactionShow({ transaction }: Props) {
 
 TransactionShow.layoutConfig = (props: {
     currentTeam?: { slug: string } | null;
+    transaction?: Transaction;
 }) => ({
     breadcrumbs: [
         {
@@ -190,8 +191,10 @@ TransactionShow.layoutConfig = (props: {
                 : '/',
         },
         {
-            title: 'Receipt',
-            href: '/',
+            title: props.transaction?.invoice_number || 'Receipt',
+            href: props.currentTeam && props.transaction
+                ? `/${props.currentTeam.slug}/transactions/${props.transaction.id}`
+                : '/',
         },
     ],
 });

@@ -115,8 +115,8 @@ test('a transaction fails if there is insufficient stock', function () {
             ],
         ]);
 
-    // Expect a 422 Unprocessable Entity due to the abort_if() check
-    $response->assertStatus(422);
+    $response->assertStatus(302);
+    $response->assertSessionHasErrors('quantity');
 
     // Verify stock is not deducted
     $this->assertEquals(10, $product->fresh()->stock_quantity);
@@ -164,7 +164,8 @@ test('a transaction fails if the product is expired', function () {
             ],
         ]);
 
-    $response->assertStatus(422);
+    $response->assertStatus(302);
+    $response->assertSessionHasErrors('expiry');
 
     // Verify stock is not deducted
     $this->assertEquals(10, $product->fresh()->stock_quantity);

@@ -127,7 +127,6 @@ return;
                     <TableHeader>
                         <TableRow>
                             <TableHead className="w-[200px] max-w-[200px] cursor-pointer select-none" onClick={() => requestSort('name')}>Product <SortIcon columnKey="name" /></TableHead>
-                            <TableHead className="px-3 w-14">Image</TableHead>
                             <TableHead className="w-[140px] cursor-pointer select-none" onClick={() => requestSort('category')}>Category <SortIcon columnKey="category" /></TableHead>
                             <TableHead className="w-[130px] cursor-pointer select-none" onClick={() => requestSort('sku')}>SKU <SortIcon columnKey="sku" /></TableHead>
                             <TableHead className="text-right w-[90px] cursor-pointer select-none" onClick={() => requestSort('cost_price')}>Cost <SortIcon columnKey="cost_price" /></TableHead>
@@ -142,11 +141,9 @@ return;
                             <TableRow
                                 key={product.id}
                             >
-                                <TableCell className="px-6 py-4 font-medium text-foreground max-w-[200px]">
-                                    <span className="line-clamp-2">{product.name}</span>
-                                </TableCell>
-                                <TableCell className="px-3 py-4">
+                                <TableCell className="px-6 py-4 flex  gap-2 items-center  ont-medium text-foreground max-w-[200px]">
                                     <ProductAvatar src={product.image_url} alt={product.name} />
+                                    <span className="line-clamp-2">{product.name}</span>
                                 </TableCell>
                                 <TableCell className="px-4 py-4 text-muted-foreground">
                                     {product.category?.name ?? '—'}

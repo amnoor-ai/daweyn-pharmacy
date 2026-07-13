@@ -1,11 +1,18 @@
 import { Head, usePage, router } from '@inertiajs/react';
-import { Trash2, ShoppingCart, RefreshCcw } from 'lucide-react';
+import { Trash2, ShoppingCart, RefreshCcw, CheckCircle2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import ProductAvatar from '@/components/ProductAvatar';
 import PosErrorDialog from '@/components/PosErrorDialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogFooter,
+} from '@/components/ui/dialog';
 import {
     Select,
     SelectContent,
@@ -34,12 +41,22 @@ export default function PosIndex() {
     const [cart, setCart] = useState<CartItem[]>([]);
     const [search, setSearch] = useState('');
     const [customerId, setCustomerId] = useState('');
-    const [paymentMethod, setPaymentMethod] = useState('cash');
+    const [paymentMethod, setPaymentMethod] = useState('');
     const [discount, setDiscount] = useState('0');
     const [tax, setTax] = useState('0');
     const [mobileCartOpen, setMobileCartOpen] = useState(false);
+    const [checkoutDialogOpen, setCheckoutDialogOpen] = useState(false);
     const [isLoadingProducts, setIsLoadingProducts] = useState(false);
     const [posError, setPosError] = useState<{ type: 'stock' | 'expiry' | 'generic'; message: string } | null>(null);
+    const [successModalData, setSuccessModalData] = useState<{ invoice_number: string; total: string } | null>(null);
+    const [paymentError, setPaymentError] = useState(false);
+
+    const flash = props.flash as any;
+    useEffect(() => {
+        if (flash?.transaction_success) {
+            setSuccessModalData(flash.transaction_success);
+        }
+    }, [flash?.transaction_success]);
 
     // Fetch initial customers (they don't change often)
     useEffect(() => {
@@ -81,11 +98,20 @@ return;
             const existing = prev.find(i => i.product.id === product.id);
 
             if (existing) {
+                if (existing.quantity + 1 > product.stock_quantity) {
+                    setPosError({ type: 'stock', message: `Only ${product.stock_quantity} units of ${product.name} available` });
+                    return prev;
+                }
                 return prev.map(i =>
                     i.product.id === product.id
                         ? { ...i, quantity: i.quantity + 1 }
                         : i
                 );
+            }
+
+            if (product.stock_quantity < 1) {
+                setPosError({ type: 'stock', message: `${product.name} is out of stock` });
+                return prev;
             }
 
             return [...prev, { product, quantity: 1 }];
@@ -100,9 +126,16 @@ return;
         }
 
         setCart(prev =>
-            prev.map(i =>
-                i.product.id === productId ? { ...i, quantity } : i
-            )
+            prev.map(i => {
+                if (i.product.id === productId) {
+                    if (quantity > i.product.stock_quantity) {
+                        setPosError({ type: 'stock', message: `Only ${i.product.stock_quantity} units of ${i.product.name} available` });
+                        return { ...i, quantity: i.product.stock_quantity };
+                    }
+                    return { ...i, quantity };
+                }
+                return i;
+            })
         );
     }
 
@@ -111,8 +144,17 @@ return;
     }
 
     const subtotal = cart.reduce((sum, i) => sum + i.product.selling_price * i.quantity, 0);
-    const taxAmount = parseFloat(tax) || 0;
-    const discountAmount = parseFloat(discount) || 0;
+    
+    // Discount is treated as a flat amount and cannot exceed subtotal.
+    let discountAmount = parseFloat(discount) || 0;
+    if (discountAmount > subtotal) {
+        discountAmount = subtotal;
+    }
+
+    // Tax is treated as a percentage applied to the discounted subtotal.
+    const taxPercentage = parseFloat(tax) || 0;
+    const taxAmount = (subtotal - discountAmount) * (taxPercentage / 100);
+
     const total = subtotal + taxAmount - discountAmount;
 
     function resetCart() {
@@ -123,6 +165,7 @@ return;
         setTax('0');
         setSearch('');
         setMobileCartOpen(false);
+        setPaymentError(false);
     }
 
     function handleSubmit() {
@@ -130,11 +173,18 @@ return;
             return;
         }
 
+        if (!paymentMethod) {
+            setPaymentError(true);
+            return;
+        }
+
+        setPaymentError(false);
+
         router.post(`/${teamSlug}/transactions`, {
             customer_id: customerId || null,
             payment_method: paymentMethod,
-            discount: discount,
-            tax: tax,
+            discount: discountAmount,
+            tax: taxAmount,
             items: cart.map(i => ({
                 product_id: i.product.id,
                 quantity: i.quantity,
@@ -142,8 +192,10 @@ return;
         }, {
             onSuccess: () => {
                 resetCart();
+                setCheckoutDialogOpen(false);
             },
             onError: (errors) => {
+                setCheckoutDialogOpen(false)
                 if (errors.quantity) {
                     setPosError({ type: 'stock', message: errors.quantity as string });
                 } else if (errors.expiry) {
@@ -168,6 +220,104 @@ return;
                     message={posError.message}
                 />
             )}
+
+            <Dialog open={!!successModalData} onOpenChange={(open) => !open && setSuccessModalData(null)}>
+                <DialogContent className="sm:max-w-sm text-center flex flex-col items-center py-8 px-6">
+                    <CheckCircle2 className="h-16 w-16 text-emerald-500 mb-2" />
+                    <DialogTitle className="text-2xl mb-1 text-center font-bold">Payment Successful</DialogTitle>
+                    <p className="text-muted-foreground text-sm mb-6 text-center">
+                        Invoice {successModalData?.invoice_number} has been generated.
+                    </p>
+                    <div className="w-full bg-muted/50 border border-border rounded-lg p-4 flex justify-between items-center mb-6">
+                        <span className="font-medium">Total Paid</span>
+                        <span className="text-xl font-bold">${successModalData?.total}</span>
+                    </div>
+                    <Button className="w-full h-11" onClick={() => setSuccessModalData(null)}>
+                        New Sale
+                    </Button>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={checkoutDialogOpen} onOpenChange={setCheckoutDialogOpen}>
+                <DialogContent className="sm:max-w-md max-h-[90vh] flex flex-col">
+                    <DialogHeader>
+                        <DialogTitle>Complete Sale</DialogTitle>
+                    </DialogHeader>
+                    
+                    <div className="flex-1 overflow-y-auto pr-2 flex flex-col gap-4">
+                        <div className="space-y-3">
+                            <h4 className="font-semibold text-sm">Order Summary</h4>
+                            {cart.length === 0 ? (
+                                <p className="text-sm text-muted-foreground">Cart is empty.</p>
+                            ) : (
+                                <div className="space-y-2">
+                                    {cart.map(item => (
+                                        <div key={item.product.id} className="flex justify-between text-sm">
+                                            <span className="truncate pr-2">{item.quantity}x {item.product.name}</span>
+                                            <span className="shrink-0">${(item.quantity * item.product.selling_price).toFixed(2)}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="border-t pt-3 space-y-1.5 text-sm">
+                            <div className="flex justify-between text-muted-foreground">
+                                <span>Subtotal</span>
+                                <span>${subtotal.toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between text-muted-foreground">
+                                <span>Discount</span>
+                                <span>-${discountAmount.toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between text-muted-foreground">
+                                <span>Tax ({taxPercentage}%)</span>
+                                <span>+${taxAmount.toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between font-bold text-foreground pt-2">
+                                <span>Total</span>
+                                <span>${total.toFixed(2)}</span>
+                            </div>
+                        </div>
+
+                        <div className="border-t pt-3 flex flex-col gap-2">
+                            <div className="flex justify-between items-center">
+                                <Label className="text-sm font-semibold">Payment Method</Label>
+                                {paymentError && <span className="text-xs font-medium text-destructive">Payment not selected</span>}
+                            </div>
+                            <div className="grid grid-cols-3 gap-2">
+                                {['cash', 'zaad', 'evc', 'jeeb', 'card'].map((method) => (
+                                    <button
+                                        key={method}
+                                        type="button"
+                                        onClick={() => {
+                                            setPaymentMethod(method);
+                                            setPaymentError(false);
+                                        }}
+                                        className={`py-2 px-1 text-xs font-medium rounded-md border transition-all ${
+                                            paymentMethod === method
+                                                ? 'bg-primary/10 border-primary text-primary'
+                                                : 'bg-card border-border text-muted-foreground hover:border-primary/50'
+                                        }`}
+                                    >
+                                        {method.charAt(0).toUpperCase() + method.slice(1)}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    <DialogFooter className="mt-4 gap-2 sm:gap-0">
+                        <Button variant="outline" onClick={() => setCheckoutDialogOpen(false)}>
+                            Cancel
+                        </Button>
+                        <Button onClick={handleSubmit} disabled={cart.length === 0}>
+                            Confirm Sale • ${total.toFixed(2)}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
             <div className="flex flex-col lg:flex-row min-h-[calc(100vh-4rem)] lg:h-[calc(100vh-4rem)] gap-0">
 
                 {/* LEFT — Product search */}
@@ -185,23 +335,36 @@ return;
                             </p>
                         ) : (
                             <>
-                                {products.map(product => (
-                                    <button
-                                        key={product.id}
-                                        onClick={() => addToCart(product)}
-                                        className="flex flex-row items-center gap-3 rounded-lg border border-border bg-card p-3 text-left hover:border-primary hover:shadow-sm transition-all"
-                                    >
-                                        <ProductAvatar src={product.image_url} alt={product.name} className="h-12 w-12 shrink-0" />
-                                        <div className="flex flex-col min-w-0 flex-1">
-                                            <span className="font-medium text-foreground text-sm truncate">{product.name}</span>
-                                            <span className="text-xs text-muted-foreground truncate">{product.sku}</span>
-                                            <div className="mt-1 flex items-center justify-between">
-                                                <span className="text-sm font-bold text-emerald-500">${Number(product.selling_price).toFixed(2)}</span>
-                                                <span className="text-xs text-muted-foreground">Stock: {product.stock_quantity}</span>
+                                {products.map(product => {
+                                    const isOutOfStock = product.stock_quantity === 0;
+                                    return (
+                                        <button
+                                            key={product.id}
+                                            onClick={() => !isOutOfStock && addToCart(product)}
+                                            disabled={isOutOfStock}
+                                            className={`relative flex flex-row items-center gap-3 rounded-lg border bg-card p-3 text-left transition-all ${
+                                                isOutOfStock 
+                                                    ? 'opacity-50 cursor-not-allowed border-border' 
+                                                    : 'border-border hover:border-primary hover:shadow-sm'
+                                            }`}
+                                        >
+                                            <ProductAvatar src={product.image_url} alt={product.name} className="h-12 w-12 shrink-0" />
+                                            <div className="flex flex-col min-w-0 flex-1">
+                                                <span className="font-medium text-foreground text-sm truncate">{product.name}</span>
+                                                <span className="text-xs text-muted-foreground truncate">{product.sku}</span>
+                                                <div className="mt-1 flex items-center justify-between">
+                                                    <span className="text-sm font-bold text-emerald-500">${Number(product.selling_price).toFixed(2)}</span>
+                                                    <span className="text-xs text-muted-foreground">Stock: {product.stock_quantity}</span>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </button>
-                                ))}
+                                            {isOutOfStock && (
+                                                <div className="absolute top-2 right-2 bg-destructive/10 text-destructive text-[10px] font-bold px-2 py-0.5 rounded-full">
+                                                    Out of Stock
+                                                </div>
+                                            )}
+                                        </button>
+                                    );
+                                })}
                                 {products.length === 0 && (
                                     <p className="col-span-2 text-center text-sm text-muted-foreground py-8">
                                         No products found.
@@ -287,22 +450,44 @@ return;
                         <span>${subtotal.toFixed(2)}</span>
                     </div>
                     <div className="flex items-center justify-between text-muted-foreground">
-                        <span>Discount</span>
+                        <span>Discount ($)</span>
                         <Input
                             type="number"
                             min="0"
                             value={discount}
-                            onChange={e => setDiscount(e.target.value)}
+                            onChange={e => {
+                                const val = e.target.value;
+                                if (val === '') {
+                                    setDiscount('');
+                                    return;
+                                }
+                                const num = parseFloat(val);
+                                setDiscount(num < 0 ? '0' : val);
+                            }}
+                            onKeyDown={e => {
+                                if (e.key === '-') e.preventDefault();
+                            }}
                             className="w-20 border-border text-right text-xs"
                         />
                     </div>
                     <div className="flex items-center justify-between text-muted-foreground">
-                        <span>Tax</span>
+                        <span>Tax (%)</span>
                         <Input
                             type="number"
                             min="0"
                             value={tax}
-                            onChange={e => setTax(e.target.value)}
+                            onChange={e => {
+                                const val = e.target.value;
+                                if (val === '') {
+                                    setTax('');
+                                    return;
+                                }
+                                const num = parseFloat(val);
+                                setTax(num < 0 ? '0' : val);
+                            }}
+                            onKeyDown={e => {
+                                if (e.key === '-') e.preventDefault();
+                            }}
                             className="w-20 border-border text-right text-xs"
                         />
                     </div>
@@ -327,43 +512,27 @@ return;
                             </SelectContent>
                         </Select>
                     </div>
-                    <div className="flex flex-col gap-2">
-                        <Label className="text-xs text-muted-foreground">Payment Method</Label>
-                        <div className="grid grid-cols-3 gap-2">
-                            {['cash', 'zaad', 'evc', 'jeeb', 'card'].map((method) => (
-                                <button
-                                    key={method}
-                                    type="button"
-                                    onClick={() => setPaymentMethod(method)}
-                                    className={`py-2 px-1 text-xs font-medium rounded-md border transition-all ${
-                                        paymentMethod === method
-                                            ? 'bg-primary/10 border-primary text-primary'
-                                            : 'bg-card border-border text-muted-foreground hover:border-primary/50'
-                                    }`}
-                                >
-                                    {method.charAt(0).toUpperCase() + method.slice(1)}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
                 </div>
-                <div className='flex gap-2 shrink-0'>
+                <div className={`shrink-0 flex flex-col gap-2 ${isMobile ? 'px-6 pb-6' : 'px-5 pb-5'}`}>
                     <Button 
-                    variant="secondary"
-                    onClick={resetCart}
-                    className="flex-1 py-5 text-sm shrink-0"
+                        variant="secondary"
+                        onClick={resetCart}
+                        className="w-full py-5 text-sm"
                     >
                         <RefreshCcw className="h-4 w-4 mr-2" />
                         Reset Cart
                     </Button>
+                    <Button
+                        onClick={() => {
+                            setPaymentError(false);
+                            setCheckoutDialogOpen(true);
+                        }}
+                        disabled={cart.length === 0}
+                        className="w-full shadow-sm py-5 text-sm"
+                    >
+                        Complete Sale • ${total.toFixed(2)}
+                    </Button>
                 </div>
-                <Button
-                    onClick={handleSubmit}
-                    disabled={cart.length === 0}
-                    className="w-full shadow-sm py-5 text-sm shrink-0"
-                >
-                    Complete Sale • ${total.toFixed(2)}
-                </Button>
 
                 
             </div>

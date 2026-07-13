@@ -75,17 +75,25 @@ export default function ProductsIndex({ products, categories = [] }: Props) {
     }, [products, categoryFilter, statusFilter]);
 
     function exportProductsCSV() {
-        const headers = ['Name', 'SKU', 'Category', 'Cost Price', 'Selling Price', 'Stock', 'Status', 'Expiry Date'];
-        const rows = filteredProducts.map((p: any) => [
-            `"${p.name}"`,
-            p.sku || '',
-            `"${p.category?.name || ''}"`,
-            Number(p.cost_price).toFixed(2),
-            Number(p.selling_price).toFixed(2),
-            p.stock_quantity ?? 0,
-            p.stock_status || '',
-            p.expiry_date || '',
-        ]);
+        const headers = ['Name', 'SKU', 'Category', 'Cost Price', 'Selling Price', 'Profit', 'Margin %', 'Stock', 'Status', 'Expiry Date'];
+        const rows = filteredProducts.map((p: any) => {
+            const cost = Number(p.cost_price);
+            const price = Number(p.selling_price);
+            const profit = price - cost;
+            const margin = price > 0 ? (profit / price) * 100 : 0;
+            return [
+                `"${p.name}"`,
+                p.sku || '',
+                `"${p.category?.name || ''}"`,
+                cost.toFixed(2),
+                price.toFixed(2),
+                profit.toFixed(2),
+                `${margin.toFixed(1)}%`,
+                p.stock_quantity ?? 0,
+                p.stock_status || '',
+                p.expiry_date || '',
+            ];
+        });
         const csv = [headers.join(','), ...rows.map((r: any[]) => r.join(','))].join('\n');
         const blob = new Blob([csv], { type: 'text/csv' });
         const url = URL.createObjectURL(blob);
@@ -161,7 +169,7 @@ export default function ProductsIndex({ products, categories = [] }: Props) {
                     </Select>
 
                     {/* Export */}
-                    <Button variant="outline" size="sm" onClick={exportProductsCSV} className="h-9 gap-2 bg-secondary hover:bg-secondary/80 text-white border-transparent">
+                    <Button variant="outline" size="sm" onClick={exportProductsCSV} className="h-9 gap-2">
                         <Download className="h-4 w-4" /> Export
                     </Button>
 

@@ -41,6 +41,9 @@ export default function ProductTable({ products, teamSlug, onEdit }: Props) {
                 if (sortConfig.key === 'category') {
                     aValue = a.category?.name;
                     bValue = b.category?.name;
+                } else if (sortConfig.key === 'profit') {
+                    aValue = Number(a.selling_price) - Number(a.cost_price);
+                    bValue = Number(b.selling_price) - Number(b.cost_price);
                 }
                 
                 if (aValue === null) {
@@ -131,6 +134,7 @@ return;
                             <TableHead className="w-[130px] cursor-pointer select-none" onClick={() => requestSort('sku')}>SKU <SortIcon columnKey="sku" /></TableHead>
                             <TableHead className="text-right w-[90px] cursor-pointer select-none" onClick={() => requestSort('cost_price')}>Cost <SortIcon columnKey="cost_price" /></TableHead>
                             <TableHead className="text-right w-[90px] cursor-pointer select-none" onClick={() => requestSort('selling_price')}>Price <SortIcon columnKey="selling_price" /></TableHead>
+                            <TableHead className="text-right w-[110px] cursor-pointer select-none" onClick={() => requestSort('profit')}>Profit <SortIcon columnKey="profit" /></TableHead>
                             <TableHead className="text-right w-[170px] cursor-pointer select-none" onClick={() => requestSort('stock')}>Stock / Status <SortIcon columnKey="stock" /></TableHead>
                             <TableHead className="w-[110px] cursor-pointer select-none" onClick={() => requestSort('expiry_date')}>Expiry <SortIcon columnKey="expiry_date" /></TableHead>
                             <TableHead className="text-right w-[90px]">Actions</TableHead>
@@ -156,6 +160,44 @@ return;
                                 </TableCell>
                                 <TableCell className="px-4 py-4 text-foreground text-right font-medium tabular-nums">
                                     ${Number(product.selling_price).toFixed(2)}
+                                </TableCell>
+                                <TableCell className="px-4 py-4 text-right tabular-nums">
+                                    {(() => {
+                                        const cost = Number(product.cost_price);
+                                        const price = Number(product.selling_price);
+                                        const profit = price - cost;
+                                        const margin = price > 0 ? (profit / price) * 100 : 0;
+                                        const formattedProfit = profit < 0 ? `-$${Math.abs(profit).toFixed(2)}` : `$${profit.toFixed(2)}`;
+                                        
+                                        if (margin < 0) {
+                                            return (
+                                                <div className="flex flex-col items-end gap-1">
+                                                    <Badge variant="secondary" className="rounded-full bg-destructive/10 text-destructive border-none shadow-none px-2 py-0.5 text-xs font-medium leading-none">
+                                                        {formattedProfit}
+                                                    </Badge>
+                                                    <span className="text-[10px] text-destructive font-medium leading-none pr-1">{margin.toFixed(1)}%</span>
+                                                </div>
+                                            );
+                                        }
+
+                                        let textColor = "text-foreground";
+                                        let marginColor = "text-muted-foreground";
+
+                                        if (margin < 20) {
+                                            textColor = "text-amber-500";
+                                            marginColor = "text-amber-500/80";
+                                        } else if (margin > 50) {
+                                            textColor = "text-emerald-500";
+                                            marginColor = "text-emerald-500/80";
+                                        }
+
+                                        return (
+                                            <div className="flex flex-col items-end gap-0.5">
+                                                <span className={`font-medium ${textColor} leading-none`}>{formattedProfit}</span>
+                                                <span className={`text-[10px] ${marginColor} leading-none`}>{margin.toFixed(1)}%</span>
+                                            </div>
+                                        );
+                                    })()}
                                 </TableCell>
                                 <TableCell className="px-4 py-4">
                                     <div className="flex items-center justify-end gap-3">

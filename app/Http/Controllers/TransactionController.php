@@ -70,9 +70,9 @@ class TransactionController extends Controller
 
     return redirect()
         ->route('pos.index', $currentTeam->slug)
-        ->with('toast', [
-            'type' => 'success',
-            'message' => "Sale completed — {$transaction->invoice_number} · \${$transaction->total}",
+        ->with('transaction_success', [
+            'invoice_number' => $transaction->invoice_number,
+            'total'          => number_format($transaction->total, 2),
         ]);
 }
 }

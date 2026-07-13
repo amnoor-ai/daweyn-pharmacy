@@ -48,6 +48,7 @@ class HandleInertiaRequests extends Middleware
             'teams' => fn () => $user?->toUserTeams(includeCurrent: true) ?? [],
             'flash' => fn () => [
                 'toast' => session('toast'),
+                'transaction_success' => session('transaction_success'),
             ]
         ];
     }

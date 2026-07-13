@@ -1,5 +1,5 @@
 import { Head, usePage, router } from '@inertiajs/react';
-import { Trash2, ShoppingCart } from 'lucide-react';
+import { Trash2, ShoppingCart, RefreshCcw } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import ProductAvatar from '@/components/ProductAvatar';
 import PosErrorDialog from '@/components/PosErrorDialog';
@@ -115,6 +115,16 @@ return;
     const discountAmount = parseFloat(discount) || 0;
     const total = subtotal + taxAmount - discountAmount;
 
+    function resetCart() {
+        setCart([]);
+        setCustomerId('');
+        setPaymentMethod('');
+        setDiscount('0');
+        setTax('0');
+        setSearch('');
+        setMobileCartOpen(false);
+    }
+
     function handleSubmit() {
         if (cart.length === 0) {
             return;
@@ -131,15 +141,8 @@ return;
             })),
         }, {
             onSuccess: () => {
-                setCart([]);
-                setCustomerId('');
-                setPaymentMethod('cash');
-                setDiscount('0');
-                setTax('0');
-                setSearch('');
-                setMobileCartOpen(false);
+                resetCart();
             },
-            // Cart is intentionally NOT cleared on error — user can correct the issue and retry
             onError: (errors) => {
                 if (errors.quantity) {
                     setPosError({ type: 'stock', message: errors.quantity as string });
@@ -157,7 +160,6 @@ return;
         <>
             <Head title="POS" />
 
-            {/* POS Error Modal — shown on stock/expiry backend validation failures */}
             {posError && (
                 <PosErrorDialog
                     open={!!posError}
@@ -345,7 +347,16 @@ return;
                         </div>
                     </div>
                 </div>
-
+                <div className='flex gap-2 shrink-0'>
+                    <Button 
+                    variant="secondary"
+                    onClick={resetCart}
+                    className="flex-1 py-5 text-sm shrink-0"
+                    >
+                        <RefreshCcw className="h-4 w-4 mr-2" />
+                        Reset Cart
+                    </Button>
+                </div>
                 <Button
                     onClick={handleSubmit}
                     disabled={cart.length === 0}
@@ -353,6 +364,8 @@ return;
                 >
                     Complete Sale • ${total.toFixed(2)}
                 </Button>
+
+                
             </div>
         );
     }

@@ -75,7 +75,7 @@ export default function RevenueLineChart({ data }: Props) {
     if (data.length === 0) {
         return (
             <div className="flex h-[220px] flex-col items-center justify-center rounded-xl border border-border bg-card text-center">
-                <TrendingUp className="mb-2 h-8 w-8 text-muted-foreground opacity-60" />
+                {/* <TrendingUp className="mb-2 h-8 w-8 text-muted-foreground opacity-60" /> */}
                 <p className="text-sm font-medium text-foreground">No revenue data yet</p>
                 <p className="mt-0.5 text-xs text-muted-foreground">
                     Revenue will appear here once transactions are recorded.

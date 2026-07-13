@@ -163,9 +163,6 @@ export default function Dashboard({
                                     Last 30 days of sales totals.
                                 </p>
                             </div>
-                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/10">
-                                <TrendingUp className="h-4 w-4 text-blue-500" />
-                            </div>
                         </div>
                         <Card className="flex flex-col gap-3 p-5">
                             <RevenueLineChart data={revenueByDay} />

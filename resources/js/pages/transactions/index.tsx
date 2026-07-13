@@ -88,13 +88,11 @@ export default function TransactionsIndex({ transactions }: Props) {
                 }
                 
                 if (aValue === null) {
-return 1;
-}
-
+                    return 1;
+                }
                 if (bValue === null) {
-return -1;
-}
-                
+                    return -1;
+                }
                 if (aValue < bValue) {
                     return sortConfig.direction === 'asc' ? -1 : 1;
                 }
@@ -203,15 +201,6 @@ return -1;
                     <Button variant="outline" size="sm" onClick={exportTransactionsCSV} className="h-9 gap-2 bg-secondary hover:bg-secondary/80 text-white border-transparent">
                         <Download className="h-4 w-4" /> Export
                     </Button>
-
-                    {/* Primary action */}
-                    <Button
-                        onClick={() => router.visit(`/${teamSlug}/pos`)}
-                        className="gap-2"
-                    >
-                        <ShoppingCart className="h-4 w-4" />
-                        Go to POS
-                    </Button>
                     </div>
                 </div>
 
@@ -219,8 +208,7 @@ return -1;
                 {filteredTx.length === 0 ? (
                     <div className="flex-1 rounded-lg border border-border bg-card">
                         <p className="p-8 text-center text-sm text-muted-foreground">
-                            No transactions yet. Click &quot;Go to POS&quot; to
-                            record one.
+                            No transactions yet. Use the POS to record your first sale.
                         </p>
                     </div>
                 ) : (

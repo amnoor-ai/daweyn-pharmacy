@@ -63,13 +63,16 @@ class TransactionController extends Controller
     }
 
     public function store(\App\Http\Requests\StoreTransactionRequest $request, Team $currentTeam, \App\Actions\CreatePosTransactionAction $action)
-    {
-        $validated = $request->validated();
+{
+    $validated = $request->validated();
 
-        $action->execute($validated, $currentTeam);
+    $transaction = $action->execute($validated, $currentTeam);
 
-        return redirect()
-            ->route('pos.index', $currentTeam->slug)
-            ->with('success', 'Transaction recorded successfully.');
-    }
+    return redirect()
+        ->route('pos.index', $currentTeam->slug)
+        ->with('toast', [
+            'type' => 'success',
+            'message' => "Sale completed — {$transaction->invoice_number} · \${$transaction->total}",
+        ]);
+}
 }

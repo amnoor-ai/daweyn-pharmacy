@@ -10,6 +10,7 @@ function Toaster({ ...props }: ToasterProps) {
     return (
         <Sonner
             theme={appearance}
+            richColors
             className="toaster group"
             position="bottom-right"
             style={
@@ -17,6 +18,9 @@ function Toaster({ ...props }: ToasterProps) {
                     '--normal-bg': 'var(--popover)',
                     '--normal-text': 'var(--popover-foreground)',
                     '--normal-border': 'var(--border)',
+                    '--success-bg': 'oklch(0.9 0.09 155)',
+                    '--success-text': 'oklch(0.3 0.09 155)',
+                    '--success-border': 'oklch(0.9 0.12 155)',
                 } as React.CSSProperties
             }
             {...props}

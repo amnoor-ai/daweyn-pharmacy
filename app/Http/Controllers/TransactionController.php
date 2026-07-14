@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Team;
 use App\Models\Transaction;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -75,4 +76,20 @@ class TransactionController extends Controller
             'total'          => number_format($transaction->total, 2),
         ]);
 }
+
+    public function download(Team $currentTeam, Transaction $transaction)
+    {
+        abort_unless($transaction->team_id === $currentTeam->id, 403);
+
+        $transaction->load(['customer', 'cashier', 'items.product']);
+
+        $pdf = Pdf::loadView('pdf.receipt', [
+            'transaction' => $transaction,
+            'team'        => $currentTeam,
+        ]);
+
+        $filename = 'receipt-' . $transaction->invoice_number . '.pdf';
+
+        return $pdf->download($filename);
+    }
 }

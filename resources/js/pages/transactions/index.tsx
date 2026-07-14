@@ -198,7 +198,7 @@ export default function TransactionsIndex({ transactions }: Props) {
                     </Select>
 
                     {/* Export */}
-                    <Button variant="outline" size="sm" onClick={exportTransactionsCSV} className="h-9 gap-2 bg-secondary hover:bg-secondary/80 text-white border-transparent">
+                    <Button variant="outline" size="sm" onClick={exportTransactionsCSV} className="h-9 gap-2 bg-secondary hover:bg-secondary/80">
                         <Download className="h-4 w-4" /> Export
                     </Button>
                     </div>

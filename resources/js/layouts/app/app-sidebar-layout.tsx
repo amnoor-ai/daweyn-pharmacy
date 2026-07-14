@@ -42,6 +42,12 @@ export default function AppSidebarLayout({
         }
     }, [collapsed, isSidebarMounted]);
 
+    useEffect(() => {
+        if (isPos) {
+            setCollapsed(true);
+        }
+    }, [isPos]);
+
     const emptySubscribe = () => () => { };
     const mounted = useSyncExternalStore(
         emptySubscribe,

@@ -25,6 +25,7 @@ export function AppHeader({ breadcrumbs = [], collapsed, setCollapsed }: Props) 
     const page = usePage();
     const { auth, currentTeam } = page.props;
     const getInitials = useInitials();
+    const isPos = page.url.split('?')[0].endsWith('/pos');
     const { resolvedAppearance, updateAppearance } = useAppearance();
 
     const emptySubscribe = () => () => { };
@@ -128,13 +129,15 @@ export function AppHeader({ breadcrumbs = [], collapsed, setCollapsed }: Props) 
                     {/* Right section */}
                     <div className="ml-auto flex items-center space-x-2">
                         {/* Primary action */}
-                        <Button
-                            onClick={() => router.visit(`/${currentTeam?.slug}/pos`)}
-                            className="gap-2"
-                        >
-                            <ShoppingCart className="h-4 w-4" />
-                            Go to POS
-                        </Button>
+                        {!isPos && (
+                            <Button
+                                onClick={() => router.visit(`/${currentTeam?.slug}/pos`)}
+                                className="gap-2"
+                            >
+                                <ShoppingCart className="h-4 w-4" />
+                                Go to POS
+                            </Button>
+                        )}
                         {/* Inline search */}
                         <div className="relative hidden items-center sm:flex" ref={searchContainerRef}>
                             <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" strokeWidth={2} />

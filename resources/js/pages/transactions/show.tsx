@@ -1,5 +1,5 @@
 import { Head, router, usePage } from '@inertiajs/react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Download } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -39,19 +39,19 @@ export default function TransactionShow({ transaction }: Props) {
     return (
         <>
             <Head title={transaction.invoice_number} />
-            <div className="flex max-w-2xl flex-col gap-6 p-6">
+            <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 p-6">
                 {/* Back */}
                 <Button
                     variant="ghost"
                     onClick={() => router.visit(`/${teamSlug}/transactions`)}
-                    className="w-fit gap-2 text-muted-foreground hover:text-primary"
+                    className="w-fit gap-2 text-muted-foreground hover:text-primary self-start"
                 >
                     <ArrowLeft className="h-4 w-4" />
                     Back to Transactions
                 </Button>
 
                 {/* Header */}
-                <div className="flex items-center justify-between">
+                <div className="w-full flex items-center justify-between">
                     <div>
                         <h1 className="text-2xl font-bold tracking-tight text-foreground">
                             {transaction.invoice_number}
@@ -68,9 +68,22 @@ export default function TransactionShow({ transaction }: Props) {
                                 : '—'}
                         </p>
                     </div>
-                    <Badge variant="secondary" className="rounded-full bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/10/80 border-transparent shadow-none">
-                        Completed
-                    </Badge>
+                    <div className="flex items-center gap-3">
+                        <Badge variant="secondary" className="rounded-full bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/10/80 border-transparent shadow-none">
+                            Completed
+                        </Badge>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            className="gap-2 h-8 text-xs bg-card"
+                            asChild
+                        >
+                            <a href={`/${teamSlug}/transactions/${transaction.id}/download`} download>
+                                <Download className="h-3.5 w-3.5" />
+                                Download Invoice
+                            </a>
+                        </Button>
+                    </div>
                 </div>
 
                 {/* Details */}

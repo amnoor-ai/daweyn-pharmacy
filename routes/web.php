@@ -49,6 +49,7 @@ Route::prefix('{current_team}')
         Route::get('transactions/create', [TransactionController::class, 'create'])->name('transactions.create');
         Route::post('transactions', [TransactionController::class, 'store'])->name('transactions.store');
         Route::get('transactions/{transaction}', [TransactionController::class, 'show'])->name('transactions.show');
+        Route::get('transactions/{transaction}/download', [TransactionController::class, 'download'])->name('transactions.download');
 
         //POS
         Route::get('pos', [TransactionController::class, 'pos'])->name('pos.index');

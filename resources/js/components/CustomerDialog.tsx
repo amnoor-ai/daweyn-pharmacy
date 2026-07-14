@@ -1,5 +1,6 @@
 import { useForm } from '@inertiajs/react';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { Camera, User } from 'lucide-react';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import {
@@ -26,7 +27,17 @@ type FormData = {
     phone: string;
     address: string;
     loyalty_points: string;
+    avatar: File | null;
 };
+
+function getInitials(name: string) {
+    return name
+        .split(' ')
+        .map((n) => n[0])
+        .slice(0, 2)
+        .join('')
+        .toUpperCase();
+}
 
 export default function CustomerDialog({
     open,
@@ -35,6 +46,8 @@ export default function CustomerDialog({
     customer,
 }: Props) {
     const isEditing = customer !== undefined;
+    const fileRef = useRef<HTMLInputElement>(null);
+    const [preview, setPreview] = useState<string | null>(customer?.avatar ?? null);
 
     const { data, setData, post, put, processing, errors, reset, clearErrors } =
         useForm<FormData>({
@@ -43,6 +56,7 @@ export default function CustomerDialog({
             phone: customer?.phone ?? '',
             address: customer?.address ?? '',
             loyalty_points: String(customer?.loyalty_points ?? 0),
+            avatar: null,
         });
 
     useEffect(() => {
@@ -55,15 +69,27 @@ export default function CustomerDialog({
                 phone: customer?.phone ?? '',
                 address: customer?.address ?? '',
                 loyalty_points: String(customer?.loyalty_points ?? 0),
+                avatar: null,
             });
+            setPreview(customer?.avatar ?? null);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [open, customer?.id]);
+
+    function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0] ?? null;
+        setData('avatar', file);
+        if (file) {
+            const url = URL.createObjectURL(file);
+            setPreview(url);
+        }
+    }
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
 
         const options = {
+            forceFormData: true,
             preserveScroll: true,
             onSuccess: () => onOpenChange(false),
         };
@@ -85,12 +111,44 @@ export default function CustomerDialog({
                 </DialogHeader>
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+                    {/* Avatar Upload */}
+                    <div className="flex flex-col items-center gap-3">
+                        <button
+                            type="button"
+                            onClick={() => fileRef.current?.click()}
+                            className="group relative h-20 w-20 rounded-full overflow-hidden border-2 border-border bg-muted flex items-center justify-center cursor-pointer hover:border-primary transition-colors"
+                        >
+                            {preview ? (
+                                <img
+                                    src={preview}
+                                    alt="Avatar preview"
+                                    className="h-full w-full object-cover"
+                                />
+                            ) : (
+                                <span className="text-2xl font-bold text-muted-foreground select-none">
+                                    {data.name ? getInitials(data.name) : <User className="h-8 w-8 text-muted-foreground" />}
+                                </span>
+                            )}
+                            <div className="absolute inset-0 bg-foreground/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <Camera className="h-5 w-5 text-background" />
+                            </div>
+                        </button>
+                        <input
+                            ref={fileRef}
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={handleAvatarChange}
+                        />
+                        <p className="text-xs text-muted-foreground">
+                            Click to upload a photo (optional)
+                        </p>
+                        <InputError message={errors.avatar} />
+                    </div>
+
                     {/* Name */}
                     <div className="flex flex-col gap-1.5">
-                        <Label
-                            htmlFor="customer-name"
-                            className="text-foreground"
-                        >
+                        <Label htmlFor="customer-name" className="text-foreground">
                             Name <span className="text-destructive">*</span>
                         </Label>
                         <Input
@@ -106,10 +164,7 @@ export default function CustomerDialog({
 
                     {/* Phone */}
                     <div className="flex flex-col gap-1.5">
-                        <Label
-                            htmlFor="customer-phone"
-                            className="text-foreground"
-                        >
+                        <Label htmlFor="customer-phone" className="text-foreground">
                             Phone <span className="text-destructive">*</span>
                         </Label>
                         <Input
@@ -124,10 +179,7 @@ export default function CustomerDialog({
 
                     {/* Email */}
                     <div className="flex flex-col gap-1.5">
-                        <Label
-                            htmlFor="customer-email"
-                            className="text-foreground"
-                        >
+                        <Label htmlFor="customer-email" className="text-foreground">
                             Email{' '}
                             <span className="text-xs font-normal text-muted-foreground">
                                 (optional)
@@ -146,10 +198,7 @@ export default function CustomerDialog({
 
                     {/* Address */}
                     <div className="flex flex-col gap-1.5">
-                        <Label
-                            htmlFor="customer-address"
-                            className="text-foreground"
-                        >
+                        <Label htmlFor="customer-address" className="text-foreground">
                             Address{' '}
                             <span className="text-xs font-normal text-muted-foreground">
                                 (optional)
@@ -167,10 +216,7 @@ export default function CustomerDialog({
 
                     {/* Loyalty Points */}
                     <div className="flex flex-col gap-1.5">
-                        <Label
-                            htmlFor="customer-loyalty"
-                            className="text-foreground"
-                        >
+                        <Label htmlFor="customer-loyalty" className="text-foreground">
                             Loyalty Points
                         </Label>
                         <Input
@@ -178,9 +224,7 @@ export default function CustomerDialog({
                             type="number"
                             min="0"
                             value={data.loyalty_points}
-                            onChange={(e) =>
-                                setData('loyalty_points', e.target.value)
-                            }
+                            onChange={(e) => setData('loyalty_points', e.target.value)}
                             className="border-border"
                         />
                         <InputError message={errors.loyalty_points} />
@@ -196,10 +240,7 @@ export default function CustomerDialog({
                         >
                             Cancel
                         </Button>
-                        <Button
-                            type="submit"
-                            disabled={processing}
-                        >
+                        <Button type="submit" disabled={processing}>
                             {processing
                                 ? 'Saving…'
                                 : isEditing

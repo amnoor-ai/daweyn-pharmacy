@@ -6,5 +6,6 @@ export type Customer = {
     phone: string;
     address: string | null;
     loyalty_points: number;
+    avatar: string | null;
     created_at: string | null;
 };

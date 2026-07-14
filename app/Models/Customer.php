@@ -28,6 +28,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
     'phone',
     'address',
     'loyalty_points',
+    'avatar',
 ])]
 
 class Customer extends Model

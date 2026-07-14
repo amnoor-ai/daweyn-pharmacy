@@ -145,7 +145,18 @@ return;
                                 key={customer.id}
                             >
                                 <TableCell className="px-6 py-4 font-medium text-foreground">
-                                    {customer.name}
+                                    <div className="flex items-center gap-3">
+                                        <div className="h-8 w-8 rounded-full shrink-0 bg-primary/10 border border-border flex items-center justify-center overflow-hidden">
+                                            {customer.avatar ? (
+                                                <img src={customer.avatar} alt={customer.name} className="h-full w-full object-cover" />
+                                            ) : (
+                                                <span className="text-xs font-bold text-primary select-none">
+                                                    {customer.name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase()}
+                                                </span>
+                                            )}
+                                        </div>
+                                        {customer.name}
+                                    </div>
                                 </TableCell>
                                 <TableCell className="px-6 py-4 text-muted-foreground text-left">
                                     {customer.phone}

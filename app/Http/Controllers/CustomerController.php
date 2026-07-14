@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Models\Team;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class CustomerController extends Controller
@@ -75,6 +76,8 @@ class CustomerController extends Controller
     {
         abort_unless($customer->team_id === $currentTeam->id, 403);
 
+        $customer->load(['transactions.items.product']);
+
         return Inertia::render('customers/show', [
             'customer' => $customer,
         ]);
@@ -88,7 +91,12 @@ class CustomerController extends Controller
             'phone'          => ['required', 'string', 'max:50'],
             'address'        => ['nullable', 'string', 'max:500'],
             'loyalty_points' => ['integer', 'min:0'],
+            'avatar'         => ['nullable', 'image', 'max:2048'],
         ]);
+
+        if ($request->hasFile('avatar')) {
+            $validated['avatar'] = Storage::url($request->file('avatar')->store('avatars', 'public'));
+        }
 
         $currentTeam->customers()->create($validated);
 
@@ -107,7 +115,17 @@ class CustomerController extends Controller
             'phone'          => ['required', 'string', 'max:50'],
             'address'        => ['nullable', 'string', 'max:500'],
             'loyalty_points' => ['integer', 'min:0'],
+            'avatar'         => ['nullable', 'image', 'max:2048'],
         ]);
+
+        if ($request->hasFile('avatar')) {
+            // Delete old avatar if exists
+            if ($customer->avatar) {
+                $oldPath = str_replace('/storage/', '', $customer->avatar);
+                Storage::disk('public')->delete($oldPath);
+            }
+            $validated['avatar'] = Storage::url($request->file('avatar')->store('avatars', 'public'));
+        }
 
         $customer->update($validated);
 
